@@ -1,0 +1,141 @@
+{
+  "modeToggle": {
+    "tooltip": "Toggle mode",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "languagesToggle": {
+    "tooltip": "Language",
+    "arabic": "Arabic",
+    "english": "English"
+  },
+  "table": {
+    "searchPlaceholder": "Search by any key...",
+    "sort": "Sort(Asc/Desc)",
+    "toggleColumns": "Show/hide Columns",
+    "actions": "Actions",
+    "noData": "No data available",
+    "next": "Next",
+    "previous": "Prev",
+    "page": "Page",
+    "of": "of",
+    "rows": "Results: "
+  },
+  "HomeNavbar": {
+    "links": {
+      "home": "Home",
+      "about": "About",
+      "pricing": "Pricing"
+    },
+    "cta": "Login / Signup",
+    "MobileMenu": {
+      "mainMenu": "Main Menu"
+    }
+  },
+  "HomePage": {
+    "build": "Build",
+    "launch": "Launch",
+    "grow": "Grow",
+    "heading": "Your Dream Store with",
+    "slogan": "Motager | Where Your Store Comes to Life",
+    "motager": "Motager",
+    "description": "Motager empowers you with everything you need to bring your store to life. From beautiful, customizable designs to powerful tools that fuel growth, take your business to the next level.",
+    "cta1": "Start Your Free Trial",
+    "cta2": "View Demo Store"
+  },
+  "LoginPage": {
+    "title": "Login",
+    "subtitle": "Enter your details to login to your account.",
+    "form": {
+      "email": "Email",
+      "password": "Password",
+      "remember": "Remember me for 14 days!",
+      "submit": "Login"
+    },
+    "haveNoAccount": "Don't have an account?"
+  },
+  "SignUpPage": {
+    "title": "New Account",
+    "subtitle": "Enter your details to create a new account.",
+    "form": {
+      "firstName": "First Name",
+      "firstNamePlaceholder": "John",
+      "lastName": "Last Name",
+      "lastNamePlaceholder": "Doe",
+      "email": "Email",
+      "emailTip": "Make sure this email is working, you will get an OTP.",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Create a new account"
+    },
+    "haveAccount": "Already have an account?"
+  },
+  "DashboardPage": {
+    "sidebar": {
+      "support": "Support",
+      "dashboardLinks": "Dashboard Links",
+      "home": "Home",
+      "orders": "Orders",
+      "products": "Products",
+      "collections": "Collections",
+      "categories": "Categories",
+      "customers": "Customers",
+      "analytics": "Analytics",
+      "discounts": "Discounts",
+      "settings": "Settings",
+      "salesChannels": "Sales Channels",
+      "onlineStore": "Online Store",
+      "whatsappStore": "WhatsApp Store"
+    },
+    "loading": {
+      "title": "Loading Data..."
+    }
+  },
+  "OrdersPage": {
+    "title": "Orders",
+    "export": "Export Data",
+    "import": "Import Data",
+    "action": "Create Order"
+  },
+  "CustomersPage": {
+    "title": "Customers",
+    "export": "Export Data",
+    "import": "Import Data",
+    "action": "Add Customer"
+  },
+  "ProductsPage": {
+    "title": "Products",
+    "export": "Export Data",
+    "import": "Import Data",
+    "action": "Add Product",
+    "new": {
+      "back": "Back",
+      "title": "Add Product",
+      "save": "Save",
+      "info": "Product information"
+    }
+  },
+  "CollectionsPage": {
+    "title": "Collections",
+    "export": "Export Data",
+    "import": "Import Data",
+    "action": "Create Collection"
+  },
+
+  "CategoriesPage": {
+    "title": "Categories",
+    "export": "Export Data",
+    "import": "Import Data",
+    "action": "Create Category"
+  },
+
+  "OnlineStorePage": {
+    "title": "Online Store",
+    "description": "Choose / Customize your theme",
+    "tabs": {
+      "currentTheme": "Current Theme",
+      "themeLibrary": "Theme Library"
+    }
+  }
+}

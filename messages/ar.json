@@ -1,0 +1,140 @@
+{
+  "modeToggle": {
+    "tooltip": "الألوان",
+    "light": "فاتح",
+    "dark": "داكن",
+    "system": "النظام"
+  },
+  "languagesToggle": {
+    "tooltip": "اللغة",
+    "arabic": "العربية",
+    "english": "الإنجليزية"
+  },
+  "table": {
+    "searchPlaceholder": "ابحث بأي مفتاح...",
+    "sort": "ترتيب (تصاعدي/تنازلي)",
+    "toggleColumns": "إظهار/إخفاء الأعمدة",
+    "actions": "الإجراءات",
+    "noData": "لا توجد بيانات",
+    "next": "التالي",
+    "previous": "السابق",
+    "page": "صفحة",
+    "of": "من",
+    "rows": "عدد النتائج: "
+  },
+  "HomeNavbar": {
+    "links": {
+      "home": "الرئيسية",
+      "about": "نبذة عنا",
+      "pricing": "الأسعار"
+    },
+    "cta": "تسجيل / إنشاء حساب",
+    "MobileMenu": {
+      "mainMenu": "القائمة الرئيسية"
+    }
+  },
+  "HomePage": {
+    "build": "أنشئ",
+    "launch": "أطلق",
+    "grow": "كَبَّر",
+    "heading": "متجر أحلامك مع منصة",
+    "slogan": "مُتَاجِر | حيث تأتي بمتجرك إلي الحياة",
+    "motager": "مُتَـــاجِر",
+    "description": "يوفر لك مُتَاجِر كل ما تحتاجه لجعل متجرك ينبض بالحياة. من تصاميم جميلة وقابلة للتخصيص إلى أدوات قوية تدعم النمو وزيادة المبيعات، ارتقِ بعملك إلى المستوى التالي.",
+    "cta1": "ابدأ تجربتك المجانية",
+    "cta2": "عرض متجر تجريبي"
+  },
+  "LoginPage": {
+    "title": "تسجيل الدخول",
+    "subtitle": "أدخل بياناتك لتسجيل الدخول إلى حسابك.",
+    "form": {
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "remember": "تذكرني لمدة 14 يومًا!",
+      "submit": "تسجيل الدخول"
+    },
+    "haveNoAccount": "ليس لديك حساب؟"
+  },
+  "SignUpPage": {
+    "title": "حساب جديد",
+    "subtitle": "أدخل بياناتك لإنشاء حساب جديد.",
+    "form": {
+      "firstName": "الاسم الأول",
+      "firstNamePlaceholder": "محمد",
+      "lastName": "اسم العائلة",
+      "lastNamePlaceholder": "عمار",
+      "email": "البريد الإلكتروني",
+      "emailTip": "تأكد من أن هذا البريد الإلكتروني يعمل، ستتلقى رمز التحقق.",
+      "password": "كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "submit": "إنشاء حساب جديد"
+    },
+    "haveAccount": "لديك حساب بالفعل؟"
+  },
+  "DashboardPage": {
+    "sidebar": {
+      "support": "الدعم",
+      "dashboardLinks": "روابط لوحة التحكم",
+      "home": "الرئيسية",
+      "orders": "الطلبات",
+      "products": "المنتجات",
+      "collections": "مجموعات المتجر",
+      "categories": "فئات المنتجات",
+      "customers": "العملاء",
+      "analytics": "التحليلات",
+      "discounts": "الخصومات",
+      "settings": "الإعدادات",
+      "salesChannels": "منافذ البيع",
+      "onlineStore": "متجر أونلاين",
+      "whatsappStore": "متجر واتساب"
+    },
+    "loading": {
+      "title": "يتم تحميل البيانات..."
+    }
+  },
+  "OrdersPage": {
+    "title": "الطَلبات",
+    "export": "تصدير البيانات",
+    "import": "استيراد البيانات",
+    "action": "إنشاء طَلب"
+  },
+  "CustomersPage": {
+    "title": "العُملاء",
+    "export": "تصدير البيانات",
+    "import": "استيراد البيانات",
+    "action": "إضافة عَميل"
+  },
+  "ProductsPage": {
+    "title": "المُنتجات",
+    "export": "تصدير البيانات",
+    "import": "استيراد البيانات",
+    "action": "إضافة مُنتج",
+    "new": {
+      "back": "رجوع",
+      "title": "إضافة مُنتج",
+      "save": "حفظ",
+      "info": "بيانات المُنتج"
+    }
+  },
+  "CollectionsPage": {
+    "title": "مَجموعات المتجر",
+    "export": "تصدير البيانات",
+    "import": "استيراد البيانات",
+    "action": "إنشاء مَجموعة"
+  },
+  "CategoriesPage": {
+    "title": "فِئات المنتجات",
+    "export": "تصدير البيانات",
+    "import": "استيراد البيانات",
+    "action": "إنشاء فِئة"
+  },
+
+  "OnlineStorePage": {
+    "title": "متجر أونلاين",
+    "description": "اختيار / تخصيص قالب المتجر",
+    "tabs": {
+      "currentTheme": "القالب الحالي",
+      "themeLibrary": "مكتبة القوالب"
+    }
+  }
+}
