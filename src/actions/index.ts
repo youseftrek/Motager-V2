@@ -17,7 +17,8 @@ export async function getTheme(themeId: string) {
         sections: [
           "Hero",
           "About",
-          "FeaturedCategories",
+          "FeaturedCollections",
+          "ImageWithText",
           "BestSellers",
           "NewsletterSignup",
           "Footer",
@@ -25,16 +26,25 @@ export async function getTheme(themeId: string) {
         initialValues: [],
         body: [
           {
-            id: "5c0eacaf-a77d-4bcb-822b-6895a6ffa063",
+            id: "33ff42bc-47dc-41dc-a039-44a2cab43c16",
             type: "Hero",
             name: "Hero",
             data: {
-              title: "Heading🔥",
-              subtitle: "Subtitle",
-              button1Text: "Shop",
-              button2Text: "Know more",
+              title: "Tesx🚀",
+              subtitle: "This ih hero title",
               imgUrl:
-                "https://images.pexels.com/photos/30537429/pexels-photo-30537429.jpeg",
+                "https://images.pexels.com/photos/7836165/pexels-photo-7836165.jpeg?auto=compress&cs=tinysrgb&w=3000",
+            },
+          },
+          {
+            id: "33ff42bc-47dc-41dc-a039-44a2cab43c22",
+            type: "Hero",
+            name: "Hero",
+            data: {
+              title: "Testttttttttt🔥",
+              subtitle: "This ih hero title",
+              imgUrl:
+                "https://images.pexels.com/photos/7836165/pexels-photo-7836165.jpeg?auto=compress&cs=tinysrgb&w=3000",
             },
           },
         ],

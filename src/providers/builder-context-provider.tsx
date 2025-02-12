@@ -26,6 +26,7 @@ export type State = {
   selectedSection: Section | null;
   availableSections: string[];
   loadedComponents: Record<string, React.ComponentType<any>>;
+  themeSettings: any;
 };
 
 type Action =
@@ -63,6 +64,7 @@ const initialState: State = {
   selectedSection: null,
   availableSections: [],
   loadedComponents: {},
+  themeSettings: {},
 };
 
 function historyReducer(
@@ -121,6 +123,7 @@ function builderReducer(state: State, action: Action): State {
         selectedTheme: action.payload,
         selectedPage: action.payload.pages[0],
         availableSections,
+        themeSettings: action.payload.themeSettings,
       };
     }
 
@@ -251,9 +254,7 @@ export function BuilderProvider({ children }: { children: React.ReactNode }) {
     }
   }, [history.present.availableSections, dispatch]);
 
-  const undoLimit = initialState.selectedPage?.body.length || 2;
-
-  const canUndo = history.past.length >= undoLimit;
+  const canUndo = history.past.length > 2;
   const canRedo = history.future.length > 0;
 
   const undo = () => dispatch({ type: "UNDO" });

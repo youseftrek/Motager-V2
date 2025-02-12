@@ -1,17 +1,67 @@
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import React from "react";
+import { Button } from "@/components/ui/button";
 
-export default function NewsletterSignup() {
+export const config = {
+  inputs: {
+    title: {
+      type: "text" as const,
+      label: "Title",
+      default: "Subscribe to Our Newsletter",
+    },
+    description: {
+      type: "text" as const,
+      label: "Description",
+      default: "Stay updated with our latest offers and news.",
+    },
+    buttonText: {
+      type: "text" as const,
+      label: "Button Text",
+      default: "Subscribe",
+    },
+    backgroundColor: {
+      type: "color" as const,
+      label: "Background Color",
+      default: "#212121",
+    },
+  },
+};
+
+type NewsletterProps = {
+  title?: string;
+  description?: string;
+  buttonText?: string;
+  backgroundColor?: string;
+};
+
+export default function NewsletterSection({
+  title = "Subscribe to Our Newsletter",
+  description = "Stay updated with our latest offers and news.",
+  buttonText = "Subscribe",
+  backgroundColor = "#212121",
+}: NewsletterProps) {
+  const [email, setEmail] = useState("");
+
+  const handleSubscribe = () => {
+    alert(`Subscribed with: ${email}`);
+    setEmail("");
+  };
+
   return (
-    <div className="bg-secondary/50 py-12 text-center">
-      <h2 className="mb-4 font-bold text-2xl">Join Our Newsletter</h2>
-      <p className="mb-8 text-muted-foreground">
-        Get exclusive updates and offers.
-      </p>
-      <div className="flex justify-center gap-2">
-        <Input placeholder="Enter your email" className="w-64" />
-        <Button>Subscribe</Button>
+    <div className="p-6 rounded-lg text-center" style={{ backgroundColor }}>
+      <h2 className="mb-2 font-bold text-2xl">{title}</h2>
+      <p className="mb-4 text-muted-foreground">{description}</p>
+      <div className="flex justify-center items-center gap-2 mx-auto max-w-md">
+        <Input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="flex-1"
+        />
+        <Button onClick={handleSubscribe} size="sm">
+          {buttonText}
+        </Button>
       </div>
     </div>
   );

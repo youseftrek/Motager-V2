@@ -94,6 +94,25 @@ body {
     animation: fade 1.2s linear infinite;
   }
 
+  /* Change bullet size and color */
+  .swiper-pagination-bullet {
+    width: 12px;
+    height: 12px;
+    background-color: gray;
+    opacity: 0.6;
+  }
+
+  /* Change active bullet color */
+  .swiper-pagination-bullet-active {
+    background-color: #ff5733; /* Change to your preferred color */
+    opacity: 1;
+  }
+
+  /* Custom position */
+  .swiper-pagination {
+    bottom: 10px; /* Adjust position */
+  }
+
   @keyframes fade {
     0% {
       opacity: 1;

@@ -24,7 +24,7 @@ const HomePageMobileMenu = () => {
   const currLocale = useLocale();
   return (
     <Sheet>
-      <SheetTrigger asChild className="flex lg:hidden">
+      <SheetTrigger asChild className="flex md:hidden">
         <Button size="icon" variant="outline">
           <Menu />
         </Button>

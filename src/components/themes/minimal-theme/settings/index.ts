@@ -4,6 +4,7 @@ export const MINIMAL_THEME_SETTINGS = {
     body: "Roboto",
   },
   colors: {
+    main: "#6F4E37",
     lightMode: {
       background: {
         primary: "#fafafa",

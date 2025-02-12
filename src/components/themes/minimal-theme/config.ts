@@ -12,7 +12,8 @@ export const MINIMAL_THEME: Theme = {
       sections: [
         "Hero",
         "About",
-        "FeaturedCategories",
+        "FeaturedCollections",
+        "ImageWithText",
         "BestSellers",
         "NewsletterSignup",
         "Footer",

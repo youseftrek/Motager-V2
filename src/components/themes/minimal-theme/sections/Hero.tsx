@@ -7,6 +7,8 @@ export type HeroProps = {
   button1Text?: string;
   button2Text?: string;
   imgUrl: string;
+  overlayOpacity?: number;
+  overlayColor?: string;
 };
 
 export const config = {
@@ -32,9 +34,19 @@ export const config = {
       placeholder: "Shop Now",
     },
     imgUrl: {
-      type: "test" as const,
+      type: "text" as const,
       label: "Background Image",
       placeholder: "",
+    },
+    overlayColor: {
+      type: "color" as const,
+      label: "Overlay Color",
+    },
+    overlayOpacity: {
+      type: "slider" as const,
+      label: "Overlay Opacity",
+      min: 0,
+      max: 100,
     },
   },
 };
@@ -45,9 +57,12 @@ export default function Hero({
   button1Text = "View More",
   button2Text = "Collections",
   imgUrl,
+  overlayOpacity = 0,
+  overlayColor = "#000000",
 }: HeroProps) {
   return (
     <section className="relative w-full h-[70vh] md:h-screen overflow-hidden">
+      {/* Background Image */}
       <Image
         src={imgUrl || "/images/hero.jpg"}
         alt="Men's beauty care"
@@ -55,23 +70,34 @@ export default function Hero({
         className="object-center object-cover"
         priority
       />
+
+      {/* Overlay */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundColor: overlayColor,
+          opacity: overlayOpacity / 100,
+        }}
+      />
+
+      {/* Content */}
       <div className="absolute inset-0 flex flex-col justify-center items-center text-center">
         <div className="space-y-6 px-4">
-          <p className="font-medium text-sm text-white tracking-widest">
+          <p className="font-medium text-white text-sm tracking-widest">
             {subtitle}
           </p>
-          <h1 className="max-w-3xl font-bold text-4xl text-white sm:text-5xl md:text-6xl lg:text-7xl tracking-tight">
+          <h1 className="max-w-3xl font-bold text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight">
             {title}
           </h1>
-          <div className="flex sm:flex-row flex-col sm:justify-center gap-4">
+          <div className="flex justify-center gap-4">
             <Button
               variant="secondary"
               size="lg"
-              className="bg-white hover:bg-white/90 min-w-[140px] text-black"
+              className="bg-white hover:bg-white/90 min-w-[150px] text-black"
             >
               {button1Text}
             </Button>
-            <Button variant="outline" size="lg">
+            <Button variant="outline" size="lg" className="min-w-[150px]">
               {button2Text}
             </Button>
           </div>

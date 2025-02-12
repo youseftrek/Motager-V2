@@ -17,7 +17,7 @@ const Navbar = () => {
         <header className="pt-2 lg:pt-4 rounded-b-md">
           <nav className="flex justify-between items-center bg-secondary md:mx-0 p-2 border rounded-md">
             <LogoLink />
-            <div className="lg:flex justify-center items-center gap-10 hidden font-semibold text-lg">
+            <div className="md:flex justify-center items-center gap-10 hidden font-semibold text-lg">
               <NavItems />
             </div>
             <div className="flex justify-center items-center gap-1.5">
@@ -27,10 +27,10 @@ const Navbar = () => {
               >
                 {t("cta")}
               </Link>
-              <ModeToggle buttonVariant="outline" className="lg:flex hidden" />
+              <ModeToggle buttonVariant="outline" className="md:flex hidden" />
               <LanguageSelect
                 buttonVariant="outline"
-                className="lg:flex hidden"
+                className="md:flex hidden"
               />
               <HomePageMobileMenu />
             </div>

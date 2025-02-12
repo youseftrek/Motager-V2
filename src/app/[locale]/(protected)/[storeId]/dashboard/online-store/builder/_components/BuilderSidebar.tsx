@@ -10,7 +10,7 @@ export function BilderSidebar() {
   const RTL = locale === "ar";
   return (
     <Sidebar
-      className="p-2 sm:pt-[72px] lg:pt-[80px]"
+      className="bg-background p-2 sm:pt-[72px] lg:pt-[80px]"
       side={RTL ? "right" : "left"}
     >
       <SidebarContent className="lg:px-2">
