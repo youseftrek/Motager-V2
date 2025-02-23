@@ -5,7 +5,7 @@ import {
   DASHBOARD_SIDEBAR_LINKS_DASGBOARDLINKS,
   DASHBOARD_SIDEBAR_LINKS_STORELINKS,
 } from "@/constants";
-import { Link, usePathname } from "@/i18n/routing";
+import { Link } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
@@ -14,10 +14,10 @@ import SidebarLink from "./SidebarLink";
 import { ModeToggle } from "@/components/shared/ModeToggle";
 import { LanguageSelect } from "@/components/shared/LanguageSelect";
 import UpgradePlanCard from "./UpgradePlanCard";
+import { StoreSwitcher } from "./StoreSwitcher";
 
 export function AppSidebar() {
   const locale = useLocale();
-  const activeLink = usePathname();
   const RTL = locale === "ar";
   const t = useTranslations("DashboardPage.sidebar");
   return (
@@ -27,18 +27,25 @@ export function AppSidebar() {
     >
       <SidebarContent className="relative flex flex-col justify-between bg-background overflow-auto">
         <div className="flex flex-col gap-0.5 p-2 ltr:pr-0 rtl:pl-0">
+          <StoreSwitcher
+            stores={[
+              { id: "1", name: "Store 1" },
+              { id: "2", name: "Store 2" },
+            ]}
+            currentStore={{ id: "1", name: "Store 1" }}
+          />
           <h4 className="mb-1.5 font-semibold text-muted-foreground text-xs">
             {t("dashboardLinks")}
           </h4>
           {DASHBOARD_SIDEBAR_LINKS_DASGBOARDLINKS.map((link) => (
-            <SidebarLink key={link.name} link={link} activeLink={activeLink} />
+            <SidebarLink key={link.name} link={link} />
           ))}
 
           <h4 className="mt-6 mb-1.5 font-semibold text-muted-foreground text-xs">
             {t("salesChannels")}
           </h4>
           {DASHBOARD_SIDEBAR_LINKS_STORELINKS.map((link) => (
-            <SidebarLink key={link.name} link={link} activeLink={activeLink} />
+            <SidebarLink key={link.name} link={link} />
           ))}
         </div>
         <div className="p-2 md:p-0">

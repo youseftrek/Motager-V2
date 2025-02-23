@@ -1,11 +1,12 @@
 "use client";
-import DashboardPageHeader from "../_components/DashboardPageHeader";
+
 import { useTranslations } from "next-intl";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AnimatedDashboardPage from "../_components/AnimatedDashboardPage";
 import CurrentThemeTab from "./_components/CurrentThemeTab";
 import ThemesLibraryTab from "./_components/ThemesLibraryTab";
 import { useState } from "react";
+import AnimatedDashboardPage from "../../../_components/AnimatedDashboardPage";
+import DashboardPageHeader from "../../../_components/DashboardPageHeader";
 
 const OnlineStorePage = () => {
   const t = useTranslations("OnlineStorePage");

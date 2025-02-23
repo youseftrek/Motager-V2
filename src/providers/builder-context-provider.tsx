@@ -123,7 +123,7 @@ function builderReducer(state: State, action: Action): State {
         selectedTheme: action.payload,
         selectedPage: action.payload.pages[0],
         availableSections,
-        themeSettings: action.payload.themeSettings,
+        themeSettings: {},
       };
     }
 
@@ -254,7 +254,7 @@ export function BuilderProvider({ children }: { children: React.ReactNode }) {
     }
   }, [history.present.availableSections, dispatch]);
 
-  const canUndo = history.past.length > 2;
+  const canUndo = history.past.length > 4;
   const canRedo = history.future.length > 0;
 
   const undo = () => dispatch({ type: "UNDO" });

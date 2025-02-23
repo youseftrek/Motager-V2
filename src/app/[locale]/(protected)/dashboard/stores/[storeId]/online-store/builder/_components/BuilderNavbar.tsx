@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-// import { useTranslations } from "next-intl";
 import {
   Eye,
   Laptop,
@@ -19,11 +18,19 @@ import MaxWidthWrapper from "@/components/shared/MaxWidthWrapper";
 import { ExitDialog } from "./ExitDialog";
 import { ModeToggle } from "@/components/shared/ModeToggle";
 import { useBuilder } from "@/providers/builder-context-provider";
+import { getTheme } from "@/actions";
 
 const BuilderNavbar = () => {
-  //   const t = useTranslations("HomeNavbar");
+  const { canRedo, canUndo, undo, redo, state } = useBuilder();
+  const handleSave = async () => {
+    try {
+      const res = await getTheme(state.selectedTheme?.id, state.selectedTheme!);
+      if (res) toast.success("Theme saved successfully");
+    } catch (error) {
+      console.error("Failed to save theme:", error);
+    }
+  };
   const [activeDevice, setActiveDevice] = useState("desktop");
-  const { canRedo, canUndo, undo, redo } = useBuilder();
   return (
     <div className="top-0 left-0 z-50 fixed bg-background/70 backdrop-blur-md w-full">
       <MaxWidthWrapper className="px-2 lg:px-4 max-w-[100%]">
@@ -115,7 +122,7 @@ const BuilderNavbar = () => {
                   <Eye />
                 </Button>
               </TooltipChildren>
-              <Button size="sm">
+              <Button size="sm" onClick={handleSave} disabled={!canUndo}>
                 <Save /> Save
               </Button>
             </div>

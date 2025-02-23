@@ -1,10 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { PROTECTED_ROUTES } from "@/constants";
 import { useRouter } from "@/i18n/routing";
 import { useBuilder } from "@/providers/builder-context-provider";
 import { Theme } from "@/types/theme";
 import { Eye, ShieldCheck } from "lucide-react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 
 type Props = {
   theme: Theme;
@@ -14,13 +16,15 @@ type Props = {
 
 export default function ThemeCard({ theme, isLoading, setIsLoading }: Props) {
   const router = useRouter();
-  const { dispatch, state } = useBuilder();
+  const { dispatch } = useBuilder();
+  const { storeId } = useParams();
 
   const handleChooseTheme = () => {
     setIsLoading(true);
     dispatch({ type: "SELECT_THEME", payload: theme });
-    console.log("state after selecting theme: ", state);
-    router.push(`/124326/dashboard/online-store/builder?theme=${theme.id}`);
+    router.push(
+      `${PROTECTED_ROUTES.STORES}/${storeId}/online-store/builder?theme=${theme.id}`
+    );
   };
 
   return (
@@ -39,7 +43,7 @@ export default function ThemeCard({ theme, isLoading, setIsLoading }: Props) {
         <div className="flex justify-between items-center mb-2">
           <h1 className="font-bold text-lg truncate">{theme.name}</h1>
           <p className="flex items-center gap-1 text-muted-foreground text-xs lg:text-sm">
-            <ShieldCheck size={16} className="text-foreground fill-blue-500" />
+            <ShieldCheck size={16} className="fill-blue-500 text-foreground" />
             <span className="truncate">By Motager</span>
           </p>
         </div>

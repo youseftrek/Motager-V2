@@ -39,15 +39,16 @@ export const LANDING_PAGE_NAV_LINKS = [
 
 export const PROTECTED_ROUTES = {
   DASHBOARD: "/dashboard",
-  ORDERS: "/dashboard/orders",
-  PRODUCTS: "/dashboard/products",
-  CATEGORIES: "/dashboard/categories",
-  COLLECTIONS: "/dashboard/collections",
-  CUSTOMERS: "/dashboard/customers",
-  ANALYTICS: "/dashboard/analytics",
-  DISCOUNTS: "/dashboard/discounts",
-  SETTINGS: "/dashboard/settings",
-  ONLINE_STORE: "/dashboard/online-store",
+  STORES: "/dashboard/stores",
+  ORDERS: "/orders",
+  PRODUCTS: "/products",
+  CATEGORIES: "/categories",
+  COLLECTIONS: "/collections",
+  CUSTOMERS: "/customers",
+  ANALYTICS: "/analytics",
+  DISCOUNTS: "/discounts",
+  SETTINGS: "/settings",
+  ONLINE_STORE: "/online-store",
 };
 
 export const DASHBOARD_SIDEBAR_LINKS_DASGBOARDLINKS = [

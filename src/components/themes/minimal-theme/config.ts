@@ -18,18 +18,7 @@ export const MINIMAL_THEME: Theme = {
         "NewsletterSignup",
         "Footer",
       ],
-      initialValues: [
-        {
-          id: getRandId(),
-          type: "Hero",
-          name: "Hero Section",
-          data: {
-            title: "Starter Hero Title🔥🔥",
-            subtitle: "Starter Hero Subtitle🔥🔥",
-          },
-        },
-      ],
-
+      initialValues: [],
       body: [],
     },
   ],
