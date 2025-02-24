@@ -16,22 +16,22 @@ export const config = {
     title: {
       type: "text" as const,
       label: "Title",
-      placeholder: "Welcome to Our Store",
+      placeholder: "All The Future Between Your Hands.",
     },
     subtitle: {
       type: "text" as const,
       label: "Subtitle",
-      placeholder: "Discover our products",
+      placeholder: "Welcome to our Store",
     },
     button1Text: {
       type: "text" as const,
       label: "Button Text",
-      placeholder: "Shop Now",
+      placeholder: "View More",
     },
     button2Text: {
       type: "text" as const,
       label: "Button Text",
-      placeholder: "Shop Now",
+      placeholder: "Collections",
     },
     imgUrl: {
       type: "text" as const,

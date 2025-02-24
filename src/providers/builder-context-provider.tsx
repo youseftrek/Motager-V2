@@ -84,6 +84,7 @@ function historyReducer(
         future: [present, ...future],
       };
     }
+
     case "REDO": {
       if (future.length === 0) return state;
       const next = future[0];
@@ -94,6 +95,7 @@ function historyReducer(
         future: newFuture,
       };
     }
+
     case "SET_SELECTED_SECTION": {
       const newPresent = builderReducer(present, action);
       return {
@@ -102,6 +104,7 @@ function historyReducer(
         future,
       };
     }
+
     default: {
       const newPresent = builderReducer(present, action);
       if (present === newPresent) return state;

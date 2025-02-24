@@ -19,7 +19,8 @@ export const config = {
     description: {
       type: "textarea" as const,
       label: "Description",
-      placeholder: "Write something about your brand...",
+      placeholder:
+        "We are passionate about delivering the best products to our customers with a focus on quality, sustainability, and customer satisfaction.",
     },
     imageUrl: {
       type: "text" as const,

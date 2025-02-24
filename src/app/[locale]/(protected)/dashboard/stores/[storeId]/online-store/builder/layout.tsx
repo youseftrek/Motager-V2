@@ -48,8 +48,8 @@ const BuilderLayout = ({ children }: Props) => {
 
   if (loading) {
     return (
-      <div className="flex flex-col justify-center items-center w-full h-screen">
-        <Spinner size={70} color="bg-primary" />
+      <div className="flex flex-col justify-center items-center gap-2 w-full h-screen">
+        <Spinner size={70} color="text-primary" />
         <p className="font-semibold text-lg">Setting Up Your Builder🚀</p>
       </div>
     );

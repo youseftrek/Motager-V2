@@ -1,6 +1,7 @@
 import { buttonVariants } from "@/components/ui/button";
 import Ripple from "@/components/ui/ripple";
 import { WordRotate } from "@/components/ui/word-rotate";
+import { PROTECTED_ROUTES } from "@/constants";
 import { Link } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
@@ -25,7 +26,7 @@ const Hero = () => {
       </p>
       <div className="flex items-center gap-2">
         <Link
-          href="/dashboard"
+          href={PROTECTED_ROUTES.STORES}
           className={cn(buttonVariants({ size: "lg" }), "")}
         >
           {t("cta1")}

@@ -10,12 +10,13 @@ export const config = {
     title: {
       type: "text" as const,
       label: "Title",
-      placeholder: "About Our Store",
+      placeholder: "About Us",
     },
     description: {
       type: "textarea" as const,
       label: "Description",
-      placeholder: "We are committed to providing high-quality products...",
+      placeholder:
+        "We are passionate about delivering the best products to our customers with a focus on quality, sustainability, and customer satisfaction.",
     },
     backgroundColor: {
       type: "color" as const,

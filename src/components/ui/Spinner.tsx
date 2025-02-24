@@ -4,53 +4,57 @@ import { cn } from "@/lib/utils";
 
 interface SpinnerProps {
   size?: number;
-  color?: string;
+  color?: string; // Tailwind color class (e.g., "text-blue-500")
   speed?: number;
   className?: string;
 }
 
-export default function Spinner({
+export const Spinner = ({
   size = 24,
-  color = "bg-white",
-  speed = 0.6,
+  color = "text-black", // Default to black
+  speed = 1.5,
   className,
-}: SpinnerProps) {
-  // Clamp speed between 0.5 and 2
-  const validatedSpeed = Math.max(0.5, Math.min(speed, 2));
-  const bars = [...Array(20)];
+}: SpinnerProps) => {
+  const animationDuration = `${1 / Math.max(0.5, Math.min(speed, 2))}s`;
 
   return (
     <div
-      className={cn("relative", className)}
+      className={cn("relative flex items-center justify-center", className)}
       style={{ width: size, height: size }}
       role="status"
       aria-label="Loading"
     >
-      {bars.map((_, i) => (
-        <div
-          key={i}
-          className={cn(`absolute rounded-full w-[10%]`, color)}
-          style={{
-            height: "24%",
-            left: "46%",
-            top: "38%",
-            opacity: 0.25 + i * 0.0625,
-            transform: `rotate(${i * 30}deg) translate(0, -130%)`,
-            animation: `spinner ${validatedSpeed}s linear infinite`,
-            animationDelay: `${(i / 12) * validatedSpeed}s`,
-          }}
+      <svg
+        className={cn("w-full h-full animate-spin", color)}
+        viewBox="0 0 24 24"
+        style={{ animationDuration }}
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Background Circle */}
+        <circle
+          className="opacity-25 stroke-current"
+          cx="12"
+          cy="12"
+          r="10"
+          strokeWidth="4"
+          fill="none"
         />
-      ))}
-      <style jsx>{`
-        @keyframes spinner {
-          0% {
-            opacity: 0.25;
-          }
-          100% {
-            opacity: 0.875;
-          }
-        }
-      `}</style>
+        {/* Rotating Arc with Rounded Caps */}
+        <circle
+          className="opacity-75 stroke-current"
+          cx="12"
+          cy="12"
+          r="10"
+          strokeWidth="4"
+          strokeLinecap="round"
+          fill="none"
+          strokeDasharray="60"
+          strokeDashoffset="20"
+        />
+      </svg>
     </div>
   );
-}
+};
+
+export default Spinner;
