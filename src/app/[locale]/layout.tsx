@@ -10,6 +10,7 @@ import { notFound } from "next/navigation";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { Metadata } from "next";
+import { SessionProvider } from "next-auth/react";
 
 const FONT_EN = Outfit({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -70,7 +71,7 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <NextIntlClientProvider messages={messages}>
-            {children}
+            <SessionProvider>{children}</SessionProvider>
             <Toaster
               richColors
               position={locale === "ar" ? "bottom-left" : "bottom-right"}

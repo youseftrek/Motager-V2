@@ -18,8 +18,11 @@ import PasswordInput from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
 import { UserLoginSchema } from "@/validations/user-login";
 import { login } from "@/actions/login";
+import { useRouter } from "@/i18n/routing";
+import { PROTECTED_ROUTES } from "@/constants";
 
 const LoginForm = () => {
+  const router = useRouter();
   const t = useTranslations("LoginPage.form");
   const form = useForm<z.infer<typeof UserLoginSchema>>({
     resolver: zodResolver(UserLoginSchema),
@@ -31,12 +34,20 @@ const LoginForm = () => {
 
   async function onSubmit(values: z.infer<typeof UserLoginSchema>) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const res = await login(values);
 
+      if (res.error) {
+        toast.error(res.error);
+        return;
+      }
+
+      if (res.success) {
+        toast.success(res.success);
+        router.push(PROTECTED_ROUTES.STORES);
+      }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error("Something went wrong.");
+      toast.error("An unexpected error occurred.");
     }
   }
 

@@ -4,12 +4,14 @@ import MaxWidthWrapper from "@/components/shared/MaxWidthWrapper";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { BellRing } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 type Props = {
   showSidebarTrigger?: boolean;
 };
 
 const DashboardNavbar = ({ showSidebarTrigger = true }: Props) => {
+  const { data: session } = useSession();
   return (
     <div className="top-0 left-0 z-50 fixed bg-background/70 backdrop-blur-md w-full">
       <MaxWidthWrapper className="px-2 lg:px-4 max-w-[100%]">
@@ -23,16 +25,7 @@ const DashboardNavbar = ({ showSidebarTrigger = true }: Props) => {
               <Button variant="outline" size="icon">
                 <BellRing />
               </Button>
-              <AvatarMenu
-                session={{
-                  user: {
-                    id: "1",
-                    name: "John Doe",
-                    email: "john.doe@example.com",
-                    image: "https://github.com/shadcn.png",
-                  },
-                }}
-              />
+              <AvatarMenu session={session || null} />
             </div>
           </nav>
         </header>

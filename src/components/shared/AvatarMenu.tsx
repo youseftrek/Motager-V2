@@ -1,6 +1,8 @@
+"use client";
+
 import { HelpCircle, LogOut, Store, UserRoundPen } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,21 +11,40 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { Session } from "next-auth";
+import { cn } from "@/lib/utils";
 import { PROTECTED_ROUTES, PUBLIC_ROUTES } from "@/constants";
+import { signOut } from "next-auth/react";
+import { toast } from "sonner";
 import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 
 type Props = {
-  session: {
-    user: {
-      id: string;
-      name: string;
-      email: string;
-      image: string;
-    };
-  };
+  session: Session | null;
 };
 
 const AvatarMenu = ({ session }: Props) => {
+  const t = useTranslations("HomeNavbar");
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast.success("Logged out successfully");
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to logout");
+    }
+  };
+
+  if (!session)
+    return (
+      <Link
+        href="/auth/login"
+        className={cn(buttonVariants({ size: "sm" }), "")}
+      >
+        {t("cta")}
+      </Link>
+    );
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -33,7 +54,11 @@ const AvatarMenu = ({ session }: Props) => {
         >
           <Avatar className="w-9 h-9">
             <AvatarImage
-              src={session?.user?.image || "/images/avatar.png"}
+              src={
+                session?.user?.image
+                  ? session?.user?.image
+                  : "https://github.com/shadcn.png"
+              }
               alt={session?.user?.name || "User Name"}
             />
             <AvatarFallback>
@@ -42,7 +67,7 @@ const AvatarMenu = ({ session }: Props) => {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
+      <DropdownMenuContent className="w-56" align="end">
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="font-medium text-sm leading-none">
@@ -54,35 +79,46 @@ const AvatarMenu = ({ session }: Props) => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href={`${PROTECTED_ROUTES.STORES}`} className="cursor-pointer">
+        <DropdownMenuItem>
+          <Link
+            href={`${PROTECTED_ROUTES.STORES}`}
+            className="flex items-center gap-2 w-full cursor-pointer"
+          >
             <Store size={18} />
             <span>Stores</span>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href={PROTECTED_ROUTES.DASHBOARD} className="cursor-pointer">
+        <DropdownMenuItem>
+          <Link
+            href={PROTECTED_ROUTES.DASHBOARD}
+            className="flex items-center gap-2 w-full cursor-pointer"
+          >
             <UserRoundPen size={18} />
             <span>Profile</span>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href={PUBLIC_ROUTES.ABOUT} className="cursor-pointer">
+        <DropdownMenuItem>
+          <Link
+            href={PUBLIC_ROUTES.ABOUT}
+            className="flex items-center gap-2 w-full cursor-pointer"
+          >
             <HelpCircle size={18} />
             <span>Help</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
+          className="bg-red-500/10 focus:bg-red-500/20 text-red-500 focus:text-red-600 cursor-pointer"
           asChild
-          className="bg-red-500/10 focus:bg-red-500/20 text-red-500 focus:text-red-600"
         >
-          <form className="cursor-pointer">
-            <button type="submit" className="flex items-center gap-2 w-full">
-              <LogOut size={18} />
-              <span>Logout</span>
-            </button>
-          </form>
+          <button
+            type="submit"
+            onClick={handleLogout}
+            className="flex items-center gap-2 w-full"
+          >
+            <LogOut size={18} />
+            <span>Logout</span>
+          </button>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
