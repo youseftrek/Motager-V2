@@ -5,13 +5,14 @@ import { z } from "zod";
 import axios from "axios";
 
 export async function signup(values: z.infer<typeof UserRegisterSchema>) {
-  const { firstName, lastName, email, password } = values;
+  const { firstName, lastName, email, password, phoneNumber } = values;
 
   const res = await axios.post("http://localhost:8080/register", {
     firstName,
     lastName,
     email,
     password,
+    phoneNumber,
   });
 
   console.log(res);

@@ -10,6 +10,7 @@ import { signup } from "@/actions/signup";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -32,6 +33,7 @@ const SignUpForm = () => {
       email: "",
       password: "",
       confirmPassword: "",
+      phoneNumber: "20",
     },
   });
 
@@ -112,6 +114,24 @@ const SignUpForm = () => {
           />
           <FormField
             control={form.control}
+            name="phoneNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("phone")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="+201012345678"
+                    disabled={form.formState.isSubmitting}
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>{t("phoneTip")}</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="password"
             render={({ field }) => (
               <FormItem>
@@ -144,13 +164,13 @@ const SignUpForm = () => {
           />
           <Button
             loading={form.formState.isSubmitting}
-            spinnerColor="bg-background"
+            spinnerColor="text-background"
           >
             {t("submit")}
           </Button>
         </form>
       </Form>
-      <OtpDialog open={open} />
+      <OtpDialog open={open} email={form.getValues("email")} />
     </>
   );
 };

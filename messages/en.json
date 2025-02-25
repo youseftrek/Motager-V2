@@ -65,6 +65,8 @@
       "lastNamePlaceholder": "Doe",
       "email": "Email",
       "emailTip": "Make sure this email is working, you will get an OTP.",
+      "phone": "Phone",
+      "phoneTip": "Make sure this phone is working, you will get an OTP.",
       "password": "Password",
       "confirmPassword": "Confirm Password",
       "submit": "Create a new account"
