@@ -44,7 +44,7 @@ const SidebarLink = ({ link }: Props) => {
         className={cn(
           "flex relative items-center rounded-sm group px-2 hover:gap-4 py-1 gap-3 hover:bg-secondary/50 transition-all duration-200",
           isActive &&
-            "rtl:bg-gradient-to-l ltr:bg-gradient-to-r from-secondary to-transparent text-foreground font-semibold"
+            "rtl:bg-gradient-to-l ltr:bg-gradient-to-r from-primary/30 to-transparent text-foreground font-semibold"
         )}
       >
         <link.icon

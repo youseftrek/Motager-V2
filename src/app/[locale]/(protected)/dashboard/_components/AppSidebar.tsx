@@ -22,7 +22,7 @@ export function AppSidebar() {
   const t = useTranslations("DashboardPage.sidebar");
   return (
     <Sidebar
-      className="p-2 sm:pt-[72px] lg:pt-[80px]"
+      className="z-50 bg-background p-2 sm:pt-[72px] lg:pt-[80px]"
       side={RTL ? "right" : "left"}
     >
       <SidebarContent className="relative flex flex-col justify-between bg-background overflow-auto">

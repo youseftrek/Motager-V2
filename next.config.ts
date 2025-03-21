@@ -10,6 +10,10 @@ const nextConfig = {
         protocol: "https" as const,
         hostname: "images.pexels.com",
       },
+      {
+        protocol: "https" as const,
+        hostname: "duuw10jl1n.ufs.sh",
+      },
     ],
   },
 };

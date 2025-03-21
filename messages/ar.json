@@ -128,7 +128,25 @@
     "title": "فِئات المنتجات",
     "export": "تصدير البيانات",
     "import": "استيراد البيانات",
-    "action": "إنشاء فِئة"
+    "action": "إنشاء فِئة",
+    "dialog": {
+      "toast": {
+        "createSuccess": "تم إنشاء الفئة بنجاح",
+        "updateSuccess": "تم تحديث الفئة بنجاح",
+        "deleteSuccess": "تم حذف الفئة بنجاح"
+      },
+      "create": "إضافة فئة",
+      "edit": "تعديل الفئة",
+      "createDescription": "أضف فئة جديدة إلى متجرك.",
+      "editDescription": "قم بتعديل تفاصيل الفئة.",
+      "name": "الاسم",
+      "namePlaceHolder": "أدخل اسم الفئة",
+      "slug": "المعرف الفريد",
+      "slugPlaceHolder": "أدخل المعرف الفريد للفئة",
+      "slugDescription": "هذا هو المسار في عنوان URL لفئتك. يجب أن يكون فريدًا ووصفيًا.",
+      "save": "حفظ",
+      "cancel": "إلغاء"
+    }
   },
 
   "OnlineStorePage": {

@@ -1,0 +1,180 @@
+"use client";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { useProductForm } from "@/providers/product-form";
+import Image from "next/image";
+
+export default function ReviewStep() {
+  const { formData } = useProductForm();
+
+  return (
+    <div className="space-y-6">
+      <h2 className="font-bold text-2xl">Review Product</h2>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Basic Information</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="gap-4 grid grid-cols-1 md:grid-cols-2">
+            <div>
+              <p className="text-muted-foreground text-sm">Product Name</p>
+              <p className="font-medium">{formData.name}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground text-sm">Category ID</p>
+              <p className="font-medium">{formData.category_id}</p>
+            </div>
+            <div className="md:col-span-2">
+              <p className="text-muted-foreground text-sm">Description</p>
+              <p className="font-medium">{formData.description}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground text-sm">Starting Price</p>
+              <p className="font-medium">
+                ${formData.starting_at_price.toFixed(2)}
+              </p>
+            </div>
+            <div>
+              <p className="text-muted-foreground text-sm">Status</p>
+              <Badge variant={formData.published ? "default" : "secondary"}>
+                {formData.published ? "Published" : "Draft"}
+              </Badge>
+            </div>
+          </div>
+
+          {formData.media.length > 0 && (
+            <div className="mt-4">
+              <p className="mb-2 text-muted-foreground text-sm">Media</p>
+              <div className="gap-2 grid grid-cols-4">
+                {formData.media.map((media, index) => (
+                  <Image
+                    key={index}
+                    src={media || "/placeholder.svg"}
+                    width={200}
+                    height={200}
+                    alt={`Product image ${index + 1}`}
+                    className="border rounded-md w-full object-cover aspect-square"
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {formData.has_variants && formData.variants.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Variants</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {formData.variants.map((variant, index) => (
+                <div key={index}>
+                  <h3 className="font-semibold text-lg">{variant.name}</h3>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {variant.values.map((value, vIndex) => (
+                      <Badge key={vIndex} variant="outline">
+                        {value}
+                      </Badge>
+                    ))}
+                  </div>
+                  {index < formData.variants.length - 1 && (
+                    <Separator className="my-4" />
+                  )}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {formData.variant_combinations.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              {formData.has_variants ? "SKUs" : "Product Details"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {formData.variant_combinations.map((combination, index) => (
+                <div key={combination.id}>
+                  {formData.has_variants && (
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {Object.entries(combination.combination).map(
+                        ([name, value]) => (
+                          <Badge key={name} variant="outline">
+                            {name}: {value}
+                          </Badge>
+                        )
+                      )}
+                    </div>
+                  )}
+
+                  <div className="gap-4 grid grid-cols-1 md:grid-cols-3 mb-4">
+                    <div>
+                      <p className="text-muted-foreground text-sm">Stock</p>
+                      <p className="font-medium">{combination.stock}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground text-sm">Price</p>
+                      <p className="font-medium">
+                        ${combination.price.toFixed(2)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground text-sm">
+                        Compare At Price
+                      </p>
+                      <p className="font-medium">
+                        {combination.compare_at_price > 0
+                          ? `$${combination.compare_at_price.toFixed(2)}`
+                          : "-"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground text-sm">
+                        Cost Per Item
+                      </p>
+                      <p className="font-medium">
+                        ${combination.cost_per_item.toFixed(2)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground text-sm">Profit</p>
+                      <p className="font-medium">
+                        ${combination.profit.toFixed(2)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground text-sm">Margin</p>
+                      <p className="font-medium">
+                        {combination.margin.toFixed(2)}%
+                      </p>
+                    </div>
+                  </div>
+
+                  {index < formData.variant_combinations.length - 1 && (
+                    <Separator className="my-4" />
+                  )}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      <div className="bg-muted p-4 rounded-lg">
+        <p className="text-muted-foreground text-sm">
+          Please review all the information above before submitting your
+          product. Once submitted, you can still edit the product from your
+          dashboard.
+        </p>
+      </div>
+    </div>
+  );
+}

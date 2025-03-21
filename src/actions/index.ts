@@ -17,7 +17,7 @@ export async function getTheme(themeId?: string, theme?: Theme) {
     locPath: "minimal-theme/sections",
     pages: [
       {
-        name: "Home",
+        name: "Home Page",
         sections: [
           "Hero",
           "About",
@@ -27,6 +27,12 @@ export async function getTheme(themeId?: string, theme?: Theme) {
           "NewsletterSignup",
           "Footer",
         ],
+        initialValues: [],
+        body: [],
+      },
+      {
+        name: "Product Page",
+        sections: ["SingleProduct"],
         initialValues: [],
         body: [],
       },

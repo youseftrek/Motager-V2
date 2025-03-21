@@ -2,12 +2,10 @@ import React from "react";
 import AnimatedDashboardPage from "../../../_components/AnimatedDashboardPage";
 import DashboardPageHeader from "../../../_components/DashboardPageHeader";
 import DataTable from "@/components/data-table";
-import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
-import { PackagePlus } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
-const ProductsPage = () => {
-  const t = useTranslations("ProductsPage");
+const ProductsPage = async () => {
+  const t = await getTranslations("ProductsPage");
 
   const data = [
     {
@@ -109,12 +107,12 @@ const ProductsPage = () => {
 
   return (
     <AnimatedDashboardPage>
-      <DashboardPageHeader title="Products">
-        <Button size="sm">
-          <PackagePlus />
-          {t("action")}
-        </Button>
-      </DashboardPageHeader>
+      <DashboardPageHeader
+        title="Products"
+        navigateTo="new"
+        navigateToTranslation={t("action")}
+        navigateToIcon="PackagePlus"
+      ></DashboardPageHeader>
 
       <DataTable
         enableSearch

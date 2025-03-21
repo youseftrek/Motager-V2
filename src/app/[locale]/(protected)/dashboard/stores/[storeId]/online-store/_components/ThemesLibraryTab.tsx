@@ -11,9 +11,9 @@ const ThemesLibraryTab = ({ isLoading, setIsLoading }: Props) => {
   return (
     <TabsContent
       value="themeLibrary"
-      className="rtl:text-right m-0 w-full h-full"
+      className="m-0 w-full h-full rtl:text-right"
     >
-      <div className="gap-2 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 w-full">
+      <div className="gap-2 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 w-full rtl:[direction:rtl]">
         {THEMES.map((theme) => (
           <ThemeCard
             key={theme.id}

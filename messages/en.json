@@ -129,7 +129,25 @@
     "title": "Categories",
     "export": "Export Data",
     "import": "Import Data",
-    "action": "Create Category"
+    "action": "Create Category",
+    "dialog": {
+      "toast": {
+        "createSuccess": "Category created successfully",
+        "updateSuccess": "Category updated successfully",
+        "deleteSuccess": "Category deleted successfully"
+      },
+      "create": "Add Category",
+      "edit": "Edit Category",
+      "createDescription": "Add a new category to your store.",
+      "editDescription": "Edit the category details.",
+      "name": "Name",
+      "namePlaceHolder": "Enter Category Name",
+      "slug": "Slug",
+      "slugPlaceHolder": "Enter Category Slug",
+      "slugDescription": "This is the URL path for your category. It should be unique and descriptive.",
+      "save": "Save",
+      "cancel": "Cancel"
+    }
   },
 
   "OnlineStorePage": {

@@ -1,7 +1,7 @@
 "use client";
 import TooltipChildren from "@/components/ui/TooltipChildren";
 import { Button } from "@/components/ui/button";
-import { GripVertical, Pencil, Trash2 } from "lucide-react";
+import { GripVertical, LayoutTemplate, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useBuilder } from "@/providers/builder-context-provider";
 import { Reorder, motion, useDragControls } from "framer-motion";
@@ -93,13 +93,21 @@ export const BuilderContent = () => {
       onReorder={handleReorder}
       className="flex flex-col gap-4"
     >
-      {sections.map((section) => (
-        <DraggableSection
-          key={section.id}
-          section={section}
-          Component={state.loadedComponents[section.type]}
-        />
-      ))}
+      {sections.length ? (
+        sections.map((section) => (
+          <DraggableSection
+            key={section.id}
+            section={section}
+            Component={state.loadedComponents[section.type]}
+          />
+        ))
+      ) : (
+        <div className="flex flex-col justify-center items-center w-f h-[calc(100vh-100px)] lg:h-[calc(100vh-130px)]">
+          <LayoutTemplate size={100} />
+          <h3 className="font-semibold text-2xl">Empty Tamplate</h3>
+          <p className="text-muted-foreground">Start building your theme</p>
+        </div>
+      )}
     </Reorder.Group>
   );
 };

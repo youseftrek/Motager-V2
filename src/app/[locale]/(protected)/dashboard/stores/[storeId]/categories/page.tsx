@@ -4,6 +4,7 @@ import DashboardPageHeader from "../../../_components/DashboardPageHeader";
 import { BookmarkPlus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import CategoryDialog from "./_components/CategoryDialog";
 
 const CategoriesPage = () => {
   const t = useTranslations("CategoriesPage");
@@ -39,10 +40,15 @@ const CategoriesPage = () => {
   return (
     <AnimatedDashboardPage>
       <DashboardPageHeader title="Categories">
-        <Button size="sm">
-          <BookmarkPlus />
-          {t("action")}
-        </Button>
+        <CategoryDialog
+          mode="create"
+          trigger={
+            <Button size="sm">
+              <BookmarkPlus />
+              {t("action")}
+            </Button>
+          }
+        />
       </DashboardPageHeader>
 
       <DataTable

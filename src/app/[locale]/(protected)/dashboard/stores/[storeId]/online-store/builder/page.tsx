@@ -11,7 +11,7 @@ const BuilderPage = () => {
   return (
     <>
       <EditSectionSheet />
-      <AnimatedDashboardPage>
+      <AnimatedDashboardPage className="bg-background dark:bg-background p-0 border rounded-none">
         <BuilderContent />
       </AnimatedDashboardPage>
     </>

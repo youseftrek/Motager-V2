@@ -7,9 +7,9 @@ const CurrentThemeTab = () => {
   return (
     <TabsContent
       value="currentTheme"
-      className="rtl:text-right gap-4 grid grid-cols-1 lg:grid-cols-[auto_1fr] m-0 w-full h-full"
+      className="gap-4 grid grid-cols-1 ltr:lg:grid-cols-[auto_1fr] rtl:lg:grid-cols-[1fr_auto] m-0 w-full h-full"
     >
-      <div className="w-fit">
+      <div className="order-1 rtl:order-2 w-fit">
         <Image
           src="/themes/focus-theme.png"
           alt="Theme Preview"
@@ -18,7 +18,7 @@ const CurrentThemeTab = () => {
           className="shadow-sm border rounded-lg object-cover"
         />
       </div>
-      <div>
+      <div className="order-2 rtl:order-1 rtl:text-right">
         <h3 className="text-muted-foreground text-sm">Your Current Theme:</h3>
         <p className="font-semibold text-3xl">Minimal</p>
         <p className="mt-4 text-muted-foreground text-sm">
@@ -27,12 +27,19 @@ const CurrentThemeTab = () => {
         <p className="text-muted-foreground text-sm">
           last updated at: 2025-01-01
         </p>
-        <div className="flex items-center gap-2 mt-4">
-          <Button size="sm" className="w-[150px]">
+        <div className="flex rtl:flex-row-reverse items-center gap-2 mt-4">
+          <Button
+            size="sm"
+            className="flex rtl:flex-row-reverse items-center gap-2 w-[150px]"
+          >
             <PencilRuler />
             Edit
           </Button>
-          <Button size="sm" variant="outline" className="w-[150px]">
+          <Button
+            size="sm"
+            variant="outline"
+            className="flex rtl:flex-row-reverse items-center gap-2 w-[150px]"
+          >
             <Eye />
             View
           </Button>
