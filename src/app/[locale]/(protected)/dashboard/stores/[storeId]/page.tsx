@@ -13,6 +13,7 @@ type StorePageProps = {
 
 export default async function StorePage({ params }: StorePageProps) {
   const { storeId } = await params;
+  console.log(storeId);
   return (
     <AnimatedDashboardPage>
       <UserBanner userName="User Name" />
