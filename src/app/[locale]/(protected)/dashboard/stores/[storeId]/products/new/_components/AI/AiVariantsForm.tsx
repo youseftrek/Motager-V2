@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import * as z from "zod";
 import MediaUploadModal from "@/components/shared/MediaUpload";
 import { useState } from "react";
 import Image from "next/image";
