@@ -43,14 +43,15 @@ export default function MediaUploadModal({
 
   // Mock library images
   const libraryImages = [
-    "/placeholder.svg?height=200&width=200&text=Product+1",
-    "/placeholder.svg?height=200&width=200&text=Product+2",
-    "/placeholder.svg?height=200&width=200&text=Product+3",
-    "/placeholder.svg?height=200&width=200&text=Product+4",
-    "/placeholder.svg?height=200&width=200&text=Product+5",
-    "/placeholder.svg?height=200&width=200&text=Product+6",
-    "/placeholder.svg?height=200&width=200&text=Product+7",
-    "/placeholder.svg?height=200&width=200&text=Product+8",
+    "/images/noImage.png",
+    "/images/noImage.png",
+    "/images/noImage.png",
+    "/images/noImage.png",
+    "/images/noImage.png",
+    "/images/noImage.png",
+    "/images/noImage.png",
+    "/images/noImage.png",
+    "/images/noImage.png",
   ];
 
   const removeUploadingFile = (fileId: string) => {

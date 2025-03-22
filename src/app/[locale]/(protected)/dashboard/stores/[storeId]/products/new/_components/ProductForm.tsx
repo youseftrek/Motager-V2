@@ -9,7 +9,7 @@ import BasicInfoStep from "./BasicInfoStep";
 import VariantsStep from "./VariantsStep";
 import SkusStep from "./SkuStep";
 import ReviewStep from "./ReviewStep";
-import AiButton from "@/components/shared/AiButton";
+import AiDialogForm from "./AiDialogForm";
 
 export default function ProductForm() {
   const { currentStep, nextStep, prevStep, isLastStep, isFirstStep, formData } =
@@ -101,7 +101,7 @@ export default function ProductForm() {
         {currentStep === 3 && <ReviewStep />}
 
         <div className="top-3 ltr:right-3 rtl:left-3 absolute w-fit h-fit">
-          <AiButton />
+          <AiDialogForm currStep={currentStep as 0 | 1 | 2 | 3} />
         </div>
 
         <div className="flex justify-between mt-8">

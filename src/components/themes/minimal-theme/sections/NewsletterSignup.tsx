@@ -22,7 +22,7 @@ export const config = {
     backgroundColor: {
       type: "color" as const,
       label: "Background Color",
-      default: "#212121",
+      default: "#dfffeb",
     },
   },
 };
@@ -38,7 +38,7 @@ export default function NewsletterSection({
   title = "Subscribe to Our Newsletter",
   description = "Stay updated with our latest offers and news.",
   buttonText = "Subscribe",
-  backgroundColor = "#212121",
+  backgroundColor = "#dfffeb",
 }: NewsletterProps) {
   const [email, setEmail] = useState("");
 

@@ -46,19 +46,20 @@ export default function VariantsStep() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mt-4">
       <div className="flex items-end gap-2">
-        <div className="flex-1">
+        <div className="">
           <label className="block mb-2 font-medium text-sm">
             Add Variant Type
           </label>
           <Input
+            className="max-w-[400px]"
             placeholder="e.g., Color, Size, Material"
             value={newVariantName}
             onChange={(e) => setNewVariantName(e.target.value)}
           />
         </div>
-        <Button onClick={handleAddVariant} disabled={!newVariantName}>
+        <Button onClick={handleAddVariant} size="sm" disabled={!newVariantName}>
           Add Variant
         </Button>
       </div>
@@ -67,17 +68,19 @@ export default function VariantsStep() {
         <div className="space-y-4">
           {formData.variants.map((variant, variantIndex) => (
             <Card key={variantIndex}>
-              <CardHeader className="flex flex-row justify-between items-center p-4 pb-2">
-                <h3 className="font-medium">{variant.name}</h3>
+              <CardHeader className="flex flex-row justify-between items-center p-2">
+                <h3 className="rtl:mr-2 ltr:ml-2 font-medium">
+                  {variant.name}
+                </h3>
                 <Button
-                  variant="ghost"
+                  variant="softDestructive"
                   size="icon"
                   onClick={() => removeVariant(variantIndex)}
                 >
                   <X className="w-4 h-4" />
                 </Button>
               </CardHeader>
-              <CardContent className="p-4">
+              <CardContent className="">
                 <div className="flex flex-wrap gap-2 mb-3">
                   {variant.values.map((value, valueIndex) => (
                     <Badge key={valueIndex} className="flex items-center gap-1">
@@ -86,7 +89,7 @@ export default function VariantsStep() {
                         onClick={() =>
                           removeVariantValue(variantIndex, valueIndex)
                         }
-                        className="hover:bg-primary-foreground ml-1 rounded-full"
+                        className="ml-1 rounded-full hover:text-destructive transition-all duration-200"
                       >
                         <X className="w-3 h-3" />
                       </button>
