@@ -11,7 +11,11 @@ import SkusStep from "./SkuStep";
 import ReviewStep from "./ReviewStep";
 import AiDialogForm from "./AiDialogForm";
 
-export default function ProductForm() {
+type Props = {
+  isModelReady: boolean;
+};
+
+export default function ProductForm({ isModelReady }: Props) {
   const { currentStep, nextStep, prevStep, isLastStep, isFirstStep, formData } =
     useProductForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -101,7 +105,10 @@ export default function ProductForm() {
         {currentStep === 3 && <ReviewStep />}
 
         <div className="top-3 ltr:right-3 rtl:left-3 absolute w-fit h-fit">
-          <AiDialogForm currStep={currentStep as 0 | 1 | 2 | 3} />
+          <AiDialogForm
+            isModelReady={isModelReady}
+            currStep={currentStep as 0 | 1 | 2 | 3}
+          />
         </div>
 
         <div className="flex justify-between mt-8">

@@ -9,6 +9,24 @@ import Image from "next/image";
 export default function ReviewStep() {
   const { formData } = useProductForm();
 
+  // Helper function to determine if a value is a hex color
+  const isHexColor = (value: string) => {
+    return /^#[0-9A-F]{6}$/i.test(value);
+  };
+
+  // Helper function to check if a color is light or dark
+  const isLightColor = (color: string): boolean => {
+    // Convert hex to RGB
+    const hex = color.replace("#", "");
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+
+    // Calculate perceived brightness using YIQ formula
+    const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+    return yiq >= 128; // Returns true if color is light
+  };
+
   return (
     <div className="space-y-6">
       <h2 className="font-bold text-2xl">Review Product</h2>
@@ -76,11 +94,41 @@ export default function ReviewStep() {
                 <div key={index}>
                   <h3 className="font-semibold text-lg">{variant.name}</h3>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {variant.values.map((value, vIndex) => (
-                      <Badge key={vIndex} variant="outline">
-                        {value}
-                      </Badge>
-                    ))}
+                    {variant.values.map((value, vIndex) => {
+                      // Check if this is a color variant and value is a hex color
+                      const isColorValue =
+                        variant.name.toLowerCase() === "color" &&
+                        isHexColor(value);
+
+                      return (
+                        <Badge
+                          key={vIndex}
+                          variant="outline"
+                          className={`flex items-center gap-1.5 ${
+                            isColorValue ? "px-3 py-1.5" : ""
+                          }`}
+                          style={
+                            isColorValue
+                              ? {
+                                  backgroundColor: value,
+                                  color: isLightColor(value) ? "#000" : "#fff",
+                                  border: isLightColor(value)
+                                    ? "1px solid #00000022"
+                                    : "none",
+                                }
+                              : {}
+                          }
+                        >
+                          {isColorValue && (
+                            <span
+                              className="inline-block border border-white/40 rounded-full w-3 h-3"
+                              style={{ backgroundColor: value }}
+                            />
+                          )}
+                          {value}
+                        </Badge>
+                      );
+                    })}
                   </div>
                   {index < formData.variants.length - 1 && (
                     <Separator className="my-4" />
@@ -106,11 +154,42 @@ export default function ReviewStep() {
                   {formData.has_variants && (
                     <div className="flex flex-wrap gap-2 mb-4">
                       {Object.entries(combination.combination).map(
-                        ([name, value]) => (
-                          <Badge key={name} variant="outline">
-                            {name}: {value}
-                          </Badge>
-                        )
+                        ([name, value]) => {
+                          // Check if this is a color variant and value is a hex color
+                          const isColorValue =
+                            name.toLowerCase() === "color" && isHexColor(value);
+
+                          return (
+                            <Badge
+                              key={name}
+                              variant="outline"
+                              className={`flex items-center gap-1.5 ${
+                                isColorValue ? "px-3 py-1.5" : ""
+                              }`}
+                              style={
+                                isColorValue
+                                  ? {
+                                      backgroundColor: value,
+                                      color: isLightColor(value)
+                                        ? "#000"
+                                        : "#fff",
+                                      border: isLightColor(value)
+                                        ? "1px solid #00000022"
+                                        : "none",
+                                    }
+                                  : {}
+                              }
+                            >
+                              {isColorValue && (
+                                <span
+                                  className="inline-block border border-white/40 rounded-full w-3 h-3"
+                                  style={{ backgroundColor: value }}
+                                />
+                              )}
+                              {name}: {value}
+                            </Badge>
+                          );
+                        }
                       )}
                     </div>
                   )}

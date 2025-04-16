@@ -92,6 +92,21 @@
     },
     "loading": {
       "title": "Loading Data..."
+    },
+    "pageHeader": {
+      "description": "Dashboard information"
+    }
+  },
+  "StoresPage": {
+    "title": "Your Stores",
+    "description": "Choose the store you want to manage/view or create a new one",
+    "createStore": "Create Store",
+    "storeInfo": {
+      "createdAt": "created_at:",
+      "plan": "plan:",
+      "manage": "Manage",
+      "upgrade": "Upgrade Plan",
+      "visit": "Visit"
     }
   },
   "OrdersPage": {
@@ -116,6 +131,13 @@
       "title": "Add Product",
       "save": "Save",
       "info": "Product information"
+    },
+    "skuManagement": {
+      "title": "SKU Management",
+      "costPerItem": "Cost Per Item ($)",
+      "profit": "Profit ($)",
+      "margin": "Margin (%)",
+      "noVariants": "No variant combinations available. Please add variants in the previous step."
     }
   },
   "CollectionsPage": {
@@ -124,7 +146,6 @@
     "import": "Import Data",
     "action": "Create Collection"
   },
-
   "CategoriesPage": {
     "title": "Categories",
     "export": "Export Data",
@@ -149,13 +170,106 @@
       "cancel": "Cancel"
     }
   },
-
   "OnlineStorePage": {
     "title": "Online Store",
     "description": "Choose / Customize your theme",
     "tabs": {
       "currentTheme": "Current Theme",
       "themeLibrary": "Theme Library"
+    },
+    "builder": {
+      "components": "Components",
+      "themeSettings": "Theme Settings",
+      "settings": "Settings Here"
+    }
+  },
+  "SettingsPage": {
+    "title": "Settings",
+    "description": "Manage your store settings",
+    "general": "General",
+    "shipping": "Shipping",
+    "payment": "Payment",
+    "taxes": "Taxes",
+    "notifications": "Notifications",
+    "legal": "Legal"
+  },
+  "AboutPage": {
+    "title": "About Us",
+    "description": "We are passionate about delivering the best products to our customers with a focus on quality, sustainability, and customer satisfaction.",
+    "mission": "Our Mission",
+    "missionText": "To provide exceptional e-commerce tools that empower businesses to grow and succeed.",
+    "vision": "Our Vision",
+    "visionText": "To become the leading e-commerce platform that helps businesses connect with customers worldwide."
+  },
+  "PricingPage": {
+    "title": "Pricing Plans",
+    "description": "Choose the right plan for your business needs",
+    "monthly": "Monthly",
+    "annually": "Annually",
+    "savePercent": "Save 20%",
+    "plans": {
+      "starter": {
+        "title": "Starter",
+        "price": "$19",
+        "period": "/month",
+        "description": "Perfect for small businesses just getting started",
+        "features": [
+          "Up to 100 products",
+          "Basic analytics",
+          "24/7 support",
+          "Mobile optimization"
+        ],
+        "cta": "Get Started"
+      },
+      "professional": {
+        "title": "Professional",
+        "price": "$49",
+        "period": "/month",
+        "description": "Ideal for growing businesses with more needs",
+        "features": [
+          "Up to 1,000 products",
+          "Advanced analytics",
+          "Priority support",
+          "Custom domain",
+          "Multiple payment options"
+        ],
+        "cta": "Get Started",
+        "recommended": "Most Popular"
+      },
+      "business": {
+        "title": "Business",
+        "price": "$99",
+        "period": "/month",
+        "description": "For established businesses with high volume",
+        "features": [
+          "Unlimited products",
+          "Enterprise analytics",
+          "Dedicated support",
+          "Multiple staff accounts",
+          "Advanced marketing tools",
+          "API access"
+        ],
+        "cta": "Get Started"
+      }
+    }
+  },
+  "ShippingInfo": {
+    "title": "Shipping Information",
+    "options": "Shipping Options",
+    "standard": {
+      "name": "Standard Shipping",
+      "time": "3-5 business days",
+      "price": "$4.99"
+    },
+    "express": {
+      "name": "Express Shipping",
+      "time": "1-2 business days",
+      "price": "$12.99"
+    },
+    "free": {
+      "name": "Free Shipping",
+      "condition": "On orders over $50",
+      "price": "$0.00"
     }
   }
 }

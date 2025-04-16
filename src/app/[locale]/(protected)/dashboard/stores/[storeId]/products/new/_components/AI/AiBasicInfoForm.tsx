@@ -19,37 +19,53 @@ import Image from "next/image";
 import { PlusCircle, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { generateProductNameAndDescription } from "@/data/ai";
+import { useProductForm } from "@/providers/product-form";
 
 const AiFormSchema = z.object({
-  brandName: z.string().min(2, {
+  Brand_name: z.string().min(2, {
     message: "Enter your brand or store name",
   }),
-  images: z.array(z.string()).min(1, {
+  image_paths: z.array(z.string()).min(1, {
     message: "At least one image is required",
   }),
 });
 
 type FormValues = z.infer<typeof AiFormSchema>;
 
-const AiBasicInfoForm = () => {
+// Define a type for the generated product data
+interface GeneratedProductData {
+  product_name: string;
+  description: string;
+}
+
+type AiBasicInfoFormProps = {
+  onGenerationSuccess?: (data: GeneratedProductData) => void;
+};
+
+const AiBasicInfoForm = ({ onGenerationSuccess }: AiBasicInfoFormProps) => {
   const [isMediaModalOpen, setIsMediaModalOpen] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const { updateFormData } = useProductForm();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(AiFormSchema),
     defaultValues: {
-      images: [],
+      Brand_name: "",
+      image_paths: [],
     },
   });
 
-  const selectedImages = form.watch("images");
+  const selectedImages = form.watch("image_paths");
 
   const handleAddMedia = (mediaUrls: string[]) => {
     // Combine existing images with newly selected ones
-    const currentImages = form.getValues("images") || [];
+    const currentImages = form.getValues("image_paths") || [];
     const newImages = [...currentImages, ...mediaUrls];
 
     // Update the form value
-    form.setValue("images", newImages, {
+    form.setValue("image_paths", newImages, {
       shouldValidate: true,
       shouldDirty: true,
       shouldTouch: true,
@@ -59,19 +75,73 @@ const AiBasicInfoForm = () => {
   };
 
   const removeImage = (index: number) => {
-    const currentImages = [...form.getValues("images")];
+    const currentImages = [...form.getValues("image_paths")];
     currentImages.splice(index, 1);
 
-    form.setValue("images", currentImages, {
+    form.setValue("image_paths", currentImages, {
       shouldValidate: true,
       shouldDirty: true,
       shouldTouch: true,
     });
   };
 
-  function onSubmit(values: FormValues) {
-    console.log("Submitted images:", values);
-    // Here you would handle the AI generation based on the uploaded images
+  async function onSubmit(values: FormValues) {
+    try {
+      setIsSubmitting(true);
+      console.log(values);
+
+      // Check internet connectivity first
+      if (!navigator.onLine) {
+        toast.error(
+          "You appear to be offline. Please check your internet connection."
+        );
+        return;
+      }
+
+      try {
+        const res = await generateProductNameAndDescription(values);
+
+        if (!res.success) {
+          toast.error("Failed to generate product information");
+          return;
+        }
+
+        toast.success("Product information generated successfully");
+
+        // Update the main form with the generated data
+        updateFormData({
+          name: res.product_name,
+          description: res.description,
+        });
+
+        // Pass the generated data to parent component if callback exists
+        if (onGenerationSuccess) {
+          onGenerationSuccess({
+            product_name: res.product_name,
+            description: res.description,
+          });
+        }
+      } catch (error: unknown) {
+        // Handle specific network errors
+        if (error instanceof Error && error.message === "Network Error") {
+          toast.error(
+            "Cannot connect to AI service. The service might be temporarily unavailable. Please try again later."
+          );
+        } else {
+          const errorMessage =
+            error instanceof Error
+              ? error.message
+              : "An unexpected error occurred";
+          toast.error(`Error: ${errorMessage}`);
+        }
+        console.error("Error generating product information:", error);
+      }
+    } catch (error) {
+      console.error("Error generating product information:", error);
+      toast.error("An unexpected error occurred");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -79,7 +149,7 @@ const AiBasicInfoForm = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name="brandName"
+          name="Brand_name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Brand Name</FormLabel>
@@ -92,7 +162,7 @@ const AiBasicInfoForm = () => {
         />
         <FormField
           control={form.control}
-          name="images"
+          name="image_paths"
           render={() => (
             <FormItem>
               <FormLabel>Product Images</FormLabel>
@@ -166,7 +236,11 @@ const AiBasicInfoForm = () => {
         />
 
         <DialogFooter>
-          <Button type="submit" disabled={selectedImages.length === 0}>
+          <Button
+            type="submit"
+            disabled={selectedImages.length === 0 || isSubmitting}
+            loading={isSubmitting}
+          >
             Generate Product Info
           </Button>
         </DialogFooter>

@@ -13,7 +13,7 @@ type Props = {
   children?: React.ReactNode;
   navigateTo?: string;
   navigateToTranslation?: string;
-  navigateToIcon?: string; // Now accepts string for icon name
+  navigateToIcon?: string; // Accepts string for icon name
 };
 
 const DashboardPageHeader = ({

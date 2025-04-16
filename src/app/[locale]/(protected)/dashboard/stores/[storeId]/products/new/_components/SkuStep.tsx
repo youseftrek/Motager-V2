@@ -11,10 +11,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useTranslations } from "next-intl";
 
 export default function SkusStep() {
   const { formData, updateVariantCombination } = useProductForm();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const t = useTranslations("ProductsPage.skuManagement");
 
   const handleToggleAccordion = (id: string) => {
     setExpandedItems((prev) =>
@@ -37,6 +39,24 @@ export default function SkusStep() {
     }
   };
 
+  // Helper function to determine if a value is a hex color
+  const isHexColor = (value: string) => {
+    return /^#[0-9A-F]{6}$/i.test(value);
+  };
+
+  // Helper function to check if a color is light or dark
+  const isLightColor = (color: string): boolean => {
+    // Convert hex to RGB
+    const hex = color.replace("#", "");
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+
+    // Calculate perceived brightness using YIQ formula
+    const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+    return yiq >= 128; // Returns true if color is light
+  };
+
   // If product doesn't have variants, show a simple form for a single SKU
   if (!formData.has_variants) {
     const singleSku = formData.variant_combinations[0] || {
@@ -52,7 +72,7 @@ export default function SkusStep() {
 
     return (
       <div className="space-y-6">
-        <h2 className="font-bold text-2xl">Product Details</h2>
+        <h2 className="font-bold text-2xl">{t("title")}</h2>
 
         <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
           <div className="space-y-2">
@@ -97,7 +117,7 @@ export default function SkusStep() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="cost">Cost Per Item ($)</Label>
+            <Label htmlFor="cost">{t("costPerItem")}</Label>
             <Input
               id="cost"
               type="number"
@@ -109,7 +129,7 @@ export default function SkusStep() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="profit">Profit ($)</Label>
+            <Label htmlFor="profit">{t("profit")}</Label>
             <Input
               id="profit"
               type="number"
@@ -119,7 +139,7 @@ export default function SkusStep() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="margin">Margin (%)</Label>
+            <Label htmlFor="margin">{t("margin")}</Label>
             <Input
               id="margin"
               type="number"
@@ -137,12 +157,9 @@ export default function SkusStep() {
   if (formData.variant_combinations.length === 0) {
     return (
       <div className="space-y-6">
-        <h2 className="font-bold text-2xl">SKU Management</h2>
+        <h2 className="font-bold text-2xl">{t("title")}</h2>
         <div className="bg-muted p-6 rounded-lg text-center">
-          <p className="text-muted-foreground">
-            No variant combinations available. Please add variants in the
-            previous step.
-          </p>
+          <p className="text-muted-foreground">{t("noVariants")}</p>
         </div>
       </div>
     );
@@ -150,7 +167,7 @@ export default function SkusStep() {
 
   return (
     <div className="space-y-6">
-      <h2 className="font-bold text-2xl">SKU Management</h2>
+      <h2 className="font-bold text-2xl">{t("title")}</h2>
       <p className="text-muted-foreground">
         Click on a variant combination to add pricing and inventory details.
       </p>
@@ -168,11 +185,39 @@ export default function SkusStep() {
             >
               <div className="flex flex-wrap items-center gap-2 text-left">
                 {Object.entries(combination.combination).map(
-                  ([name, value]) => (
-                    <Badge key={name} variant="outline" className="px-2 py-1">
-                      {name}: {value}
-                    </Badge>
-                  )
+                  ([name, value]) => {
+                    // Check if this is a color variant and the value is a hex color
+                    const isColorValue =
+                      name.toLowerCase() === "color" && isHexColor(value);
+
+                    return (
+                      <Badge
+                        key={name}
+                        variant="outline"
+                        className={`px-2 py-1 flex items-center gap-1.5`}
+                        style={
+                          isColorValue
+                            ? {
+                                backgroundColor: value,
+                                color: isLightColor(value) ? "#000" : "#fff",
+                                border: isLightColor(value)
+                                  ? "1px solid #00000022"
+                                  : "none",
+                              }
+                            : {}
+                        }
+                      >
+                        {/* Show color swatch for color variants */}
+                        {isColorValue && (
+                          <span
+                            className="inline-block border border-white/40 rounded-full w-3 h-3"
+                            style={{ backgroundColor: value }}
+                          />
+                        )}
+                        {name}: {value}
+                      </Badge>
+                    );
+                  }
                 )}
               </div>
             </AccordionTrigger>
@@ -221,7 +266,7 @@ export default function SkusStep() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor={`${combination.id}-cost`}>
-                    Cost Per Item ($)
+                    {t("costPerItem")}
                   </Label>
                   <Input
                     id={`${combination.id}-cost`}
@@ -238,7 +283,9 @@ export default function SkusStep() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor={`${combination.id}-profit`}>Profit ($)</Label>
+                  <Label htmlFor={`${combination.id}-profit`}>
+                    {t("profit")}
+                  </Label>
                   <Input
                     id={`${combination.id}-profit`}
                     type="number"
@@ -248,7 +295,9 @@ export default function SkusStep() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor={`${combination.id}-margin`}>Margin (%)</Label>
+                  <Label htmlFor={`${combination.id}-margin`}>
+                    {t("margin")}
+                  </Label>
                   <Input
                     id={`${combination.id}-margin`}
                     type="number"

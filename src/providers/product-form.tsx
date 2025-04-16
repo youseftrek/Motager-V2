@@ -53,6 +53,11 @@ type ProductFormContextType = {
   removeVariant: (index: number) => void;
   addVariantValue: (variantIndex: number, value: string) => void;
   removeVariantValue: (variantIndex: number, valueIndex: number) => void;
+  updateVariantValue: (
+    variantIndex: number,
+    valueIndex: number,
+    newValue: string
+  ) => void;
   generateVariantCombinations: () => void;
   updateVariantCombination: (
     id: string,
@@ -123,6 +128,29 @@ export function ProductFormProvider({ children }: { children: ReactNode }) {
         ...newVariants[variantIndex],
         values: newValues,
       };
+      return { ...prev, variants: newVariants };
+    });
+  };
+
+  const updateVariantValue = (
+    variantIndex: number,
+    valueIndex: number,
+    newValue: string
+  ) => {
+    setFormData((prev) => {
+      const newVariants = [...prev.variants];
+      if (
+        newVariants[variantIndex] &&
+        newVariants[variantIndex].values &&
+        newVariants[variantIndex].values[valueIndex] !== undefined
+      ) {
+        const newValues = [...newVariants[variantIndex].values];
+        newValues[valueIndex] = newValue;
+        newVariants[variantIndex] = {
+          ...newVariants[variantIndex],
+          values: newValues,
+        };
+      }
       return { ...prev, variants: newVariants };
     });
   };
@@ -250,6 +278,7 @@ export function ProductFormProvider({ children }: { children: ReactNode }) {
         removeVariant,
         addVariantValue,
         removeVariantValue,
+        updateVariantValue,
         generateVariantCombinations,
         updateVariantCombination,
         nextStep,

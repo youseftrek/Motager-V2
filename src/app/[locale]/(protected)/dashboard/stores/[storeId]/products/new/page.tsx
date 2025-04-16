@@ -1,12 +1,15 @@
 import { ProductFormProvider } from "@/providers/product-form";
 import AnimatedDashboardPage from "../../../../_components/AnimatedDashboardPage";
 import ProductForm from "./_components/ProductForm";
+import { checkAiStatus } from "@/data/ai";
 
-export default function page() {
+export default async function page() {
+  const res = await checkAiStatus();
+  console.log(res);
   return (
     <AnimatedDashboardPage>
       <ProductFormProvider>
-        <ProductForm />
+        <ProductForm isModelReady={res.success} />
       </ProductFormProvider>
     </AnimatedDashboardPage>
   );
