@@ -5,7 +5,7 @@ import { checkAiStatus } from "@/data/ai";
 
 export default async function page() {
   const res = await checkAiStatus();
-  console.log(res);
+
   return (
     <AnimatedDashboardPage>
       <ProductFormProvider>
