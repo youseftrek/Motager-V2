@@ -271,5 +271,17 @@
       "condition": "للطلبات التي تزيد عن 50$",
       "price": "0.00$"
     }
+  },
+  "addStore":{
+    "createStore":"إنشاء متجر",
+    "description":"أدخل بيانات المتجر الذي تريد إنشاؤه.",
+    "name":"اسم المتجر",
+    "category":"التصنيف",
+    "create":"إنشاء",
+    "cancel":"إلغاء",
+    "phone":"الهاتف",
+    "currency":"عمله المتجر",
+    "subscription":"الخطه"
+
   }
 }

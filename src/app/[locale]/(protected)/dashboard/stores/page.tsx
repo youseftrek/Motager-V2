@@ -7,18 +7,21 @@ import { ChartLine, CircleFadingArrowUp, CirclePlus, Eye } from "lucide-react";
 import TooltipChildren from "@/components/ui/TooltipChildren";
 import { Link } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 export default function StoresPage() {
   const t = useTranslations("StoresPage");
+  const locale = useLocale()
 
   return (
-    <div className="p-2 md:p-4 h-[calc(100vh-64px)] lg:h-[calc(100vh-70px)]">
+    <div  className="p-2 md:p-4 h-[calc(100vh-64px)] lg:h-[calc(100vh-70px)]">
       <AnimatedDashboardPage>
         <DashboardPageHeader title={t("title")} description={t("description")}>
-          <Button variant="outline" size="sm">
+          <Button className="flex" variant="outline" size="lg">
+          <Link className="flex gap-2" href={'add-store'}>
             <CirclePlus />
             {t("createStore")}
+          </Link>
           </Button>
         </DashboardPageHeader>
         <div className="flex flex-col gap-2 mx-auto mt-4 max-w-4xl">

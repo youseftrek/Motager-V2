@@ -19,7 +19,7 @@ const DashboardLayout = ({ children }: Props) => {
 
   if (pathName.includes("builder")) return <>{children}</>;
 
-  if (pathName.endsWith("stores"))
+  if (pathName.endsWith("stores") || pathName.endsWith("add-store"))
     return (
       <div className="pt-16 lg:pt-[70px]">
         <DashboardNavbar showSidebarTrigger={false} />
