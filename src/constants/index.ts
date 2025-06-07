@@ -37,6 +37,8 @@ export const LANDING_PAGE_NAV_LINKS = [
   },
 ];
 
+export const BASE_URL = 'http://localhost:8080'
+
 export const PROTECTED_ROUTES = {
   DASHBOARD: "/dashboard",
   STORES: "/dashboard/stores",

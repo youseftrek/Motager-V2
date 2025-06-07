@@ -5,7 +5,7 @@ import { auth } from "./auth";
 
 export default async function middleware(req: NextRequest) {
   const authResponse = await auth();
-  const isAuthenticated = !!authResponse || true;
+  const isAuthenticated = !!authResponse;
 
   const { pathname } = req.nextUrl;
 
