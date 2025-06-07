@@ -21,9 +21,13 @@ import PasswordInput from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
 import OtpDialog from "./OtpDialog";
 import { useState } from "react";
+import { useRegisterUserMutation } from "@/redux/features/auth/authApi";
+import { useRouter } from "@/i18n/routing";
+import { PROTECTED_ROUTES } from "@/constants";
 
 const SignUpForm = () => {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
   const t = useTranslations("SignUpPage.form");
   const form = useForm<z.infer<typeof UserRegisterSchema>>({
     resolver: zodResolver(UserRegisterSchema),
@@ -33,27 +37,24 @@ const SignUpForm = () => {
       email: "",
       password: "",
       confirmPassword: "",
-      phoneNumber: "20",
+      address: "",
     },
   });
+  const [register , {data , isLoading , isError}] = useRegisterUserMutation();
 
   async function onSubmit(values: z.infer<typeof UserRegisterSchema>) {
-    try {
-      const res = await signup(values);
-      if (res.success) {
-        toast.success(res.message);
-        setOpen(true);
-      } else {
-        toast.error(res.message);
+      try {
+        const res = await register(values);
+        if (res.data) {
+          router.push(PROTECTED_ROUTES.STORES);
+        }
+      } catch (error) {
+        toast.error("An unexpected error occurred.");
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      toast.error("Something went wrong.");
-    }
   }
 
   return (
-    <>
+    <div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -120,12 +121,28 @@ const SignUpForm = () => {
                 <FormLabel>{t("phone")}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="+201012345678"
+                    placeholder="+20"
                     disabled={form.formState.isSubmitting}
                     {...field}
                   />
                 </FormControl>
-                <FormDescription>{t("phoneTip")}</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="address"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("address")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="123 Main St, City, Country"
+                    disabled={form.formState.isSubmitting}
+                    {...field}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -171,7 +188,7 @@ const SignUpForm = () => {
         </form>
       </Form>
       <OtpDialog open={open} email={form.getValues("email")} />
-    </>
+    </div>
   );
 };
 

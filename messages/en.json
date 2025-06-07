@@ -65,6 +65,7 @@
       "lastName": "Last Name",
       "lastNamePlaceholder": "Doe",
       "email": "Email",
+      "address": "Address",
       "emailTip": "Make sure this email is working, you will get an OTP.",
       "phone": "Phone",
       "phoneTip": "Make sure this phone is working, you will get an OTP.",
