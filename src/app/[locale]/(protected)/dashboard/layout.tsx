@@ -3,6 +3,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { redirect, routing, usePathname } from "@/i18n/routing";
 import { AppSidebar } from "./_components/AppSidebar";
 import DashboardNavbar from "./_components/DashboardNavbar";
+import { useAuth } from "@/hooks";
 
 type Props = {
   children: React.ReactNode;
@@ -10,6 +11,7 @@ type Props = {
 
 const DashboardLayout = ({ children }: Props) => {
   const pathName = usePathname();
+  const { user } = useAuth();
 
   if (pathName.endsWith("dashboard"))
     return redirect({
@@ -19,10 +21,10 @@ const DashboardLayout = ({ children }: Props) => {
 
   if (pathName.includes("builder")) return <>{children}</>;
 
-  if (pathName.endsWith("stores") || pathName.endsWith("add-store"))
+  if (pathName.endsWith("stores") || pathName.endsWith("stores/new"))
     return (
       <div className="pt-16 lg:pt-[70px]">
-        <DashboardNavbar showSidebarTrigger={false} />
+        <DashboardNavbar showSidebarTrigger={false} user={user || undefined} />
         {children}
       </div>
     );

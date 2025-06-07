@@ -5,13 +5,14 @@ import { LanguageSelect } from "../shared/LanguageSelect";
 import HomePageMobileMenu from "./MobileMenu";
 import NavItems from "./NavItems";
 import AvatarMenu from "../shared/AvatarMenu";
-import { Session } from "next-auth";
+import { IUser } from "@/types/auth/auth";
 
 type Props = {
-  session?: Session | null;
+  user?: IUser;
+  isAuthenticated: boolean;
 };
 
-const Navbar = ({ session }: Props) => {
+const Navbar = ({ user, isAuthenticated }: Props) => {
   return (
     <div className="top-0 left-0 z-50 fixed bg-background/70 backdrop-blur-md w-full">
       <MaxWidthWrapper className="px-2 md:px-4 lg:px-16 xl:px-32 2xl:px-48">
@@ -22,7 +23,7 @@ const Navbar = ({ session }: Props) => {
               <NavItems />
             </div>
             <div className="flex justify-center items-center gap-1.5">
-              <AvatarMenu session={session || null} />
+              <AvatarMenu user={user} />
               <ModeToggle buttonVariant="outline" className="hidden md:flex" />
               <LanguageSelect
                 buttonVariant="outline"

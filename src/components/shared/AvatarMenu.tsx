@@ -11,31 +11,34 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Session } from "next-auth";
 import { cn } from "@/lib/utils";
 import { PROTECTED_ROUTES, PUBLIC_ROUTES } from "@/constants";
-import { signOut } from "next-auth/react";
 import { toast } from "sonner";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
+import { IUser } from "@/types/auth/auth";
+import { useAuth } from "@/hooks";
 
 type Props = {
-  session: Session | null;
+  user?: IUser;
 };
 
-const AvatarMenu = ({ session }: Props) => {
+const AvatarMenu = ({ user }: Props) => {
   const t = useTranslations("HomeNavbar");
+  const router = useRouter();
+  const { logout } = useAuth();
   const handleLogout = async () => {
     try {
-      await signOut();
+      logout();
       toast.success("Logged out successfully");
+      router.push(PUBLIC_ROUTES.LOGIN);
     } catch (error) {
       console.log(error);
       toast.error("Failed to logout");
     }
   };
 
-  if (!session)
+  if (!user)
     return (
       <Link
         href="/auth/login"
@@ -54,15 +57,11 @@ const AvatarMenu = ({ session }: Props) => {
         >
           <Avatar className="w-9 h-9">
             <AvatarImage
-              src={
-                session?.user?.image
-                  ? session?.user?.image
-                  : "https://github.com/shadcn.png"
-              }
-              alt={session?.user?.name || "User Name"}
+              src={user.image || "https://avatar.iran.liara.run/public"}
+              alt={"User Name"}
             />
             <AvatarFallback>
-              {session?.user?.name?.charAt(0).toUpperCase()}
+              {user.name?.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -71,10 +70,10 @@ const AvatarMenu = ({ session }: Props) => {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="font-medium text-sm leading-none">
-              {session?.user?.name || "User Name"}
+              {user.name || "User Name"}
             </p>
             <p className="text-muted-foreground text-xs leading-none">
-              {session?.user?.email || "user@email.com"}
+              {user.email || "user@email.com"}
             </p>
           </div>
         </DropdownMenuLabel>

@@ -17,11 +17,12 @@ import { Input } from "@/components/ui/input";
 import PasswordInput from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
 import { UserLoginSchema } from "@/validations/user-login";
-import { login } from "@/actions/login";
 import { useRouter } from "@/i18n/routing";
+import { useLoginUserMutation } from "@/redux/features/auth/authApi";
 import { PROTECTED_ROUTES } from "@/constants";
 
 const LoginForm = () => {
+  const [loginUser, { isLoading }] = useLoginUserMutation();
   const router = useRouter();
   const t = useTranslations("LoginPage.form");
   const form = useForm<z.infer<typeof UserLoginSchema>>({
@@ -34,18 +35,10 @@ const LoginForm = () => {
 
   async function onSubmit(values: z.infer<typeof UserLoginSchema>) {
     try {
-      const res = await login(values);
-
-      if (res.error) {
-        toast.error(res.error);
-        return;
-      }
-
-      if (res.success) {
-        toast.success(res.success);
+      const res = await loginUser(values);
+      if (res.data) {
         router.push(PROTECTED_ROUTES.STORES);
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("An unexpected error occurred.");
     }

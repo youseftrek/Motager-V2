@@ -1,13 +1,17 @@
 import { buttonVariants } from "@/components/ui/button";
 import Ripple from "@/components/ui/ripple";
 import { WordRotate } from "@/components/ui/word-rotate";
-import { PROTECTED_ROUTES } from "@/constants";
+import { PROTECTED_ROUTES, PUBLIC_ROUTES } from "@/constants";
 import { Link } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 
-const Hero = () => {
+type HeroProps = {
+  isAuthenticated: boolean;
+};
+
+const Hero = ({ isAuthenticated = false }: HeroProps) => {
   const t = useTranslations("HomePage");
   return (
     <div className="relative flex flex-col justify-center items-center mt-[75px] w-full min-h-[calc(100vh-75px)] overflow-hidden">
@@ -25,12 +29,21 @@ const Hero = () => {
         {t("description")}
       </p>
       <div className="flex items-center gap-2">
-        <Link
-          href={PROTECTED_ROUTES.STORES}
-          className={cn(buttonVariants({ size: "lg" }), "")}
-        >
-          {t("cta1")}
-        </Link>
+        {isAuthenticated ? (
+          <Link
+            href={PROTECTED_ROUTES.STORES}
+            className={cn(buttonVariants({ size: "lg" }), "")}
+          >
+            {t("dashboard")}
+          </Link>
+        ) : (
+          <Link
+            href={PUBLIC_ROUTES.LOGIN}
+            className={cn(buttonVariants({ size: "lg" }), "")}
+          >
+            {t("cta1")}
+          </Link>
+        )}
         <Link
           href="#"
           className={cn(

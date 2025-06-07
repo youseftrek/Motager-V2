@@ -1,11 +1,12 @@
 import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 import { routing } from "./i18n/routing";
-import { auth } from "./auth";
+import { getSession } from "./actions/get-session";
 
 export default async function middleware(req: NextRequest) {
-  const authResponse = await auth();
-  const isAuthenticated = !!authResponse;
+  const { user } = await getSession();
+
+  const isAuthenticated = user !== null && user !== undefined;
 
   const { pathname } = req.nextUrl;
 

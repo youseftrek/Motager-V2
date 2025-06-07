@@ -42,7 +42,8 @@
     "motager": "Motager",
     "description": "Motager empowers you with everything you need to bring your store to life. From beautiful, customizable designs to powerful tools that fuel growth, take your business to the next level.",
     "cta1": "Start Your Free Trial",
-    "cta2": "View Demo Store"
+    "cta2": "View Demo Store",
+    "dashboard": "Dashboard"
   },
   "LoginPage": {
     "title": "Login",
@@ -107,6 +108,10 @@
       "manage": "Manage",
       "upgrade": "Upgrade Plan",
       "visit": "Visit"
+    },
+    "noStores": {
+      "title": "No Stores Yet",
+      "description": "You don't have any stores yet. Create your first store to start selling your products online."
     }
   },
   "OrdersPage": {
@@ -270,6 +275,54 @@
       "name": "Free Shipping",
       "condition": "On orders over $50",
       "price": "$0.00"
+    }
+  },
+  "addStore": {
+    "createStore": "Create Store",
+    "description": "Enter the details of the store you want to create.",
+    "name": "Store Name",
+    "category": "Category",
+    "create": "Create",
+    "cancel": "Cancel",
+    "phone": "Phone",
+    "currency": "Store Currency",
+    "subscription": "Subscription Plan",
+    "namePlaceholder": "My Amazing Store",
+    "categoryPlaceholder": "Select a category",
+    "descriptionPlaceholder": "Describe your store and what you sell...",
+    "phonePlaceholder": "+1 (555) 123-4567",
+    "currencyPlaceholder": "Select currency",
+    "planPlaceholder": "Select a plan",
+    "descriptionHelp": "Provide a detailed description of your store to attract customers.",
+    "creating": "Creating...",
+    "successMessage": "Store created successfully!",
+    "errorMessage": "Failed to create store. Please try again.",
+    "nameRequired": "Store name is required",
+    "categoryRequired": "Category is required",
+    "descriptionRequired": "Description is required",
+    "descriptionMinLength": "Description must be at least 10 characters",
+    "phoneRequired": "Business phone is required",
+    "planRequired": "Subscription plan is required",
+    "currencyRequired": "Store currency is required",
+    "categories": {
+      "electronics": "Electronics",
+      "clothing": "Clothing",
+      "food": "Food & Beverages",
+      "health": "Health & Beauty",
+      "home": "Home & Garden"
+    },
+    "currencies": {
+      "usd": "USD ($)",
+      "eur": "EUR (€)",
+      "gbp": "GBP (£)",
+      "jpy": "JPY (¥)",
+      "cad": "CAD ($)"
+    },
+    "plans": {
+      "basic": "Basic",
+      "pro": "Professional",
+      "business": "Business",
+      "enterprise": "Enterprise"
     }
   }
 }

@@ -1,35 +1,60 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Building2, CreditCard, DollarSign, Phone, ShoppingBag, User } from "lucide-react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { toast } from "sonner"
-import { useRouter } from "@/i18n/routing"
-import AnimatedDashboardPage from "../_components/AnimatedDashboardPage"
-import DashboardPageHeader from "../_components/DashboardPageHeader"
-import { useTranslations } from "next-intl"
-
-const storeSchema = z.object({
-  categoryId: z.string().nonempty("Category is required"),
-  store_name: z.string().nonempty("Store name is required"),
-  description: z.string().nonempty("Description is required").min(10, "Description must be at least 10 characters"),
-  business_phone: z.string().nonempty("Business phone is required"),
-  plan_id: z.string().nonempty("Plan is required"),
-  store_currency: z.string().nonempty("Store currency is required"),
-})
-
-type StoreSchemaFields = z.infer<typeof storeSchema>
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Building2,
+  CreditCard,
+  DollarSign,
+  Phone,
+  ShoppingBag,
+} from "lucide-react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { toast } from "sonner";
+import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
+import AnimatedDashboardPage from "../../_components/AnimatedDashboardPage";
+import DashboardPageHeader from "../../_components/DashboardPageHeader";
 
 const Page = () => {
   const router = useRouter();
-  const t = useTranslations('addStore')
+  const t = useTranslations("addStore");
+  const categoriesT = useTranslations("CategoriesPage");
+
+  const storeSchema = z.object({
+    categoryId: z.string().nonempty(t("categoryRequired")),
+    store_name: z.string().nonempty(t("nameRequired")),
+    description: z
+      .string()
+      .nonempty(t("descriptionRequired"))
+      .min(10, t("descriptionMinLength")),
+    business_phone: z.string().nonempty(t("phoneRequired")),
+    plan_id: z.string().nonempty(t("planRequired")),
+    store_currency: z.string().nonempty(t("currencyRequired")),
+  });
+
+  type StoreSchemaFields = z.infer<typeof storeSchema>;
+
   const form = useForm<StoreSchemaFields>({
     resolver: zodResolver(storeSchema),
     defaultValues: {
@@ -40,37 +65,40 @@ const Page = () => {
       plan_id: "",
       store_currency: "",
     },
-  })
+  });
 
   const onSubmit = async (data: StoreSchemaFields) => {
     try {
-      console.log(data)
+      console.log(data);
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // Success message
-      toast.success("Store created successfully!")
-      
+      toast.success(t("successMessage"));
+
       // Redirect to stores page
-      router.push("/dashboard/stores")
+      router.push("/dashboard/stores");
     } catch (error) {
-      console.error("Error creating store:", error)
-      toast.error("Failed to create store. Please try again.")
+      console.error("Error creating store:", error);
+      toast.error(t("errorMessage"));
     }
-  }
+  };
 
   return (
     <div className="p-2 md:p-4 h-[calc(100vh-64px)] lg:h-[calc(100vh-70px)]">
       <AnimatedDashboardPage>
-        <DashboardPageHeader 
-          title={t('createStore')} 
-          description={t('description')}
+        <DashboardPageHeader
+          title={t("createStore")}
+          description={t("description")}
         />
         <div className="container mx-auto py-6 px-4 md:px-0">
           <Card className="max-w-3xl mx-auto border shadow-sm">
             <CardContent className="pt-6">
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-6"
+                >
                   <div className="grid gap-6 md:grid-cols-2">
                     <FormField
                       control={form.control}
@@ -79,11 +107,11 @@ const Page = () => {
                         <FormItem>
                           <FormLabel className="flex items-center gap-2 font-medium">
                             <Building2 className="h-4 w-4 text-primary" />
-                            {t('name')}
+                            {t("name")}
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="My Amazing Store"
+                              placeholder={t("namePlaceholder")}
                               {...field}
                             />
                           </FormControl>
@@ -99,20 +127,35 @@ const Page = () => {
                         <FormItem>
                           <FormLabel className="flex items-center gap-2 font-medium">
                             <ShoppingBag className="h-4 w-4 text-primary" />
-                            {t('category')}
+                            {t("category")}
                           </FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Select a category" />
+                                <SelectValue
+                                  placeholder={t("categoryPlaceholder")}
+                                />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="electronics">Electronics</SelectItem>
-                              <SelectItem value="clothing">Clothing</SelectItem>
-                              <SelectItem value="food">Food & Beverages</SelectItem>
-                              <SelectItem value="health">Health & Beauty</SelectItem>
-                              <SelectItem value="home">Home & Garden</SelectItem>
+                              <SelectItem value="electronics">
+                                {t("categories.electronics")}
+                              </SelectItem>
+                              <SelectItem value="clothing">
+                                {t("categories.clothing")}
+                              </SelectItem>
+                              <SelectItem value="food">
+                                {t("categories.food")}
+                              </SelectItem>
+                              <SelectItem value="health">
+                                {t("categories.health")}
+                              </SelectItem>
+                              <SelectItem value="home">
+                                {t("categories.home")}
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -128,17 +171,17 @@ const Page = () => {
                       <FormItem>
                         <FormLabel className="flex items-center gap-2 font-medium">
                           <ShoppingBag className="h-4 w-4 text-primary" />
-                          {t('description')}
+                          {t("description")}
                         </FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Describe your store and what you sell..."
+                            placeholder={t("descriptionPlaceholder")}
                             className="min-h-[120px]"
                             {...field}
                           />
                         </FormControl>
                         <FormDescription>
-                          Provide a detailed description of your store to attract customers.
+                          {t("descriptionHelp")}
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -153,11 +196,11 @@ const Page = () => {
                         <FormItem>
                           <FormLabel className="flex items-center gap-2 font-medium">
                             <Phone className="h-4 w-4 text-primary" />
-                            {t('phone')}
+                            {t("phone")}
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="+1 (555) 123-4567"
+                              placeholder={t("phonePlaceholder")}
                               {...field}
                             />
                           </FormControl>
@@ -173,20 +216,35 @@ const Page = () => {
                         <FormItem>
                           <FormLabel className="flex items-center gap-2 font-medium">
                             <DollarSign className="h-4 w-4 text-primary" />
-                            {t('currency')}
+                            {t("currency")}
                           </FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Select currency" />
+                                <SelectValue
+                                  placeholder={t("currencyPlaceholder")}
+                                />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="usd">USD ($)</SelectItem>
-                              <SelectItem value="eur">EUR (€)</SelectItem>
-                              <SelectItem value="gbp">GBP (£)</SelectItem>
-                              <SelectItem value="jpy">JPY (¥)</SelectItem>
-                              <SelectItem value="cad">CAD ($)</SelectItem>
+                              <SelectItem value="usd">
+                                {t("currencies.usd")}
+                              </SelectItem>
+                              <SelectItem value="eur">
+                                {t("currencies.eur")}
+                              </SelectItem>
+                              <SelectItem value="gbp">
+                                {t("currencies.gbp")}
+                              </SelectItem>
+                              <SelectItem value="jpy">
+                                {t("currencies.jpy")}
+                              </SelectItem>
+                              <SelectItem value="cad">
+                                {t("currencies.cad")}
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -203,42 +261,56 @@ const Page = () => {
                         <FormItem>
                           <FormLabel className="flex items-center gap-2 font-medium">
                             <CreditCard className="h-4 w-4 text-primary" />
-                            {t('subscription')}
+                            {t("subscription")}
                           </FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Select a plan" />
+                                <SelectValue
+                                  placeholder={t("planPlaceholder")}
+                                />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="basic">Basic</SelectItem>
-                              <SelectItem value="pro">Professional</SelectItem>
-                              <SelectItem value="business">Business</SelectItem>
-                              <SelectItem value="enterprise">Enterprise</SelectItem>
+                              <SelectItem value="basic">
+                                {t("plans.basic")}
+                              </SelectItem>
+                              <SelectItem value="pro">
+                                {t("plans.pro")}
+                              </SelectItem>
+                              <SelectItem value="business">
+                                {t("plans.business")}
+                              </SelectItem>
+                              <SelectItem value="enterprise">
+                                {t("plans.enterprise")}
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-
                   </div>
 
                   <div className="flex justify-end gap-4 pt-4">
-                    <Button 
-                      variant="outline" 
-                      type="button" 
+                    <Button
+                      variant="outline"
+                      type="button"
                       onClick={() => router.push("/dashboard/stores")}
                     >
-                      {t('cancel')}
+                      {t("cancel")}
                     </Button>
                     <Button
                       type="submit"
                       disabled={form.formState.isSubmitting}
                       loading={form.formState.isSubmitting}
                     >
-                      {form.formState.isSubmitting ? "Creating..." : `${t('create')}`}
+                      {form.formState.isSubmitting
+                        ? t("creating")
+                        : t("create")}
                     </Button>
                   </div>
                 </form>
@@ -248,7 +320,7 @@ const Page = () => {
         </div>
       </AnimatedDashboardPage>
     </div>
-  )
-}
+  );
+};
 
-export default Page
+export default Page;

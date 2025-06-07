@@ -10,12 +10,12 @@ import { notFound } from "next/navigation";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { Metadata } from "next";
-import { SessionProvider } from "next-auth/react";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "../api/uploadthing/core";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import ReduxProvider from "@/providers/redux-provider";
 
 const FONT_EN = Outfit({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -70,31 +70,33 @@ export default async function RootLayout({
           locale === "ar" ? FONT_AR.className : FONT_EN.className
         } antialiased`}
       >
-        <Suspense>
-          <UTSSR />
-        </Suspense>
-        <NextTopLoader
-          color="#22c55e"
-          initialPosition={0.08}
-          height={3}
-          showSpinner={false}
-          easing="ease"
-          shadow="0 0 10px #22c55e,0 0 5px #22c55e"
-        />
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <NextIntlClientProvider messages={messages}>
-            <SessionProvider>{children}</SessionProvider>
-            <Toaster
-              richColors
-              position={locale === "ar" ? "bottom-left" : "bottom-right"}
-            />
-          </NextIntlClientProvider>
-        </ThemeProvider>
+        <ReduxProvider>
+          <Suspense>
+            <UTSSR />
+          </Suspense>
+          <NextTopLoader
+            color="#22c55e"
+            initialPosition={0.08}
+            height={3}
+            showSpinner={false}
+            easing="ease"
+            shadow="0 0 10px #22c55e,0 0 5px #22c55e"
+          />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <NextIntlClientProvider messages={messages}>
+              {children}
+              <Toaster
+                richColors
+                position={locale === "ar" ? "bottom-left" : "bottom-right"}
+              />
+            </NextIntlClientProvider>
+          </ThemeProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

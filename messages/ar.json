@@ -42,7 +42,8 @@
     "motager": "مُتَـــاجِر",
     "description": "يوفر لك مُتَاجِر كل ما تحتاجه لجعل متجرك ينبض بالحياة. من تصاميم جميلة وقابلة للتخصيص إلى أدوات قوية تدعم النمو وزيادة المبيعات، ارتقِ بعملك إلى المستوى التالي.",
     "cta1": "ابدأ تجربتك المجانية",
-    "cta2": "عرض متجر تجريبي"
+    "cta2": "عرض متجر تجريبي",
+    "dashboard": "لوحة التحكم"
   },
   "LoginPage": {
     "title": "تسجيل الدخول",
@@ -107,6 +108,10 @@
       "manage": "إدارة",
       "upgrade": "ترقية الخطة",
       "visit": "زيارة"
+    },
+    "noStores": {
+      "title": "لا توجد متاجر حتى الآن",
+      "description": "ليس لديك أي متاجر حتى الآن. قم بإنشاء متجرك الأول لبدء بيع منتجاتك عبر الإنترنت."
     }
   },
   "OrdersPage": {
@@ -272,16 +277,52 @@
       "price": "0.00$"
     }
   },
-  "addStore":{
-    "createStore":"إنشاء متجر",
-    "description":"أدخل بيانات المتجر الذي تريد إنشاؤه.",
-    "name":"اسم المتجر",
-    "category":"التصنيف",
-    "create":"إنشاء",
-    "cancel":"إلغاء",
-    "phone":"الهاتف",
-    "currency":"عمله المتجر",
-    "subscription":"الخطه"
-
+  "addStore": {
+    "createStore": "إنشاء متجر",
+    "description": "أدخل بيانات المتجر الذي تريد إنشاؤه.",
+    "name": "اسم المتجر",
+    "category": "التصنيف",
+    "create": "إنشاء",
+    "cancel": "إلغاء",
+    "phone": "الهاتف",
+    "currency": "عمله المتجر",
+    "subscription": "الخطه",
+    "namePlaceholder": "متجري الرائع",
+    "categoryPlaceholder": "اختر تصنيفًا",
+    "descriptionPlaceholder": "صف متجرك وما تبيعه...",
+    "phonePlaceholder": "+966 5xxxxxxxx",
+    "currencyPlaceholder": "اختر العملة",
+    "planPlaceholder": "اختر خطة",
+    "descriptionHelp": "قدم وصفًا تفصيليًا لمتجرك لجذب العملاء.",
+    "creating": "جاري الإنشاء...",
+    "successMessage": "تم إنشاء المتجر بنجاح!",
+    "errorMessage": "فشل إنشاء المتجر. يرجى المحاولة مرة أخرى.",
+    "nameRequired": "اسم المتجر مطلوب",
+    "categoryRequired": "التصنيف مطلوب",
+    "descriptionRequired": "الوصف مطلوب",
+    "descriptionMinLength": "يجب أن يكون الوصف 10 أحرف على الأقل",
+    "phoneRequired": "رقم الهاتف مطلوب",
+    "planRequired": "خطة الاشتراك مطلوبة",
+    "currencyRequired": "عملة المتجر مطلوبة",
+    "categories": {
+      "electronics": "إلكترونيات",
+      "clothing": "ملابس",
+      "food": "أغذية ومشروبات",
+      "health": "صحة وجمال",
+      "home": "منزل وحديقة"
+    },
+    "currencies": {
+      "usd": "دولار أمريكي ($)",
+      "eur": "يورو (€)",
+      "gbp": "جنيه استرليني (£)",
+      "jpy": "ين ياباني (¥)",
+      "cad": "دولار كندي ($)"
+    },
+    "plans": {
+      "basic": "أساسي",
+      "pro": "احترافي",
+      "business": "أعمال",
+      "enterprise": "مؤسسات"
+    }
   }
 }
