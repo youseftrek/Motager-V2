@@ -57,7 +57,10 @@ const AvatarMenu = ({ user }: Props) => {
         >
           <Avatar className="w-9 h-9">
             <AvatarImage
-              src={user.image || "https://avatar.iran.liara.run/public"}
+              src={
+                user.image ||
+                `https://avatar.iran.liara.run/public/boy?username=${user.name}`
+              }
               alt={"User Name"}
             />
             <AvatarFallback>

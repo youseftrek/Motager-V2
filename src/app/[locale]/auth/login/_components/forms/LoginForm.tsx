@@ -25,6 +25,7 @@ const LoginForm = () => {
   const [loginUser, { isLoading }] = useLoginUserMutation();
   const router = useRouter();
   const t = useTranslations("LoginPage.form");
+  const tToast = useTranslations("toast");
   const form = useForm<z.infer<typeof UserLoginSchema>>({
     resolver: zodResolver(UserLoginSchema),
     defaultValues: {
@@ -38,6 +39,7 @@ const LoginForm = () => {
       const res = await loginUser(values);
       if (res.data) {
         router.push(PROTECTED_ROUTES.STORES);
+        toast.success(tToast("loginSuccess"));
       }
     } catch (error) {
       toast.error("An unexpected error occurred.");

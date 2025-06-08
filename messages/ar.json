@@ -1,4 +1,7 @@
 {
+  "toast": {
+    "loginSuccess": "تم تسجيل الدخول بنجاح"
+  },
   "modeToggle": {
     "tooltip": "الألوان",
     "light": "فاتح",
@@ -280,6 +283,8 @@
   "addStore": {
     "createStore": "إنشاء متجر",
     "description": "أدخل بيانات المتجر الذي تريد إنشاؤه.",
+    "createStoreHeader": "معلومات المتجر",
+    "createStoreDescription": "برجاء إدخال البيانات الآتية بشكل صحيح، يمكنك التعديل عليها لاحقاً.",
     "name": "اسم المتجر",
     "category": "التصنيف",
     "create": "إنشاء",
@@ -292,7 +297,7 @@
     "descriptionPlaceholder": "صف متجرك وما تبيعه...",
     "phonePlaceholder": "+966 5xxxxxxxx",
     "currencyPlaceholder": "اختر العملة",
-    "planPlaceholder": "اختر خطة",
+
     "descriptionHelp": "قدم وصفًا تفصيليًا لمتجرك لجذب العملاء.",
     "creating": "جاري الإنشاء...",
     "successMessage": "تم إنشاء المتجر بنجاح!",

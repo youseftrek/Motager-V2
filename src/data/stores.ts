@@ -1,0 +1,47 @@
+import { Store } from "@/types/store";
+import axios from "axios";
+
+export async function getStores(id: any, token: any) {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/store/user/${id}`,
+      {
+        headers: {
+          Authorization: `${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching stores:", error);
+    return { data: [] };
+  }
+}
+
+export async function checkStore(
+  userId: any,
+  token: any,
+  storeId: number
+): Promise<boolean> {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/store/user/${userId}`,
+      {
+        headers: {
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    const stores: Store[] = response.data.data;
+
+    const isValidStore = stores.some((store: Store) => store.id === storeId);
+
+    return isValidStore;
+  } catch (error) {
+    console.error("Error checking store:", error);
+    return false;
+  }
+}

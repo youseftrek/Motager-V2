@@ -15,11 +15,14 @@ import { ModeToggle } from "@/components/shared/ModeToggle";
 import { LanguageSelect } from "@/components/shared/LanguageSelect";
 import UpgradePlanCard from "./UpgradePlanCard";
 import { StoreSwitcher } from "./StoreSwitcher";
+import { useUserStores } from "@/providers/user-stores-context";
 
 export function AppSidebar() {
   const locale = useLocale();
   const RTL = locale === "ar";
   const t = useTranslations("DashboardPage.sidebar");
+  const { stores, currentStore } = useUserStores();
+
   return (
     <Sidebar
       className="z-50 bg-background p-2 sm:pt-[72px] lg:pt-[80px]"
@@ -27,13 +30,9 @@ export function AppSidebar() {
     >
       <SidebarContent className="relative flex flex-col justify-between bg-background overflow-auto">
         <div className="flex flex-col gap-0.5 p-2 ltr:pr-0 rtl:pl-0">
-          <StoreSwitcher
-            stores={[
-              { id: "1", name: "Store 1" },
-              { id: "2", name: "Store 2" },
-            ]}
-            currentStore={{ id: "1", name: "Store 1" }}
-          />
+          {stores.length > 0 && currentStore && (
+            <StoreSwitcher stores={stores} currentStore={currentStore} />
+          )}
           <h4 className="mb-1.5 font-semibold text-muted-foreground text-xs">
             {t("dashboardLinks")}
           </h4>

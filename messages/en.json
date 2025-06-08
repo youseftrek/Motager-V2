@@ -1,4 +1,7 @@
 {
+  "toast": {
+    "loginSuccess": "Login successful"
+  },
   "modeToggle": {
     "tooltip": "Toggle mode",
     "light": "Light",
@@ -280,6 +283,8 @@
   "addStore": {
     "createStore": "Create Store",
     "description": "Enter the details of the store you want to create.",
+    "createStoreHeader": "Store Information",
+    "createStoreDescription": "Please enter the following details correctly, you can edit them later.",
     "name": "Store Name",
     "category": "Category",
     "create": "Create",

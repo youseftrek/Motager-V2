@@ -1,8 +1,17 @@
 "use client";
 import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import TooltipChildren from "@/components/ui/TooltipChildren";
 import { Link } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
+import { Store } from "@/types/store";
 import {
   ChartLine,
   CircleFadingArrowUp,
@@ -12,9 +21,12 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-export default function StoreCards() {
+type Props = {
+  stores: Store[];
+};
+
+export default function StoreCards({ stores }: Props) {
   const t = useTranslations("StoresPage");
-  const stores = [];
 
   if (stores.length === 0) {
     return (
@@ -44,35 +56,44 @@ export default function StoreCards() {
   }
 
   return (
-    <div className="bg-secondary p-4 border border-1 border-card rounded-lg">
-      <h2 className="font-medium text-lg">Your Store Name</h2>
-      <p className="text-muted-foreground text-sm">
-        {t("storeInfo.createdAt")} 2024-01-01
-      </p>
-      <p className="text-muted-foreground text-sm">
-        {t("storeInfo.plan")} Free
-      </p>
-      <div className="flex justify-between items-center gap-2 mt-4">
-        <Link
-          href={`/dashboard/stores/123123123`}
-          className={cn(buttonVariants({ size: "sm" }))}
-        >
-          <ChartLine />
-          {t("storeInfo.manage")}
-        </Link>
-        <div className="flex items-center gap-2">
-          <TooltipChildren message={t("storeInfo.upgrade")}>
-            <Button variant="softPrimary" size="icon">
-              <CircleFadingArrowUp />
-            </Button>
-          </TooltipChildren>
-          <TooltipChildren message={t("storeInfo.visit")}>
-            <Button variant="outline" size="icon">
-              <Eye />
-            </Button>
-          </TooltipChildren>
-        </div>
-      </div>
+    <div className="flex flex-col gap-2 mx-auto mt-4 max-w-4xl">
+      {stores.map((store) => (
+        <Card key={store.id}>
+          <CardHeader>
+            <CardTitle>{store.store_name}</CardTitle>
+            <CardDescription>{store.description}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground text-sm">
+              {t("storeInfo.createdAt")} {new Date().toLocaleDateString()}
+            </p>
+            <p className="text-muted-foreground text-sm">
+              {t("storeInfo.plan")} {store.plan_id === 0 ? "Free" : "Premium"}
+            </p>
+          </CardContent>
+          <CardFooter className="w-full flex items-center justify-between gap-2">
+            <Link
+              href={`/dashboard/stores/${store.id}`}
+              className={cn(buttonVariants({ size: "sm" }))}
+            >
+              <ChartLine />
+              {t("storeInfo.manage")}
+            </Link>
+            <div className="flex items-center gap-2">
+              <TooltipChildren message={t("storeInfo.upgrade")}>
+                <Button variant="softPrimary" size="icon">
+                  <CircleFadingArrowUp />
+                </Button>
+              </TooltipChildren>
+              <TooltipChildren message={t("storeInfo.visit")}>
+                <Button variant="outline" size="icon">
+                  <Eye />
+                </Button>
+              </TooltipChildren>
+            </div>
+          </CardFooter>
+        </Card>
+      ))}
     </div>
   );
 }
