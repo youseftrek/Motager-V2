@@ -65,6 +65,7 @@
     "form": {
       "firstName": "الاسم الأول",
       "firstNamePlaceholder": "محمد",
+      "address":"العنوان",
       "lastName": "اسم العائلة",
       "lastNamePlaceholder": "عمار",
       "email": "البريد الإلكتروني",
