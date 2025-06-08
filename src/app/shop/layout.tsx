@@ -1,7 +1,6 @@
 import { Outfit } from "next/font/google";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "sonner";
-import { SessionProvider } from "next-auth/react";
 import NextTopLoader from "nextjs-toploader";
 import { Suspense } from "react";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
@@ -53,7 +52,7 @@ export default function ShopLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SessionProvider>{children}</SessionProvider>
+          {children}
           <Toaster richColors position="bottom-right" />
         </ThemeProvider>
       </body>
