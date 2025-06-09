@@ -53,7 +53,7 @@ const ClientForm = ({ categories }: Props) => {
   const t = useTranslations("addStore");
 
   const storeSchema = z.object({
-    categoryId: z.number().int().positive(t("categoryRequired")),
+    category_id: z.number().int().positive(t("categoryRequired")),
     store_name: z.string().nonempty(t("nameRequired")),
     description: z
       .string()
@@ -68,7 +68,7 @@ const ClientForm = ({ categories }: Props) => {
   const form = useForm<StoreSchemaFields>({
     resolver: zodResolver(storeSchema),
     defaultValues: {
-      categoryId: undefined,
+      category_id: undefined,
       store_name: "",
       description: "",
       business_phone: "",
@@ -132,7 +132,7 @@ const ClientForm = ({ categories }: Props) => {
 
                     <FormField
                       control={form.control}
-                      name="categoryId"
+                      name="category_id"
                       render={({
                         field: { value, onChange, ...fieldProps },
                       }) => (
