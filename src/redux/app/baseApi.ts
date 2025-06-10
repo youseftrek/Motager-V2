@@ -19,21 +19,36 @@ const baseQuery = fetchBaseQuery({
         const token = (getState() as RootState).auth.access_token;
         if(token) headers.set('authorization', `Bearer ${token}`)
         return headers;
-    }
+    },
+    fetchFn: async (...args) => {
+      const response = await fetch(...args);
+      console.log('Res',response);
+      
+      const data = await response.json();
+      console.log(data);
+      
+      // Return both response and data
+      return { data, meta: { response } } as any;
+    },
 })
 
 
 const baseQueryWithInterceptor: typeof baseQuery = async (
-    args,
-    api,
-    extraOptions
+  args,
+  api,
+  extraOptions
 ) => {
-    const result = await baseQuery(args, api, extraOptions);
-    const method = typeof args === "string" ? "GET" : args.method || "GET";
-    // console.log(method, result);
-    if (!!result.error)
-    toast.error((result.error?.data as ErrorResponse).message);
-    return result;
+  const result = await baseQuery(args, api, extraOptions);
+  const method = typeof args === "string" ? "GET" : args.method || "GET";
+
+  if (result.error) {
+    const fallbackMessage = "An unexpected error occurred";
+    const errorData = result.error.data as ErrorResponse | undefined;
+
+    toast.error(errorData?.message || fallbackMessage);
+  }
+
+  return result;
 };
 
 export const baseApi = createApi({
