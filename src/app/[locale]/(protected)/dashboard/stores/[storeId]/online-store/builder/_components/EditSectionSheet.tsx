@@ -20,7 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Pipette, Plus, Trash } from "lucide-react";
+import { Image as ImageIcon, Pipette, Plus, Trash } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -36,6 +36,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { ImageSelectDialog } from "./ImageSelectDialog";
 
 export type InputConfig = {
   type:
@@ -47,7 +48,8 @@ export type InputConfig = {
     | "select"
     | "toggle"
     | "boolean"
-    | "array";
+    | "array"
+    | "image";
   label: string;
   placeholder?: string;
   min?: number;
@@ -96,6 +98,18 @@ export function EditSectionSheet() {
             }
           }
 
+          // Convert string image URLs to image objects if needed
+          if (sectionConfig) {
+            Object.entries(sectionConfig).forEach(([key, config]) => {
+              if (
+                config.type === "image" &&
+                typeof initialData[key] === "string"
+              ) {
+                initialData[key] = { src: initialData[key], alt: "" };
+              }
+            });
+          }
+
           setSectionData(initialData);
         } catch (error) {
           console.error("Failed to load section config:", error);
@@ -105,7 +119,7 @@ export function EditSectionSheet() {
     };
 
     loadConfig();
-  }, [state.selectedSection]);
+  }, [state.selectedSection, sectionConfig]);
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
@@ -122,11 +136,31 @@ export function EditSectionSheet() {
 
   const handleSave = () => {
     if (!state.selectedSection) return;
+
+    // Process the data before saving
+    const processedData = { ...sectionData };
+
+    // Convert image objects to URLs if they only have src property for backward compatibility
+    if (sectionConfig) {
+      Object.entries(sectionConfig).forEach(([key, config]) => {
+        if (config.type === "image" && processedData[key]) {
+          const imageData = processedData[key];
+          if (
+            typeof imageData === "object" &&
+            Object.keys(imageData).length === 1 &&
+            "src" in imageData
+          ) {
+            processedData[key] = imageData.src;
+          }
+        }
+      });
+    }
+
     dispatch({
       type: "UPDATE_SECTION",
       payload: {
         id: state.selectedSection.id,
-        data: sectionData,
+        data: processedData,
       },
     });
     handleOpenChange(false);
@@ -180,6 +214,22 @@ export function EditSectionSheet() {
         [key]: newArray,
       };
     });
+  };
+
+  const handlePhotoSelect = (key: string, photo: any) => {
+    console.log("Photo selected in EditSectionSheet:", photo);
+    setSectionData((prev) => ({
+      ...prev,
+      [key]: {
+        src: photo.src.original || photo.src.large2x || photo.src.large,
+        alt: photo.alt || "",
+        width: photo.width,
+        height: photo.height,
+        photographer: photo.photographer,
+        photographer_url: photo.photographer_url,
+        pexels_url: photo.url,
+      },
+    }));
   };
 
   const renderArrayItemInputs = (
@@ -412,6 +462,8 @@ export function EditSectionSheet() {
           : "";
       case "array":
         return [];
+      case "image":
+        return { src: "", alt: "" };
       default:
         return "";
     }
@@ -534,6 +586,66 @@ export function EditSectionSheet() {
               ))}
             </SelectContent>
           </Select>
+        );
+      case "image":
+        // Handle both string and object values
+        const imageValue =
+          typeof value === "string"
+            ? { src: value, alt: "" }
+            : value || { src: "", alt: "" };
+
+        return (
+          <div className="space-y-2">
+            {imageValue.src && (
+              <div className="relative rounded-md overflow-hidden">
+                <img
+                  src={imageValue.src}
+                  alt={imageValue.alt || ""}
+                  className="w-full h-auto object-cover max-h-40"
+                />
+                <div className="absolute inset-0 bg-black/0 hover:bg-black/20 transition-colors">
+                  {imageValue.photographer && (
+                    <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent">
+                      <p className="text-white text-xs truncate">
+                        Photo by {imageValue.photographer}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            <div className="flex items-center gap-2">
+              <Input
+                id={`${key}-url`}
+                type="text"
+                value={imageValue.src || ""}
+                onChange={(e) =>
+                  onChange({
+                    ...imageValue,
+                    src: e.target.value,
+                  })
+                }
+                placeholder="Image URL"
+                className="flex-1"
+              />
+              <ImageSelectDialog
+                onImageSelect={(photo) => handlePhotoSelect(key, photo)}
+              />
+            </div>
+            <Input
+              id={`${key}-alt`}
+              type="text"
+              value={imageValue.alt || ""}
+              onChange={(e) =>
+                onChange({
+                  ...imageValue,
+                  alt: e.target.value,
+                })
+              }
+              placeholder="Alt text"
+              className="mt-2"
+            />
+          </div>
         );
       default:
         return <div>Unsupported input type: {config.type}</div>;
@@ -675,10 +787,8 @@ export function EditSectionSheet() {
         <SheetHeader>
           <SheetTitle>Edit {state.selectedSection?.name}</SheetTitle>
         </SheetHeader>
-        <div className="max-h-[calc(100vh-180px)] overflow-y-auto">
-          {renderInputs()}
-        </div>
-        <SheetFooter className="mt-4 pt-4 border-t">
+        <div className="max-h-[calc(100vh-80px)]">{renderInputs()}</div>
+        <SheetFooter className="">
           <Button onClick={handleSave}>Save changes</Button>
         </SheetFooter>
       </SheetContent>

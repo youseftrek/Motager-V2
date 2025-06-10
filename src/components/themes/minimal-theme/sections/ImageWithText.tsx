@@ -4,10 +4,20 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
+export type ImageObject = {
+  src: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  photographer?: string;
+  photographer_url?: string;
+  pexels_url?: string;
+};
+
 export type ImageWithTextProps = {
   // Content
-  imageUrl: string;
-  imageAlt: string;
+  imageUrl: string | ImageObject;
+  imageAlt?: string;
   title: string;
   description: string;
   ctaText?: string;
@@ -34,16 +44,11 @@ export type ImageWithTextProps = {
 export const config = {
   inputs: {
     imageUrl: {
-      type: "text" as const,
+      type: "image" as const,
       label: "Image URL",
-      placeholder: "/images/example.jpg",
-      default: "/placeholder.jpg",
-    },
-    imageAlt: {
-      type: "text" as const,
-      label: "Image Alt Text",
-      placeholder: "Descriptive text for the image",
-      default: "Featured image",
+      placeholder: "https://your-image-url.com",
+      default:
+        "https://images.pexels.com/photos/32437901/pexels-photo-32437901.jpeg",
     },
     title: {
       type: "text" as const,
@@ -144,7 +149,7 @@ export const config = {
 
 export default function ImageWithText({
   // Content
-  imageUrl = "/placeholder.jpg",
+  imageUrl = "https://images.pexels.com/photos/32437901/pexels-photo-32437901.jpeg",
   imageAlt = "Featured image",
   title = "Section Title",
   description = "This is a description of the section. You can customize this text to provide more information about your content.",
@@ -168,6 +173,14 @@ export default function ImageWithText({
   imageClassName,
   ctaClassName,
 }: ImageWithTextProps) {
+  // Handle both string URLs and image objects
+  const imageSrc = typeof imageUrl === "string" ? imageUrl : imageUrl.src;
+  const imageAltText =
+    typeof imageUrl === "string" ? imageAlt : imageUrl.alt || imageAlt;
+
+  // Show photographer attribution if available
+  const hasPhotographer = typeof imageUrl !== "string" && imageUrl.photographer;
+
   // Calculate aspect ratio CSS
   const getAspectRatioClass = () => {
     switch (aspectRatio) {
@@ -244,8 +257,8 @@ export default function ImageWithText({
           >
             {/* Image */}
             <img
-              src={imageUrl}
-              alt={imageAlt}
+              src={imageSrc}
+              alt={imageAltText}
               className={cn(
                 "absolute inset-0 w-full h-full",
                 imageObjectFit,
@@ -293,6 +306,25 @@ export default function ImageWithText({
                   </Button>
                 </a>
               )}
+
+              {/* Photographer attribution */}
+              {hasPhotographer && (
+                <div className="mt-2 text-xs opacity-70">
+                  Photo by{" "}
+                  {imageUrl.photographer_url ? (
+                    <a
+                      href={imageUrl.photographer_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:underline"
+                    >
+                      {imageUrl.photographer}
+                    </a>
+                  ) : (
+                    imageUrl.photographer
+                  )}
+                </div>
+              )}
             </div>
           </div>
         );
@@ -312,8 +344,8 @@ export default function ImageWithText({
             {/* Image Container */}
             <div className={cn("overflow-hidden", getAspectRatioClass())}>
               <img
-                src={imageUrl}
-                alt={imageAlt}
+                src={imageSrc}
+                alt={imageAltText}
                 className={cn("w-full h-full", imageObjectFit, imageClassName)}
                 style={{
                   borderWidth: imageBorderWidth,
@@ -355,6 +387,25 @@ export default function ImageWithText({
                   </Button>
                 </a>
               )}
+
+              {/* Photographer attribution */}
+              {hasPhotographer && (
+                <div className="mt-2 text-xs opacity-70">
+                  Photo by{" "}
+                  {imageUrl.photographer_url ? (
+                    <a
+                      href={imageUrl.photographer_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:underline"
+                    >
+                      {imageUrl.photographer}
+                    </a>
+                  ) : (
+                    imageUrl.photographer
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         );
@@ -382,9 +433,13 @@ export default function ImageWithText({
               )}
             >
               <img
-                src={imageUrl}
-                alt={imageAlt}
-                className={cn("w-full h-full", imageObjectFit, imageClassName)}
+                src={imageSrc}
+                alt={imageAltText}
+                className={cn(
+                  "w-full h-full object-cover",
+                  imageObjectFit,
+                  imageClassName
+                )}
                 style={{
                   borderWidth: imageBorderWidth,
                   borderStyle: imageBorderWidth > 0 ? "solid" : "none",
@@ -424,6 +479,25 @@ export default function ImageWithText({
                     {ctaText}
                   </Button>
                 </a>
+              )}
+
+              {/* Photographer attribution */}
+              {hasPhotographer && (
+                <div className="mt-2 text-xs opacity-70">
+                  Photo by{" "}
+                  {imageUrl.photographer_url ? (
+                    <a
+                      href={imageUrl.photographer_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:underline"
+                    >
+                      {imageUrl.photographer}
+                    </a>
+                  ) : (
+                    imageUrl.photographer
+                  )}
+                </div>
               )}
             </div>
           </div>

@@ -1,12 +1,22 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
+export type ImageObject = {
+  src: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  photographer?: string;
+  photographer_url?: string;
+  pexels_url?: string;
+};
+
 export type HeroProps = {
   title: string;
   subtitle: string;
   button1Text?: string;
   button2Text?: string;
-  imgUrl: string;
+  imgUrl: string | ImageObject;
   overlayOpacity?: number;
   overlayColor?: string;
 };
@@ -34,9 +44,11 @@ export const config = {
       placeholder: "Collections",
     },
     imgUrl: {
-      type: "text" as const,
+      type: "image" as const,
       label: "Background Image",
-      placeholder: "",
+      placeholder: "https://your-image-url.com",
+      default:
+        "https://images.pexels.com/photos/1802268/pexels-photo-1802268.jpeg",
     },
     overlayColor: {
       type: "color" as const,
@@ -56,19 +68,27 @@ export default function Hero({
   subtitle = "Welcome to our Store",
   button1Text = "View More",
   button2Text = "Collections",
-  imgUrl,
+  imgUrl = "https://images.pexels.com/photos/1802268/pexels-photo-1802268.jpeg",
   overlayOpacity = 0,
   overlayColor = "#000000",
 }: HeroProps) {
+  // Handle both string URLs and image objects
+  const imageUrl = typeof imgUrl === "string" ? imgUrl : imgUrl.src;
+  const imageAlt =
+    typeof imgUrl === "string"
+      ? "Hero background"
+      : imgUrl.alt || "Hero background";
+
   return (
     <section className="relative w-full h-[70vh] md:h-screen overflow-hidden">
       {/* Background Image */}
       <Image
-        src={imgUrl || "/images/hero.jpg"}
-        alt="Men's beauty care"
+        src={imageUrl}
+        alt={imageAlt}
         fill
         className="object-center object-cover"
         priority
+        unoptimized={imageUrl.startsWith("http")}
       />
 
       {/* Overlay */}

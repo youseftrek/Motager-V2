@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { Loader } from "lucide-react";
 
 interface SpinnerProps {
   size?: number;
@@ -24,35 +25,7 @@ export const Spinner = ({
       role="status"
       aria-label="Loading"
     >
-      <svg
-        className={cn("w-full h-full animate-spin", color)}
-        viewBox="0 0 24 24"
-        style={{ animationDuration }}
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        {/* Background Circle */}
-        <circle
-          className="opacity-25 stroke-current"
-          cx="12"
-          cy="12"
-          r="10"
-          strokeWidth="4"
-          fill="none"
-        />
-        {/* Rotating Arc with Rounded Caps */}
-        <circle
-          className="opacity-75 stroke-current"
-          cx="12"
-          cy="12"
-          r="10"
-          strokeWidth="4"
-          strokeLinecap="round"
-          fill="none"
-          strokeDasharray="60"
-          strokeDashoffset="20"
-        />
-      </svg>
+      <Loader className={cn("animate-spin", color)} size={size} />
     </div>
   );
 };
