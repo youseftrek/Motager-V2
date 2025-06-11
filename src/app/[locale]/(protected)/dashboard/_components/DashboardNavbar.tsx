@@ -1,14 +1,14 @@
+"use client";
+
 import AvatarMenu from "@/components/shared/AvatarMenu";
 import { LanguageSelect } from "@/components/shared/LanguageSelect";
 import LogoLink from "@/components/shared/LogoLink";
 import MaxWidthWrapper from "@/components/shared/MaxWidthWrapper";
 import { ModeToggle } from "@/components/shared/ModeToggle";
-import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAuth } from "@/hooks";
+import { useAuth } from "@/providers/auth-context-provider";
 import { IUser } from "@/types/auth/auth";
-import { BellRing } from "lucide-react";
 
 type Props = {
   showSidebarTrigger?: boolean;

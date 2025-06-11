@@ -17,6 +17,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import ReduxProvider from "@/providers/redux-provider";
 import { UserStoresProvider } from "@/providers/user-stores-context";
+import { AuthProvider } from "@/providers/auth-context-provider";
 
 const FONT_EN = Outfit({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -90,7 +91,9 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <NextIntlClientProvider messages={messages}>
-              <UserStoresProvider>{children}</UserStoresProvider>
+              <AuthProvider>
+                <UserStoresProvider>{children}</UserStoresProvider>
+              </AuthProvider>
               <Toaster
                 richColors
                 position={locale === "ar" ? "bottom-left" : "bottom-right"}

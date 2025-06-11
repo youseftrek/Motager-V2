@@ -7,7 +7,7 @@ import {
 import AnimatedDashboardPage from "../../_components/AnimatedDashboardPage";
 import { UserBanner } from "./_components/UserBanner";
 import { checkStore, getStores } from "@/data/stores";
-import { getSession } from "@/actions/get-session";
+import { getSession } from "@/actions/getSession";
 import { redirect } from "next/navigation";
 import { StoresInitializer } from "../../_components/StoresInitializer";
 import { Store } from "@/types/store";

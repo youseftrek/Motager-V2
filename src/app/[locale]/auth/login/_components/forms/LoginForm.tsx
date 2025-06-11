@@ -18,12 +18,13 @@ import PasswordInput from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
 import { UserLoginSchema } from "@/validations/user-login";
 import { useRouter } from "@/i18n/routing";
-import { useLoginUserMutation } from "@/redux/features/auth/authApi";
 import { PROTECTED_ROUTES } from "@/constants";
+import axios from "axios";
+import { useAuth } from "@/providers/auth-context-provider";
 
 const LoginForm = () => {
-  const [loginUser, { isLoading }] = useLoginUserMutation();
   const router = useRouter();
+  const { refreshUser } = useAuth();
   const t = useTranslations("LoginPage.form");
   const tToast = useTranslations("toast");
   const form = useForm<z.infer<typeof UserLoginSchema>>({
@@ -36,13 +37,16 @@ const LoginForm = () => {
 
   async function onSubmit(values: z.infer<typeof UserLoginSchema>) {
     try {
-      const res = await loginUser(values);
-      if (res.data) {
+      const res = await axios.post("/api/login", values);
+      if (res.data.success) {
+        await refreshUser();
         router.push(PROTECTED_ROUTES.STORES);
         toast.success(tToast("loginSuccess"));
       }
-    } catch (error) {
-      toast.error("An unexpected error occurred.");
+    } catch (error: any) {
+      toast.error(
+        error.response.data.message || "An unexpected error occurred."
+      );
     }
   }
 

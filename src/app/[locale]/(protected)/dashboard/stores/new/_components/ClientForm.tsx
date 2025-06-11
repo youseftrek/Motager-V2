@@ -39,16 +39,17 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
-import axiosInstance from "@/utils/client-axios";
 import AnimatedDashboardPage from "../../../_components/AnimatedDashboardPage";
 import DashboardPageHeader from "../../../_components/DashboardPageHeader";
 import { Category } from "@/types/category";
+import { createStore } from "@/data/stores";
 
 type Props = {
   categories: Category[];
+  token: string;
 };
 
-const ClientForm = ({ categories }: Props) => {
+const ClientForm = ({ categories, token }: Props) => {
   const router = useRouter();
   const t = useTranslations("addStore");
 
@@ -78,7 +79,7 @@ const ClientForm = ({ categories }: Props) => {
 
   const onSubmit = async (data: StoreSchemaFields) => {
     try {
-      const response = await axiosInstance.post("/store", data);
+      const response = await createStore(data, token);
       console.log(response);
       toast.success(t("successMessage"));
 

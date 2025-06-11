@@ -1,3 +1,5 @@
+"use server";
+
 import axios from "axios";
 export async function createPayment(
   data: { plan_id: number; user_id: number },

@@ -45,3 +45,23 @@ export async function checkStore(
     return false;
   }
 }
+
+export async function createStore(data: any, token: any) {
+  try {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/store`,
+      data,
+      {
+        headers: {
+          Authorization: `${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error creating store:", error);
+    return { data: [] };
+  }
+}

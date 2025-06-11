@@ -13,13 +13,17 @@ import { Link } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { Store } from "@/types/store";
 import {
-  ChartLine,
-  CircleFadingArrowUp,
+  Calendar,
+  CircleDollarSign,
   Eye,
+  MousePointerClick,
+  Phone,
   PlusCircle,
   StoreIcon,
+  Tag,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { formatDistanceToNow } from "date-fns";
 
 type Props = {
   stores: Store[];
@@ -56,41 +60,64 @@ export default function StoreCards({ stores }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-2 mx-auto mt-4 max-w-4xl">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mx-auto mt-4 max-w-6xl">
       {stores.map((store) => (
-        <Card key={store.id}>
-          <CardHeader>
-            <CardTitle>{store.store_name}</CardTitle>
-            <CardDescription>{store.description}</CardDescription>
+        <Card
+          key={store.id}
+          className="overflow-hidden hover:shadow-lg transition-all duration-300 border-t-4 border-t-primary"
+        >
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/10 pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xl font-bold truncate">
+                {store.store_name}
+              </CardTitle>
+              <span className="text-xs font-medium px-2 py-1 bg-primary/10 text-primary rounded-full">
+                {store.category.name}
+              </span>
+            </div>
+            <CardDescription className="line-clamp-2 mt-1">
+              {store.description}
+            </CardDescription>
           </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground text-sm">
-              {t("storeInfo.createdAt")} {new Date().toLocaleDateString()}
-            </p>
-            <p className="text-muted-foreground text-sm">
-              {t("storeInfo.plan")} {store.plan_id === 0 ? "Free" : "Premium"}
-            </p>
+          <CardContent className="pt-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Calendar size={14} />
+                <span>
+                  {formatDistanceToNow(new Date(store.created_at), {
+                    addSuffix: true,
+                  })}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <CircleDollarSign size={14} />
+                <span className="uppercase">{store.store_currency}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Phone size={14} />
+                <span className="truncate">{store.business_phone}</span>
+              </div>
+            </div>
           </CardContent>
-          <CardFooter className="w-full flex items-center justify-between gap-2">
+          <CardFooter className="w-full flex items-center justify-between gap-2 bg-muted/30 mt-2 pt-3">
             <Link
               href={`/dashboard/stores/${store.id}`}
-              className={cn(buttonVariants({ size: "sm" }))}
+              className={cn(
+                buttonVariants({ size: "sm", variant: "default" }),
+                "gap-2"
+              )}
             >
-              <ChartLine />
+              <MousePointerClick size={16} />
               {t("storeInfo.manage")}
             </Link>
-            <div className="flex items-center gap-2">
-              <TooltipChildren message={t("storeInfo.upgrade")}>
-                <Button variant="softPrimary" size="icon">
-                  <CircleFadingArrowUp />
-                </Button>
-              </TooltipChildren>
+
+            <Link href={store.href || "#"} target="_blank">
               <TooltipChildren message={t("storeInfo.visit")}>
-                <Button variant="outline" size="icon">
-                  <Eye />
+                <Button variant="outline" size="icon" className="h-8 w-8">
+                  <Eye size={16} />
                 </Button>
               </TooltipChildren>
-            </div>
+            </Link>
           </CardFooter>
         </Card>
       ))}

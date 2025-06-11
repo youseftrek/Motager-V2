@@ -7,14 +7,13 @@ import { cn } from "@/lib/utils";
 import StoreCards from "./_components/StoreCards";
 import { getTranslations } from "next-intl/server";
 import { getStores } from "@/data/stores";
-import { getSession } from "@/actions/get-session";
 import { StoresInitializer } from "../_components/StoresInitializer";
+import { getSession } from "@/actions/getSession";
 
 export default async function StoresPage() {
   const t = await getTranslations("StoresPage");
   const { token, user } = await getSession();
   const stores = await getStores(user?.user_id, token);
-  console.log(stores);
 
   return (
     <div className="p-2 md:p-4 h-[calc(100vh-64px)] lg:h-[calc(100vh-70px)]">

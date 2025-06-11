@@ -18,6 +18,7 @@ import { Link, useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { IUser } from "@/types/auth/auth";
 import { useAuth } from "@/hooks";
+import { logout as serverLogout } from "@/actions/logout";
 
 type Props = {
   user?: IUser;
@@ -26,10 +27,14 @@ type Props = {
 const AvatarMenu = ({ user }: Props) => {
   const t = useTranslations("HomeNavbar");
   const router = useRouter();
-  const { logout } = useAuth();
+  const { logout: clientLogout } = useAuth();
+
   const handleLogout = async () => {
     try {
-      logout();
+      // Call the server action to clear cookies
+      await serverLogout();
+      // Update client-side auth state
+      clientLogout();
       toast.success("Logged out successfully");
       router.push(PUBLIC_ROUTES.LOGIN);
     } catch (error) {

@@ -1,34 +1,41 @@
 import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 import { routing } from "./i18n/routing";
-import { getSession } from "./actions/get-session";
+
+const AUTH_ROUTES = ["/auth/login", "/auth/sign-up"];
+const PRIVATE_ROUTES = ["/dashboard", "/payment"];
 
 export default async function middleware(req: NextRequest) {
-  const { user } = await getSession();
-
-  const isAuthenticated = user !== null && user !== undefined;
+  const token = req.cookies.get("access_token")?.value;
+  const isAuthenticated = token !== undefined && token !== null && token !== "";
 
   const { pathname } = req.nextUrl;
 
-  const isAuthRoute = pathname.includes("/auth");
+  // Extract locale and clean pathname
+  const locale = pathname.startsWith("/ar") ? "ar" : "en";
+  const cleanPathname = pathname.replace(/^\/(ar|en)/, "") || "/";
 
-  const isProtected =
-    pathname.startsWith("/dashboard") || pathname.includes("/dashboard");
+  // Check if current route is protected or auth route
+  const isProtected = PRIVATE_ROUTES.some((route) =>
+    cleanPathname.startsWith(route)
+  );
+  const isAuthRoute = AUTH_ROUTES.some((route) =>
+    cleanPathname.startsWith(route)
+  );
 
+  // Redirect unauthenticated users away from protected routes
   if (isProtected && !isAuthenticated) {
-    // Detect locale from the URL
-    const locale = pathname.startsWith("/ar") ? "ar" : "en";
     const loginUrl = new URL(`/${locale}/auth/login`, req.nextUrl.origin);
-
     return NextResponse.redirect(loginUrl);
   }
 
+  // Redirect authenticated users away from auth routes
   if (isAuthRoute && isAuthenticated) {
-    const locale = pathname.startsWith("/ar") ? "ar" : "en";
-    const dashboardUrl = new URL(`/${locale}`, req.nextUrl.origin);
+    const dashboardUrl = new URL(`/${locale}/dashboard`, req.nextUrl.origin);
     return NextResponse.redirect(dashboardUrl);
   }
 
+  // Continue with next-intl middleware for internationalization
   return createMiddleware(routing)(req);
 }
 

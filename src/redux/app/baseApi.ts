@@ -1,27 +1,26 @@
-import { BASE_URL } from '@/constants';
-import { RootState } from './store';
-import { createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
-import { toast } from 'sonner';
+import { BASE_URL } from "@/constants";
+import { RootState } from "./store";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { toast } from "sonner";
 
 interface ErrorResponse {
-    message: string;
-    error: boolean;
+  message: string;
+  error: boolean;
 }
 
-  // Define success response type with a dynamic DT
+// Define success response type with a dynamic DT
 export interface SuccessResponse<DataType = any> {
-    data: DataType;
+  data: DataType;
 }
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: BASE_URL ,
-  prepareHeaders:(headers , {getState})=>{
-      const token = (getState() as RootState).auth.access_token;
-      if(token) headers.set('authorization', `Bearer ${token}`)
-      return headers;
-  }
-})
-
+  baseUrl: BASE_URL,
+  prepareHeaders: (headers, { getState }) => {
+    const token = (getState() as RootState).auth.access_token;
+    if (token) headers.set("authorization", `Bearer ${token}`);
+    return headers;
+  },
+});
 
 const baseQueryWithInterceptor: typeof baseQuery = async (
   args,
@@ -32,18 +31,21 @@ const baseQueryWithInterceptor: typeof baseQuery = async (
   const method = typeof args === "string" ? "GET" : args.method || "GET";
 
   if (result.error) {
+    console.log("#$#$#$#$", result.error);
     const fallbackMessage = "An unexpected error occurred";
-    const errorData = result.error.data as ErrorResponse | undefined;
+    const errorData = result.error.data as ErrorResponse | undefined | any;
 
-    toast.error(errorData?.message || fallbackMessage);
+    toast.error(
+      errorData?.data?.message || errorData?.message || fallbackMessage
+    );
   }
 
   return result;
 };
 
 export const baseApi = createApi({
-    reducerPath: "api",
-    baseQuery: baseQueryWithInterceptor,
-    tagTypes: [],
-    endpoints: () => ({}),
+  reducerPath: "api",
+  baseQuery: baseQueryWithInterceptor,
+  tagTypes: [],
+  endpoints: () => ({}),
 });
