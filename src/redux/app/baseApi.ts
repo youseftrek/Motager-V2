@@ -14,22 +14,12 @@ export interface SuccessResponse<DataType = any> {
 }
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: BASE_URL ,
-    prepareHeaders:(headers , {getState})=>{
-        const token = (getState() as RootState).auth.access_token;
-        if(token) headers.set('authorization', `Bearer ${token}`)
-        return headers;
-    },
-    fetchFn: async (...args) => {
-      const response = await fetch(...args);
-      console.log('Res',response);
-      
-      const data = await response.json();
-      console.log(data);
-      
-      // Return both response and data
-      return { data, meta: { response } } as any;
-    },
+  baseUrl: BASE_URL ,
+  prepareHeaders:(headers , {getState})=>{
+      const token = (getState() as RootState).auth.access_token;
+      if(token) headers.set('authorization', `Bearer ${token}`)
+      return headers;
+  }
 })
 
 

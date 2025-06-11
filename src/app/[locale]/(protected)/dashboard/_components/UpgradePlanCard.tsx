@@ -19,7 +19,7 @@ const UpgradePlanCard = () => {
         Upgrade your plan to get the full power!
       </p>
       <Link
-        href="#"
+        href="/pricing"
         className={cn(
           buttonVariants({ variant: "softPrimary", size: "sm" }),
           "w-full"
