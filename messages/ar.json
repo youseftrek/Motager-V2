@@ -177,7 +177,10 @@
       "slugPlaceHolder": "أدخل المعرف الفريد للفئة",
       "slugDescription": "هذا هو المسار في عنوان URL لفئتك. يجب أن يكون فريدًا ووصفيًا.",
       "save": "حفظ",
-      "cancel": "إلغاء"
+      "cancel": "إلغاء",
+      "description": "الوصف",
+      "descriptionPlaceHolder": "أدخل وصفًا للفئة",
+      "descriptionDescription": "وصف قصير يوضح ما تحتويه هذه الفئة."
     }
   },
   "OnlineStorePage": {

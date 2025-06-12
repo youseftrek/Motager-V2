@@ -14,6 +14,10 @@ const nextConfig = {
         protocol: "https" as const,
         hostname: "duuw10jl1n.ufs.sh",
       },
+      {
+        protocol: "https" as const,
+        hostname: "example.com",
+      }
     ],
   },
   eslint: {

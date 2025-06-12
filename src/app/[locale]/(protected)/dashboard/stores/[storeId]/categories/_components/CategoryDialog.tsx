@@ -29,6 +29,7 @@ import { Input } from "@/components/ui/input";
 import { categorySchema } from "@/validations/category";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { createStoreCategory } from "@/data/categories";
 
 type CategoryFormValues = z.infer<typeof categorySchema>;
 
@@ -37,23 +38,23 @@ interface CategoryDialogProps {
   initialData?: CategoryFormValues;
   trigger?: React.ReactNode;
   mode: "create" | "edit";
+  id:string
 }
 
 export default function CategoryDialog({
   initialData,
   trigger,
   mode,
+  id
 }: CategoryDialogProps) {
   const t = useTranslations("CategoriesPage.dialog");
-  const [open, setOpen] = useState(false);
-
+  const [open, setOpen] = useState(false);  
   // Set up the form with React Hook Form and Zod resolver
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(categorySchema),
     defaultValues: initialData || {
-      id: "",
       name: "",
-      slug: "",
+      description: "",
     },
   });
 
@@ -65,17 +66,25 @@ export default function CategoryDialog({
     toast.success(t("toast.updateSuccess"));
   };
 
-  const handleCreateCategory = (data: { name: string; slug?: string }) => {
+  const handleCreateCategory = async (data: { name: string; description: string }) => {
     console.log(data);
-    toast.success(t("toast.createSuccess"));
+    try {
+        const reponse = await createStoreCategory(data , Number(id))
+        toast.success(t("toast.createSuccess"));
+    }catch (error:any) {
+        console.error("Error creating category:", error);
+        if(error.status === 404)
+        toast.error('Store not found');
+    }
+   
   };
 
   // Handle form submission
-  const handleSubmit = (data: CategoryFormValues) => {
+  const handleSubmit = async (data: CategoryFormValues) => {
     if (mode === "edit") {
       handleEditCategory(initialData?.id || "1", data);
     } else {
-      handleCreateCategory(data);
+      await handleCreateCategory(data as { name: string; description: string });
     }
     setOpen(false);
     form.reset();
@@ -117,14 +126,14 @@ export default function CategoryDialog({
             />
             <FormField
               control={form.control}
-              name="slug"
+              name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("slug")}</FormLabel>
+                  <FormLabel>{t("description")}</FormLabel>
                   <FormControl>
-                    <Input placeholder={t("slugPlaceHolder")} {...field} />
+                    <Input placeholder={t("descriptionPlaceHolder")} {...field} />
                   </FormControl>
-                  <FormDescription>{t("slugDescription")}</FormDescription>
+                  <FormDescription>{t("descriptionDescription")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

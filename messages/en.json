@@ -177,7 +177,10 @@
       "slugPlaceHolder": "Enter Category Slug",
       "slugDescription": "This is the URL path for your category. It should be unique and descriptive.",
       "save": "Save",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "description": "Description",
+      "descriptionPlaceHolder": "Enter a short description of the category",
+      "descriptionDescription": "This description will be displayed on the category page to help customers understand what products are included in this category."
     }
   },
   "OnlineStorePage": {
