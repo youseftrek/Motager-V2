@@ -23,12 +23,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks";
 import { createPayment } from "@/actions/payment";
 import { Link } from "@/i18n/routing";
-<<<<<<< HEAD
-=======
 import { getCookie } from "cookies-next";
->>>>>>> 5ec5ca03f274bf7a9e0a9e8592e1ddf96caa6c0d
 
-export default function PaymentClientPage({ id  , user}: { id: string , user:any }) {
+export default function PaymentClientPage({
+  id,
+  user,
+}: {
+  id: string;
+  user: any;
+}) {
   const searchParams = useSearchParams();
   const billingCycle = searchParams.get("billing") || "monthly";
   const [isProcessing, setIsProcessing] = useState(false);
@@ -91,21 +94,23 @@ export default function PaymentClientPage({ id  , user}: { id: string , user:any
       popular: false,
     },
   };
-  
 
   // Convert params.id to number and find the matching plan
   const planId = Number.parseInt(id) || 2; // Default to basic plan (id: 2)
 
   // Find the plan that matches the numeric ID
-  const selectedPlan =Object.values(planDetails).find((plan) => plan.id === planId) ||planDetails.basic;
-  const price =selectedPlan.price[billingCycle as keyof typeof selectedPlan.price];
+  const selectedPlan =
+    Object.values(planDetails).find((plan) => plan.id === planId) ||
+    planDetails.basic;
+  const price =
+    selectedPlan.price[billingCycle as keyof typeof selectedPlan.price];
   const isAnnual = billingCycle === "annually";
   const monthlyPrice = selectedPlan.price.monthly;
   const savings = isAnnual ? monthlyPrice * 12 - price : 0;
   const handlePayment = async () => {
     setIsProcessing(true);
     console.log(user.user);
-    
+
     const data = await createPayment(
       {
         plan_id: Number(id),
@@ -114,9 +119,9 @@ export default function PaymentClientPage({ id  , user}: { id: string , user:any
       String(user.token)
     );
     if (data) {
-      window.location.assign(data.transaction.url)
-      setIsProcessing(false)
-    };
+      window.location.assign(data.transaction.url);
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -210,13 +215,8 @@ export default function PaymentClientPage({ id  , user}: { id: string , user:any
                             <span className="text-primary font-medium">
                               Annual Discount (20%)
                             </span>
-<<<<<<< HEAD
-                            <span className="text-primary font-semibold">
-                              -${savings.toFixed(2)}
-=======
                             <span className="text-emerald-400 font-semibold">
                               -{savings.toFixed(2)} EGP
->>>>>>> 5ec5ca03f274bf7a9e0a9e8592e1ddf96caa6c0d
                             </span>
                           </div>
                         </div>
@@ -227,13 +227,8 @@ export default function PaymentClientPage({ id  , user}: { id: string , user:any
                       <div className="flex justify-between items-center text-xl font-bold">
                         <span>Total</span>
                         <div className="text-right">
-<<<<<<< HEAD
-                          <span>${price.toFixed(2)}</span>
-                          <p className="text-sm text-muted-foreground font-normal">
-=======
                           <span>{price.toFixed(2)} EGP</span>
                           <p className="text-sm text-gray-400 font-normal">
->>>>>>> 5ec5ca03f274bf7a9e0a9e8592e1ddf96caa6c0d
                             {isAnnual ? "billed annually" : "billed monthly"}
                           </p>
                         </div>
@@ -296,14 +291,14 @@ export default function PaymentClientPage({ id  , user}: { id: string , user:any
                   {/* Price Display */}
                   <div className="text-center">
                     <div className="text-3xl font-bold">
-                      ${price.toFixed(2)}
+                      {price.toFixed(2)} EGP
                     </div>
                     <div className="text-muted-foreground text-sm">
                       {isAnnual ? "per year" : "per month"}
                     </div>
                     {isAnnual && (
                       <div className="text-primary text-sm mt-1">
-                        Save ${savings.toFixed(2)} annually
+                        Save {savings.toFixed(2)} EGP annually
                       </div>
                     )}
                   </div>

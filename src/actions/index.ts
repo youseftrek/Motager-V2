@@ -13,6 +13,8 @@ export async function getTheme(themeId?: string, theme?: Theme) {
       ...theme,
       themeSettings: dbThemeSettings || theme.themeSettings,
     };
+
+    console.log(dbTheme);
   }
 
   const savedTheme: Theme | null = dbTheme || {

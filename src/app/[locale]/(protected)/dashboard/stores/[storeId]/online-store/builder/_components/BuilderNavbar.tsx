@@ -23,6 +23,7 @@ import { getTheme, saveThemeSettings } from "@/actions";
 const BuilderNavbar = () => {
   const { canRedo, canUndo, undo, redo, state } = useBuilder();
   const handleSave = async () => {
+    console.log("#$#$#$#$#$#$#$#$#", state);
     try {
       // First save theme settings
       if (state.themeSettings) {
