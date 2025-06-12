@@ -14,7 +14,6 @@ export async function getSession() {
       user: null,
     };
   }
-
   const response = await axios.get(
     process.env.NEXT_PUBLIC_APP_URL + "/api/me",
     {

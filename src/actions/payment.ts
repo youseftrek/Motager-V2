@@ -16,7 +16,6 @@ export async function createPayment(
       data: data,
     });
 
-    console.log(response.data);
     return response.data;
   } catch (error: any) {
     console.error(

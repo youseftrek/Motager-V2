@@ -57,7 +57,7 @@ const authSlice = createSlice({
         email: action.payload.email,
         image: action.payload.image,
         name: action.payload.name,
-      };
+      };      
 
       state.user = userData;
       state.access_token = action.payload.access_token;

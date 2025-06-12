@@ -9,7 +9,6 @@ import {
   CreditCard,
   Star,
 } from "lucide-react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,15 +19,17 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks";
 import { createPayment } from "@/actions/payment";
+import { Link } from "@/i18n/routing";
+import { getCookie } from "cookies-next";
 
-export default function PaymentClientPage({ id }: { id: string }) {
+export default function PaymentClientPage({ id  , user}: { id: string , user:any }) {
   const searchParams = useSearchParams();
   const billingCycle = searchParams.get("billing") || "monthly";
   const [isProcessing, setIsProcessing] = useState(false);
-
+  const router = useRouter();
   // Plan details based on the selected plan
   const planDetails = {
     free: {
@@ -47,7 +48,7 @@ export default function PaymentClientPage({ id }: { id: string }) {
     basic: {
       id: 2,
       name: "Basic Plan",
-      price: { monthly: 10, annually: 96 },
+      price: { monthly: 500, annually: 96 },
       features: [
         "Up to 2 stores",
         "Basic analytics",
@@ -60,7 +61,7 @@ export default function PaymentClientPage({ id }: { id: string }) {
     pro: {
       id: 3,
       name: "Pro Plan",
-      price: { monthly: 20, annually: 192 },
+      price: { monthly: 1000, annually: 192 },
       features: [
         "Up to 5 stores",
         "Advanced analytics",
@@ -74,7 +75,7 @@ export default function PaymentClientPage({ id }: { id: string }) {
     premium: {
       id: 4,
       name: "Premium Plan",
-      price: { monthly: 30, annually: 288 },
+      price: { monthly: 1500, annually: 288 },
       features: [
         "Up to 10 stores",
         "Advanced analytics",
@@ -87,30 +88,32 @@ export default function PaymentClientPage({ id }: { id: string }) {
       popular: false,
     },
   };
+  
 
   // Convert params.id to number and find the matching plan
   const planId = Number.parseInt(id) || 2; // Default to basic plan (id: 2)
 
   // Find the plan that matches the numeric ID
-  const selectedPlan =
-    Object.values(planDetails).find((plan) => plan.id === planId) ||
-    planDetails.basic;
-  const price =
-    selectedPlan.price[billingCycle as keyof typeof selectedPlan.price];
+  const selectedPlan =Object.values(planDetails).find((plan) => plan.id === planId) ||planDetails.basic;
+  const price =selectedPlan.price[billingCycle as keyof typeof selectedPlan.price];
   const isAnnual = billingCycle === "annually";
   const monthlyPrice = selectedPlan.price.monthly;
   const savings = isAnnual ? monthlyPrice * 12 - price : 0;
-  const user = useAuth();
   const handlePayment = async () => {
     setIsProcessing(true);
+    console.log(user.user);
+    
     const data = await createPayment(
       {
-        plan_id: selectedPlan.id,
+        plan_id: Number(id),
         user_id: Number(user.user?.user_id),
       },
       String(user.token)
     );
-    if (data) setIsProcessing(false);
+    if (data) {
+      window.location.assign(data.transaction.url)
+      setIsProcessing(false)
+    };
   };
 
   return (
@@ -199,7 +202,7 @@ export default function PaymentClientPage({ id }: { id: string }) {
                         </div>
                         <div className="text-right">
                           <p className="font-semibold text-xl">
-                            ${price.toFixed(2)}
+                            {price.toFixed(2)} EGP
                           </p>
                           <p className="text-sm text-gray-400">
                             {isAnnual ? "per year" : "per month"}
@@ -214,7 +217,7 @@ export default function PaymentClientPage({ id }: { id: string }) {
                               Annual Discount (20%)
                             </span>
                             <span className="text-emerald-400 font-semibold">
-                              -${savings.toFixed(2)}
+                              -{savings.toFixed(2)} EGP
                             </span>
                           </div>
                         </div>
@@ -225,7 +228,7 @@ export default function PaymentClientPage({ id }: { id: string }) {
                       <div className="flex justify-between items-center text-xl font-bold">
                         <span>Total</span>
                         <div className="text-right">
-                          <span>${price.toFixed(2)}</span>
+                          <span>{price.toFixed(2)} EGP</span>
                           <p className="text-sm text-gray-400 font-normal">
                             {isAnnual ? "billed annually" : "billed monthly"}
                           </p>
@@ -249,7 +252,7 @@ export default function PaymentClientPage({ id }: { id: string }) {
                       ) : (
                         <div className="flex items-center gap-2">
                           <Lock className="h-5 w-5" />
-                          Pay ${price.toFixed(2)} Securely
+                          Pay {price.toFixed(2)} EGP Securely
                         </div>
                       )}
                     </Button>
