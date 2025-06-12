@@ -276,6 +276,9 @@ export function EditSectionSheet() {
                 <SelectItem value="LinkedIn">LinkedIn</SelectItem>
                 <SelectItem value="GitHub">GitHub</SelectItem>
                 <SelectItem value="YouTube">YouTube</SelectItem>
+                <SelectItem value="Discord">Discord</SelectItem>
+                <SelectItem value="TikTok">TikTok</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -391,6 +394,45 @@ export function EditSectionSheet() {
                 Add Link
               </Button>
             </div>
+          </div>
+        </div>
+      );
+    } else if (key === "legalLinks") {
+      return (
+        <div className="bg-muted/30 mb-2 p-3 border rounded-md">
+          <div className="flex justify-between items-center mb-2">
+            <h4 className="font-medium text-sm">Legal Link {index + 1}</h4>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleRemoveArrayItem(key, index)}
+            >
+              <Trash className="w-4 h-4" />
+            </Button>
+          </div>
+
+          <div className="mb-2">
+            <Label className="text-xs">Text</Label>
+            <Input
+              value={itemData.text || ""}
+              onChange={(e) => {
+                const updatedItem = { ...itemData, text: e.target.value };
+                handleItemChange(updatedItem);
+              }}
+              placeholder="Link Text"
+            />
+          </div>
+
+          <div className="mb-2">
+            <Label className="text-xs">URL</Label>
+            <Input
+              value={itemData.url || ""}
+              onChange={(e) => {
+                const updatedItem = { ...itemData, url: e.target.value };
+                handleItemChange(updatedItem);
+              }}
+              placeholder="/privacy"
+            />
           </div>
         </div>
       );
@@ -661,10 +703,12 @@ export function EditSectionSheet() {
         return {
           platform: "Twitter",
           url: "https://twitter.com",
-          icon: "twitter",
+          icon: "",
         };
       } else if (key === "columns") {
         return { title: "New Column", links: [{ text: "New Link", url: "/" }] };
+      } else if (key === "legalLinks") {
+        return { text: "New Legal Link", url: "/legal" };
       }
       return {};
     };
@@ -706,6 +750,8 @@ export function EditSectionSheet() {
                     ? "Social Link"
                     : key === "columns"
                     ? "Column"
+                    : key === "legalLinks"
+                    ? "Legal Link"
                     : "Item"}
                 </Button>
               </div>

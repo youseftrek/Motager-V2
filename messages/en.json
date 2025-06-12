@@ -29,7 +29,8 @@
     "links": {
       "home": "Home",
       "about": "About",
-      "pricing": "Pricing"
+      "pricing": "Pricing",
+      "docs": "Docs"
     },
     "cta": "Login / Signup",
     "MobileMenu": {

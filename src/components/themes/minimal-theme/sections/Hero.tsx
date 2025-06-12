@@ -1,5 +1,6 @@
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { extractThemeColors } from "../theme-utils";
+import { ThemedButton, ThemedHeading, ThemedText } from "../theme-components";
 
 export type ImageObject = {
   src: string;
@@ -19,6 +20,7 @@ export type HeroProps = {
   imgUrl: string | ImageObject;
   overlayOpacity?: number;
   overlayColor?: string;
+  themeColors?: any;
 };
 
 export const config = {
@@ -27,21 +29,25 @@ export const config = {
       type: "text" as const,
       label: "Title",
       placeholder: "All The Future Between Your Hands.",
+      default: "All The Future Between Your Hands.",
     },
     subtitle: {
       type: "text" as const,
       label: "Subtitle",
       placeholder: "Welcome to our Store",
+      default: "Welcome to our Store",
     },
     button1Text: {
       type: "text" as const,
-      label: "Button Text",
+      label: "Primary Button Text",
       placeholder: "View More",
+      default: "View More",
     },
     button2Text: {
       type: "text" as const,
-      label: "Button Text",
+      label: "Secondary Button Text",
       placeholder: "Collections",
+      default: "Collections",
     },
     imgUrl: {
       type: "image" as const,
@@ -53,12 +59,14 @@ export const config = {
     overlayColor: {
       type: "color" as const,
       label: "Overlay Color",
+      default: "#000000",
     },
     overlayOpacity: {
       type: "slider" as const,
       label: "Overlay Opacity",
       min: 0,
       max: 100,
+      default: 0,
     },
   },
 };
@@ -71,6 +79,7 @@ export default function Hero({
   imgUrl = "https://images.pexels.com/photos/1802268/pexels-photo-1802268.jpeg",
   overlayOpacity = 0,
   overlayColor = "#000000",
+  themeColors,
 }: HeroProps) {
   // Handle both string URLs and image objects
   const imageUrl = typeof imgUrl === "string" ? imgUrl : imgUrl.src;
@@ -78,6 +87,9 @@ export default function Hero({
     typeof imgUrl === "string"
       ? "Hero background"
       : imgUrl.alt || "Hero background";
+
+  // Extract theme colors
+  const colors = extractThemeColors(themeColors);
 
   return (
     <section className="relative w-full h-[70vh] md:h-screen overflow-hidden">
@@ -103,23 +115,41 @@ export default function Hero({
       {/* Content */}
       <div className="absolute inset-0 flex flex-col justify-center items-center text-center">
         <div className="space-y-6 px-4">
-          <p className="font-medium text-white text-sm tracking-widest">
+          <ThemedText
+            variant="inverted"
+            className="font-medium text-sm tracking-widest"
+            colors={colors}
+          >
             {subtitle}
-          </p>
-          <h1 className="max-w-3xl font-bold text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight">
+          </ThemedText>
+
+          <ThemedHeading
+            level={1}
+            className="max-w-3xl font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight"
+            style={{ color: colors.text.inverted }}
+            colors={colors}
+          >
             {title}
-          </h1>
+          </ThemedHeading>
+
           <div className="flex justify-center gap-4">
-            <Button
-              variant="secondary"
+            <ThemedButton
+              variant="primary"
               size="lg"
-              className="bg-white hover:bg-white/90 min-w-[150px] text-black"
+              className="min-w-[150px]"
+              colors={colors}
             >
               {button1Text}
-            </Button>
-            <Button variant="outline" size="lg" className="min-w-[150px]">
+            </ThemedButton>
+
+            <ThemedButton
+              variant="tertiary"
+              size="lg"
+              className="min-w-[150px]"
+              colors={colors}
+            >
               {button2Text}
-            </Button>
+            </ThemedButton>
           </div>
         </div>
       </div>

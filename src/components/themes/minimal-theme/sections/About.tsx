@@ -1,4 +1,6 @@
 import React from "react";
+import { extractThemeColors, ThemeColors } from "../theme-utils";
+import { ThemedHeading, ThemedText } from "../theme-components";
 
 export type AboutProps = {
   title: string;
@@ -7,6 +9,7 @@ export type AboutProps = {
   textColor?: string;
   showDivider?: boolean;
   alignment?: "center" | "left" | "right";
+  themeColors?: any;
 };
 
 export const config = {
@@ -15,17 +18,20 @@ export const config = {
       type: "text" as const,
       label: "Title",
       placeholder: "About Us",
+      default: "About Us",
     },
     description: {
       type: "textarea" as const,
       label: "Description",
       placeholder:
         "We are passionate about delivering the best products to our customers with a focus on quality, sustainability, and customer satisfaction.",
+      default:
+        "We are passionate about delivering the best products to our customers with a focus on quality, sustainability, and customer satisfaction.",
     },
     backgroundColor: {
       type: "color" as const,
       label: "Background Color",
-      default: "#dfffeb",
+      default: "#e0e0e0",
     },
     textColor: {
       type: "color" as const,
@@ -53,11 +59,19 @@ export const config = {
 export default function About({
   title = "About Us",
   description = "We are passionate about delivering the best products to our customers with a focus on quality, sustainability, and customer satisfaction.",
-  backgroundColor = "#dfffeb",
-  textColor = "#000000",
+  backgroundColor,
+  textColor,
   showDivider = true,
   alignment = "center",
+  themeColors,
 }: AboutProps) {
+  // Extract theme colors
+  const colors = extractThemeColors(themeColors);
+
+  // Use theme colors if no explicit colors are provided
+  const bgColor = backgroundColor || colors.background.secondary;
+  const txtColor = textColor || colors.text.primary;
+
   const getAlignmentClass = () => {
     switch (alignment) {
       case "left":
@@ -72,7 +86,7 @@ export default function About({
   return (
     <section
       className={`px-6 py-16 md:py-24 relative overflow-hidden ${getAlignmentClass()}`}
-      style={{ backgroundColor, color: textColor }}
+      style={{ backgroundColor: bgColor, color: txtColor }}
     >
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
@@ -97,9 +111,13 @@ export default function About({
       </div>
 
       <div className="z-10 relative mx-auto max-w-4xl container">
-        <h2 className="mb-6 font-bold text-4xl md:text-5xl tracking-tight">
+        <ThemedHeading
+          level={2}
+          className="mb-6 font-bold text-4xl md:text-5xl tracking-tight"
+          colors={colors}
+        >
           {title}
-        </h2>
+        </ThemedHeading>
 
         {showDivider && (
           <div className="flex justify-center mb-8">
@@ -111,14 +129,18 @@ export default function About({
                   ? "mr-0 ml-auto"
                   : "mx-auto"
               }`}
-              style={{ backgroundColor: textColor }}
+              style={{ backgroundColor: colors.buttons.primary.background }}
             />
           </div>
         )}
 
-        <p className="opacity-90 mx-auto max-w-3xl text-xl md:text-2xl leading-relaxed">
+        <ThemedText
+          variant="secondary"
+          className="opacity-90 mx-auto max-w-3xl text-xl md:text-2xl leading-relaxed"
+          colors={colors}
+        >
           {description}
-        </p>
+        </ThemedText>
       </div>
     </section>
   );

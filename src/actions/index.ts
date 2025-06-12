@@ -3,11 +3,16 @@
 import { Theme } from "@/types/theme";
 
 let dbTheme: Theme | null = null;
+let dbThemeSettings: any = null;
 
 export async function getTheme(themeId?: string, theme?: Theme) {
   // TODO: API call to get theme by ID
   if (theme) {
-    dbTheme = theme;
+    // Save the entire theme including settings
+    dbTheme = {
+      ...theme,
+      themeSettings: dbThemeSettings || theme.themeSettings,
+    };
   }
 
   const savedTheme: Theme | null = dbTheme || {
@@ -15,6 +20,7 @@ export async function getTheme(themeId?: string, theme?: Theme) {
     name: "Minimal Theme",
     img: "/themes/minimal-theme.png",
     locPath: "minimal-theme/sections",
+    themeSettings: dbThemeSettings,
     pages: [
       {
         name: "Home Page",
@@ -40,4 +46,10 @@ export async function getTheme(themeId?: string, theme?: Theme) {
   };
 
   return savedTheme;
+}
+
+export async function saveThemeSettings(settings: any) {
+  // In a real app, this would be saved to a database
+  dbThemeSettings = settings;
+  return { success: true };
 }

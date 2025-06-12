@@ -4,6 +4,7 @@ import { useLocale } from "next-intl";
 import CurrentThemePageSelect from "./CurrentThemePageSelect";
 import CurrentThemeComponents from "./CurrentThemeComponents";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ThemeSettings } from "@/components/themes/minimal-theme/settings/ThemeSettings";
 
 export function BilderSidebar() {
   const locale = useLocale();
@@ -28,7 +29,9 @@ export function BilderSidebar() {
             <TabsContent value="components">
               <CurrentThemeComponents />
             </TabsContent>
-            <TabsContent value="themeSettings">Settings Here</TabsContent>
+            <TabsContent value="themeSettings">
+              <ThemeSettings />
+            </TabsContent>
           </Tabs>
         </div>
       </SidebarContent>

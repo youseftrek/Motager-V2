@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { extractThemeColors, ThemeColors } from "../theme-utils";
+import { ThemedHeading, ThemedText } from "../theme-components";
 
 export type Collection = {
   id: string;
@@ -49,6 +51,7 @@ export type FeaturedCollectionsProps = {
   description: string;
   overlayOpacity?: number;
   overlayColor?: string;
+  themeColors?: any;
 };
 
 export const config = {
@@ -57,16 +60,19 @@ export const config = {
       type: "text" as const,
       label: "Title",
       placeholder: "Featured Collections",
+      default: "Featured Collections",
     },
     description: {
       type: "text" as const,
       label: "Description",
       placeholder:
         "Explore our curated collections for every season and style.",
+      default: "Explore our curated collections for every season and style.",
     },
     overlayColor: {
       type: "color" as const,
       label: "Overlay Color",
+      default: "#000000",
     },
     overlayOpacity: {
       type: "slider" as const,
@@ -81,14 +87,33 @@ export const config = {
 export default function FeaturedCollections({
   title = "Featured Collections",
   description = "Explore our curated collections for every season and style.",
-  overlayColor = "#000000",
+  overlayColor,
   overlayOpacity = 30,
+  themeColors,
 }: FeaturedCollectionsProps) {
+  // Extract theme colors
+  const colors = extractThemeColors(themeColors);
+
+  // Use theme colors if no explicit colors are provided
+  const overlay = overlayColor || colors.main;
+
   return (
     <section className="py-12">
       <div className="mx-auto px-4 container">
-        <h2 className="mb-4 font-bold text-3xl text-center">{title}</h2>
-        <p className="mb-8 text-muted-foreground text-center">{description}</p>
+        <ThemedHeading
+          level={2}
+          className="mb-4 font-bold text-3xl text-center"
+          colors={colors}
+        >
+          {title}
+        </ThemedHeading>
+        <ThemedText
+          variant="secondary"
+          className="mb-8 text-center"
+          colors={colors}
+        >
+          {description}
+        </ThemedText>
         <div className="gap-6 grid grid-cols-2 lg:grid-cols-4">
           {collections.map((collection) => (
             <Link
@@ -106,7 +131,7 @@ export default function FeaturedCollections({
                 <div
                   className="absolute inset-0 transition-colors duration-300"
                   style={{
-                    backgroundColor: overlayColor,
+                    backgroundColor: overlay,
                     opacity: overlayOpacity / 100,
                   }}
                 />

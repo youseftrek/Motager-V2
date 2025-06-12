@@ -2,6 +2,7 @@
 "use client";
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 import type { Page, Section, Theme } from "@/types/theme";
+import { MINIMAL_THEME_SETTINGS } from "@/components/themes/minimal-theme/settings";
 
 export const loadComponents = async (componentsNames: string[]) => {
   const componentFiles = componentsNames || [];
@@ -40,6 +41,7 @@ type Action =
   | { type: "DELETE_SECTION"; payload: string }
   | { type: "SET_SELECTED_SECTION"; payload: Section | null }
   | { type: "REORDER_SECTIONS"; payload: Section[] }
+  | { type: "UPDATE_THEME_SETTINGS"; payload: any }
   | { type: "UNDO" }
   | { type: "REDO" }
   | {
@@ -64,7 +66,7 @@ const initialState: State = {
   selectedSection: null,
   availableSections: [],
   loadedComponents: {},
-  themeSettings: {},
+  themeSettings: MINIMAL_THEME_SETTINGS,
 };
 
 function historyReducer(
@@ -96,7 +98,9 @@ function historyReducer(
       };
     }
 
-    case "SET_SELECTED_SECTION": {
+    case "SET_SELECTED_SECTION":
+    case "LOAD_COMPONENTS": {
+      // Don't add these actions to history
       const newPresent = builderReducer(present, action);
       return {
         past,
@@ -126,7 +130,7 @@ function builderReducer(state: State, action: Action): State {
         selectedTheme: action.payload,
         selectedPage: action.payload.pages[0],
         availableSections,
-        themeSettings: {},
+        themeSettings: MINIMAL_THEME_SETTINGS,
       };
     }
 
@@ -229,6 +233,12 @@ function builderReducer(state: State, action: Action): State {
     case "SET_SELECTED_SECTION":
       return { ...state, selectedSection: action.payload };
 
+    case "UPDATE_THEME_SETTINGS":
+      return {
+        ...state,
+        themeSettings: { ...state.themeSettings, ...action.payload },
+      };
+
     case "LOAD_COMPONENTS":
       return {
         ...state,
@@ -257,7 +267,7 @@ export function BuilderProvider({ children }: { children: React.ReactNode }) {
     }
   }, [history.present.availableSections, dispatch]);
 
-  const canUndo = history.past.length > 4;
+  const canUndo = history.past.length > 1;
   const canRedo = history.future.length > 0;
 
   const undo = () => dispatch({ type: "UNDO" });

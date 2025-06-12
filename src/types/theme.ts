@@ -5,6 +5,7 @@ export type Theme = {
   img?: string;
   pages: Page[];
   locPath: string;
+  themeSettings?: any;
 };
 
 export type Page = {

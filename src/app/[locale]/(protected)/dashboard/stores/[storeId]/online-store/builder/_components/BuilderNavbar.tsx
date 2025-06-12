@@ -18,16 +18,27 @@ import MaxWidthWrapper from "@/components/shared/MaxWidthWrapper";
 import { ExitDialog } from "./ExitDialog";
 import { ModeToggle } from "@/components/shared/ModeToggle";
 import { useBuilder } from "@/providers/builder-context-provider";
-import { getTheme } from "@/actions";
+import { getTheme, saveThemeSettings } from "@/actions";
 
 const BuilderNavbar = () => {
   const { canRedo, canUndo, undo, redo, state } = useBuilder();
   const handleSave = async () => {
     try {
-      const res = await getTheme(state.selectedTheme?.id, state.selectedTheme!);
+      // First save theme settings
+      if (state.themeSettings) {
+        await saveThemeSettings(state.themeSettings);
+      }
+
+      // Then save the theme
+      const res = await getTheme(state.selectedTheme?.id, {
+        ...state.selectedTheme!,
+        themeSettings: state.themeSettings,
+      });
+
       if (res) toast.success("Theme saved successfully");
     } catch (error) {
       console.error("Failed to save theme:", error);
+      toast.error("Failed to save theme");
     }
   };
   const [activeDevice, setActiveDevice] = useState("desktop");

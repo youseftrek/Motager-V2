@@ -1,17 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
-import React from "react";
+import React, { useState } from "react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { extractThemeColors } from "../theme-utils";
+import { ThemedButton, ThemedHeading, ThemedText } from "../theme-components";
+import { ArrowRight, ChevronRight } from "lucide-react";
 
 export type ImageObject = {
   src: string;
   alt?: string;
   width?: number;
   height?: number;
-  photographer?: string;
-  photographer_url?: string;
-  pexels_url?: string;
 };
 
 export type ImageWithTextProps = {
@@ -19,26 +18,24 @@ export type ImageWithTextProps = {
   imageUrl: string | ImageObject;
   imageAlt?: string;
   title: string;
+  subtitle?: string;
   description: string;
   ctaText?: string;
   ctaUrl?: string;
+  secondaryCtaText?: string;
+  secondaryCtaUrl?: string;
 
-  // Layout & Style Options
-  layout?: "left" | "right" | "overlay" | "card";
-  aspectRatio?: "square" | "video" | "wide" | "portrait" | "auto";
-  imageObjectFit?: "cover" | "contain" | "fill";
-  roundedCorners?: boolean;
-  imageBorderWidth?: number;
-  darkOverlay?: boolean;
+  // Style Options
+  layout?: "left" | "right" | "overlay" | "parallax" | "stacked";
+  imageHeight?: "small" | "medium" | "large" | "full";
+  overlayColor?: string;
   overlayOpacity?: number;
-  variant?: "default" | "muted" | "primary" | "secondary" | "accent";
+  overlayGradient?: boolean;
+  overlayGradientDirection?: "top" | "bottom" | "left" | "right" | "diagonal";
+  textAlignment?: "left" | "center" | "right";
 
-  // Additional optional props
-  className?: string;
-  titleClassName?: string;
-  descriptionClassName?: string;
-  imageClassName?: string;
-  ctaClassName?: string;
+  // Theme colors
+  themeColors?: any;
 };
 
 export const config = {
@@ -46,102 +43,105 @@ export const config = {
     imageUrl: {
       type: "image" as const,
       label: "Image URL",
-      placeholder: "https://your-image-url.com",
       default:
-        "https://images.pexels.com/photos/32437901/pexels-photo-32437901.jpeg",
+        "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg",
     },
     title: {
       type: "text" as const,
       label: "Title",
-      placeholder: "Your title here",
-      default: "Section Title",
+      default: "Discover Our Story",
+    },
+    subtitle: {
+      type: "text" as const,
+      label: "Subtitle",
+      default: "ABOUT US",
     },
     description: {
       type: "textarea" as const,
       label: "Description",
-      placeholder: "Enter content description here",
       default:
-        "This is a description of the section. You can customize this text to provide more information about your content.",
+        "We believe in creating exceptional experiences that blend innovation with timeless design. Our journey began with a simple idea: to make quality products accessible to everyone.",
     },
     ctaText: {
       type: "text" as const,
-      label: "CTA Text",
-      placeholder: "Learn More",
+      label: "Primary Button Text",
       default: "Learn More",
     },
     ctaUrl: {
       type: "text" as const,
-      label: "CTA URL",
-      placeholder: "/learn-more",
+      label: "Primary Button URL",
+      default: "#",
+    },
+    secondaryCtaText: {
+      type: "text" as const,
+      label: "Secondary Button Text",
+      default: "View Collection",
+    },
+    secondaryCtaUrl: {
+      type: "text" as const,
+      label: "Secondary Button URL",
       default: "#",
     },
     layout: {
       type: "select" as const,
-      label: "Layout",
-      default: "left",
+      label: "Layout Style",
+      default: "right",
       options: [
         { value: "left", label: "Image Left" },
         { value: "right", label: "Image Right" },
         { value: "overlay", label: "Text Overlay" },
-        { value: "card", label: "Card Style" },
+        { value: "parallax", label: "Parallax Effect" },
+        { value: "stacked", label: "Stacked (Image Top)" },
       ],
     },
-    aspectRatio: {
+    imageHeight: {
       type: "select" as const,
-      label: "Image Aspect Ratio",
-      default: "square",
+      label: "Image Height",
+      default: "medium",
       options: [
-        { value: "square", label: "Square (1:1)" },
-        { value: "video", label: "Video (16:9)" },
-        { value: "wide", label: "Wide (2:1)" },
-        { value: "portrait", label: "Portrait (3:4)" },
-        { value: "auto", label: "Automatic" },
+        { value: "small", label: "Small (300px)" },
+        { value: "medium", label: "Medium (400px)" },
+        { value: "large", label: "Large (500px)" },
+        { value: "full", label: "Full Height" },
       ],
     },
-    imageObjectFit: {
-      type: "select" as const,
-      label: "Image Fit",
-      default: "cover",
-      options: [
-        { value: "cover", label: "Cover" },
-        { value: "contain", label: "Contain" },
-        { value: "fill", label: "Fill" },
-      ],
-    },
-    roundedCorners: {
-      type: "boolean" as const,
-      label: "Rounded Corners",
-      default: true,
-    },
-    imageBorderWidth: {
-      type: "number" as const,
-      label: "Image Border Width",
-      default: 0,
-      min: 0,
-      max: 10,
-    },
-    darkOverlay: {
-      type: "boolean" as const,
-      label: "Overlay (for Text Overlay layout)",
-      default: true,
+    overlayColor: {
+      type: "color" as const,
+      label: "Overlay Color",
+      default: "#000000",
     },
     overlayOpacity: {
       type: "slider" as const,
       label: "Overlay Opacity",
-      default: 40,
       min: 0,
       max: 100,
+      default: 40,
     },
-    variant: {
+    overlayGradient: {
+      type: "boolean" as const,
+      label: "Use Gradient Overlay",
+      default: true,
+    },
+    overlayGradientDirection: {
       type: "select" as const,
-      label: "Color Variant",
-      default: "default",
+      label: "Gradient Direction",
+      default: "diagonal",
       options: [
-        { value: "default", label: "Default" },
-        { value: "muted", label: "Muted" },
-        { value: "primary", label: "Primary" },
-        { value: "secondary", label: "Secondary" },
-        { value: "accent", label: "Accent" },
+        { value: "top", label: "Top to Bottom" },
+        { value: "bottom", label: "Bottom to Top" },
+        { value: "left", label: "Left to Right" },
+        { value: "right", label: "Right to Left" },
+        { value: "diagonal", label: "Diagonal" },
+      ],
+    },
+    textAlignment: {
+      type: "select" as const,
+      label: "Text Alignment",
+      default: "left",
+      options: [
+        { value: "left", label: "Left" },
+        { value: "center", label: "Center" },
+        { value: "right", label: "Right" },
       ],
     },
   },
@@ -149,361 +149,312 @@ export const config = {
 
 export default function ImageWithText({
   // Content
-  imageUrl = "https://images.pexels.com/photos/32437901/pexels-photo-32437901.jpeg",
+  imageUrl = "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg",
   imageAlt = "Featured image",
-  title = "Section Title",
-  description = "This is a description of the section. You can customize this text to provide more information about your content.",
+  title = "Discover Our Story",
+  subtitle = "ABOUT US",
+  description = "We believe in creating exceptional experiences that blend innovation with timeless design. Our journey began with a simple idea: to make quality products accessible to everyone.",
   ctaText = "Learn More",
   ctaUrl = "#",
+  secondaryCtaText = "View Collection",
+  secondaryCtaUrl = "#",
 
-  // Layout & Style
-  layout = "left",
-  aspectRatio = "square",
-  imageObjectFit = "cover",
-  roundedCorners = true,
-  imageBorderWidth = 0,
-  darkOverlay = true,
+  // Style Options
+  layout = "right",
+  imageHeight = "medium",
+  overlayColor = "#000000",
   overlayOpacity = 40,
-  variant = "default",
+  overlayGradient = true,
+  overlayGradientDirection = "diagonal",
+  textAlignment = "left",
 
-  // Additional classNames
-  className,
-  titleClassName,
-  descriptionClassName,
-  imageClassName,
-  ctaClassName,
+  // Theme colors
+  themeColors,
 }: ImageWithTextProps) {
+  // Extract theme colors
+  const colors = extractThemeColors(themeColors);
+
   // Handle both string URLs and image objects
   const imageSrc = typeof imageUrl === "string" ? imageUrl : imageUrl.src;
   const imageAltText =
     typeof imageUrl === "string" ? imageAlt : imageUrl.alt || imageAlt;
 
-  // Show photographer attribution if available
-  const hasPhotographer = typeof imageUrl !== "string" && imageUrl.photographer;
-
-  // Calculate aspect ratio CSS
-  const getAspectRatioClass = () => {
-    switch (aspectRatio) {
-      case "square":
-        return "aspect-square";
-      case "video":
-        return "aspect-video";
-      case "wide":
-        return "aspect-[2/1]";
-      case "portrait":
-        return "aspect-[3/4]";
-      case "auto":
-        return "";
+  // Get image height class
+  const getImageHeightClass = () => {
+    switch (imageHeight) {
+      case "small":
+        return "h-[300px]";
+      case "medium":
+        return "h-[400px]";
+      case "large":
+        return "h-[500px]";
+      case "full":
+        return "h-[70vh]";
       default:
-        return "aspect-square";
+        return "h-[400px]";
     }
   };
 
-  // Get variant classes for background, text, etc.
-  const getVariantClasses = () => {
-    switch (variant) {
-      case "muted":
-        return {
-          bg: "bg-muted",
-          text: "text-muted-foreground",
-          button: "bg-primary hover:bg-primary/90",
-          buttonText: "text-primary-foreground",
-        };
-      case "primary":
-        return {
-          bg: "bg-primary",
-          text: "text-primary-foreground",
-          button: "bg-secondary hover:bg-secondary/90",
-          buttonText: "text-secondary-foreground",
-        };
-      case "secondary":
-        return {
-          bg: "bg-secondary",
-          text: "text-secondary-foreground",
-          button: "bg-primary hover:bg-primary/90",
-          buttonText: "text-primary-foreground",
-        };
-      case "accent":
-        return {
-          bg: "bg-accent",
-          text: "text-accent-foreground",
-          button: "bg-primary hover:bg-primary/90",
-          buttonText: "text-primary-foreground",
-        };
+  // Get text alignment class
+  const getTextAlignmentClass = () => {
+    switch (textAlignment) {
+      case "center":
+        return "text-center";
+      case "right":
+        return "text-right";
+      case "left":
       default:
-        return {
-          bg: "bg-background",
-          text: "text-foreground",
-          button: "bg-primary hover:bg-primary/90",
-          buttonText: "text-primary-foreground",
-        };
+        return "text-left";
     }
   };
 
-  const variantClasses = getVariantClasses();
+  // Get gradient style
+  const getGradientStyle = () => {
+    if (!overlayGradient) return {};
+
+    let gradient = "";
+    switch (overlayGradientDirection) {
+      case "top":
+        gradient = `linear-gradient(to bottom, ${overlayColor} 0%, transparent 100%)`;
+        break;
+      case "bottom":
+        gradient = `linear-gradient(to top, ${overlayColor} 0%, transparent 100%)`;
+        break;
+      case "left":
+        gradient = `linear-gradient(to right, ${overlayColor} 0%, transparent 100%)`;
+        break;
+      case "right":
+        gradient = `linear-gradient(to left, ${overlayColor} 0%, transparent 100%)`;
+        break;
+      case "diagonal":
+      default:
+        gradient = `linear-gradient(135deg, ${overlayColor} 0%, transparent 100%)`;
+        break;
+    }
+
+    return { backgroundImage: gradient };
+  };
+
+  // Render the image with overlay
+  const ImageWithOverlay = ({ className = "" }) => (
+    <div
+      className={cn(
+        "relative overflow-hidden rounded-lg group",
+        getImageHeightClass(),
+        className
+      )}
+    >
+      <Image
+        src={imageSrc}
+        alt={imageAltText}
+        fill
+        className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
+      />
+
+      {/* Color Overlay */}
+      <div
+        className="absolute inset-0 transition-opacity duration-300"
+        style={
+          overlayGradient
+            ? { ...getGradientStyle(), opacity: overlayOpacity / 100 }
+            : { backgroundColor: overlayColor, opacity: overlayOpacity / 100 }
+        }
+      />
+
+      {/* Subtle pattern overlay for texture */}
+      <div
+        className="absolute inset-0 opacity-10 bg-repeat"
+        style={{
+          backgroundImage:
+            "url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjUiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjZmZmIj48L3JlY3Q+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNjY2MiPjwvcmVjdD4KPC9zdmc+')",
+        }}
+      />
+    </div>
+  );
+
+  // Content section with title, description and CTAs
+  const ContentSection = ({ isOverlay = false }) => (
+    <div
+      className={cn(
+        "space-y-6",
+        getTextAlignmentClass(),
+        isOverlay ? "text-white" : ""
+      )}
+    >
+      {subtitle && (
+        <ThemedText
+          variant={isOverlay ? "inverted" : "secondary"}
+          className="font-medium tracking-widest uppercase text-sm mb-2"
+          colors={colors}
+        >
+          {subtitle}
+        </ThemedText>
+      )}
+
+      <ThemedHeading
+        level={2}
+        className="text-3xl md:text-4xl lg:text-5xl font-bold"
+        colors={colors}
+        style={isOverlay ? { color: "#ffffff" } : {}}
+      >
+        {title}
+      </ThemedHeading>
+
+      <ThemedText
+        variant={isOverlay ? "inverted" : "secondary"}
+        className="text-base md:text-lg leading-relaxed max-w-xl"
+        colors={colors}
+      >
+        {description}
+      </ThemedText>
+
+      <div className="flex flex-wrap gap-4 pt-2">
+        {ctaText && (
+          <ThemedButton
+            variant="primary"
+            href={ctaUrl}
+            colors={colors}
+            className="group"
+          >
+            <span>{ctaText}</span>
+            <span className="inline-block ml-2">
+              <ArrowRight size={16} />
+            </span>
+          </ThemedButton>
+        )}
+
+        {secondaryCtaText && (
+          <ThemedButton
+            variant="tertiary"
+            href={secondaryCtaUrl}
+            colors={colors}
+            className="group"
+          >
+            <span>{secondaryCtaText}</span>
+            <ChevronRight size={16} className="ml-1" />
+          </ThemedButton>
+        )}
+      </div>
+    </div>
+  );
 
   // Render different layouts
-  const renderContent = () => {
+  const renderLayout = () => {
     switch (layout) {
       case "overlay":
         return (
-          <div
-            className={cn(
-              "relative overflow-hidden group",
-              roundedCorners && "rounded-md",
-              getAspectRatioClass(),
-              className
-            )}
-          >
-            {/* Image */}
-            <img
-              src={imageSrc}
-              alt={imageAltText}
-              className={cn(
-                "absolute inset-0 w-full h-full",
-                imageObjectFit,
-                imageClassName
-              )}
-              style={{
-                borderWidth: imageBorderWidth,
-                borderStyle: imageBorderWidth > 0 ? "solid" : "none",
-              }}
-            />
+          <div className="relative w-full overflow-hidden rounded-lg">
+            <div className={cn("w-full", getImageHeightClass(), "md:h-[70vh]")}>
+              <Image
+                src={imageSrc}
+                alt={imageAltText}
+                fill
+                className="object-cover w-full h-full"
+                priority
+              />
 
-            {/* Overlay */}
-            {darkOverlay && (
+              {/* Color Overlay */}
               <div
-                className="absolute inset-0 bg-black"
-                style={{ opacity: overlayOpacity / 100 }}
-              ></div>
-            )}
+                className="absolute inset-0"
+                style={
+                  overlayGradient
+                    ? { ...getGradientStyle(), opacity: overlayOpacity / 100 }
+                    : {
+                        backgroundColor: overlayColor,
+                        opacity: overlayOpacity / 100,
+                      }
+                }
+              />
+            </div>
 
-            {/* Content */}
-            <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8">
-              <h2
-                className={cn(
-                  "text-2xl md:text-3xl font-bold mb-3",
-                  titleClassName
-                )}
-              >
-                {title}
-              </h2>
-              <p
-                className={cn(
-                  "mb-4 text-sm md:text-base",
-                  descriptionClassName
-                )}
-              >
-                {description}
-              </p>
-              {ctaText && ctaUrl && (
-                <a href={ctaUrl}>
-                  <Button
-                    variant="default"
-                    className={cn("w-fit", ctaClassName)}
-                  >
-                    {ctaText}
-                  </Button>
-                </a>
-              )}
-
-              {/* Photographer attribution */}
-              {hasPhotographer && (
-                <div className="mt-2 text-xs opacity-70">
-                  Photo by{" "}
-                  {imageUrl.photographer_url ? (
-                    <a
-                      href={imageUrl.photographer_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:underline"
-                    >
-                      {imageUrl.photographer}
-                    </a>
-                  ) : (
-                    imageUrl.photographer
-                  )}
+            <div className="absolute inset-0 flex items-center">
+              <div className="container mx-auto px-6 md:px-12">
+                <div className="max-w-2xl">
+                  <ContentSection isOverlay={true} />
                 </div>
-              )}
+              </div>
             </div>
           </div>
         );
 
-      case "card":
+      case "parallax":
         return (
-          <Card
-            className={cn(
-              "overflow-hidden",
-              roundedCorners ? "rounded-md" : "rounded-none",
-              "flex flex-col h-full",
-              variantClasses.bg,
-              variantClasses.text,
-              className
-            )}
-          >
-            {/* Image Container */}
-            <div className={cn("overflow-hidden", getAspectRatioClass())}>
-              <img
-                src={imageSrc}
-                alt={imageAltText}
-                className={cn("w-full h-full", imageObjectFit, imageClassName)}
-                style={{
-                  borderWidth: imageBorderWidth,
-                  borderStyle: imageBorderWidth > 0 ? "solid" : "none",
-                }}
+          <div className="relative overflow-hidden">
+            <div
+              className={cn("w-full", getImageHeightClass(), "md:h-[80vh]")}
+              style={{
+                backgroundImage: `url(${imageSrc})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundAttachment: "fixed",
+              }}
+            >
+              {/* Color Overlay */}
+              <div
+                className="absolute inset-0"
+                style={
+                  overlayGradient
+                    ? { ...getGradientStyle(), opacity: overlayOpacity / 100 }
+                    : {
+                        backgroundColor: overlayColor,
+                        opacity: overlayOpacity / 100,
+                      }
+                }
               />
-            </div>
 
-            {/* Content */}
-            <CardContent className="flex flex-col flex-grow p-6">
-              <h2
-                className={cn(
-                  "text-xl md:text-2xl font-bold mb-3",
-                  titleClassName
-                )}
-              >
-                {title}
-              </h2>
-              <p
-                className={cn(
-                  "mb-4 text-sm md:text-base opacity-80 flex-grow",
-                  descriptionClassName
-                )}
-              >
-                {description}
-              </p>
-              {ctaText && ctaUrl && (
-                <a href={ctaUrl}>
-                  <Button
-                    variant="default"
-                    className={cn(
-                      "mt-auto w-fit",
-                      variantClasses.button,
-                      variantClasses.buttonText,
-                      ctaClassName
-                    )}
-                  >
-                    {ctaText}
-                  </Button>
-                </a>
-              )}
-
-              {/* Photographer attribution */}
-              {hasPhotographer && (
-                <div className="mt-2 text-xs opacity-70">
-                  Photo by{" "}
-                  {imageUrl.photographer_url ? (
-                    <a
-                      href={imageUrl.photographer_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:underline"
-                    >
-                      {imageUrl.photographer}
-                    </a>
-                  ) : (
-                    imageUrl.photographer
-                  )}
+              <div className="absolute inset-0 flex items-center">
+                <div className="container mx-auto px-6 md:px-12">
+                  <div className="max-w-2xl">
+                    <ContentSection isOverlay={true} />
+                  </div>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+              </div>
+            </div>
+          </div>
         );
 
-      case "right":
+      case "stacked":
+        return (
+          <div className="flex flex-col gap-12">
+            <ImageWithOverlay className="w-full md:h-[50vh]" />
+            <div className="container mx-auto px-6">
+              <div className="max-w-2xl mx-auto">
+                <ContentSection />
+              </div>
+            </div>
+          </div>
+        );
+
       case "left":
+        return (
+          <div className="container mx-auto px-6">
+            <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center">
+              <div className="w-full md:w-1/2">
+                <ImageWithOverlay />
+              </div>
+              <div className="w-full md:w-1/2">
+                <ContentSection />
+              </div>
+            </div>
+          </div>
+        );
+
+      // Default is "right"
       default:
         return (
-          <div
-            className={cn(
-              "grid md:grid-cols-2 gap-6 md:gap-12 items-center",
-              layout === "right" && "md:[grid-template-areas:_'content_image']",
-              variantClasses.bg,
-              variantClasses.text,
-              className
-            )}
-          >
-            {/* Image Container */}
-            <div
-              className={cn(
-                "overflow-hidden",
-                roundedCorners && "rounded-md",
-                getAspectRatioClass(),
-                layout === "right" && "md:[grid-area:_image]"
-              )}
-            >
-              <img
-                src={imageSrc}
-                alt={imageAltText}
-                className={cn(
-                  "w-full h-full object-cover",
-                  imageObjectFit,
-                  imageClassName
-                )}
-                style={{
-                  borderWidth: imageBorderWidth,
-                  borderStyle: imageBorderWidth > 0 ? "solid" : "none",
-                }}
-              />
-            </div>
-
-            {/* Content */}
-            <div
-              className={cn(
-                "flex flex-col px-4",
-                layout === "right" && "md:[grid-area:_content]"
-              )}
-            >
-              <h2
-                className={cn(
-                  "text-2xl md:text-3xl font-bold mb-4",
-                  titleClassName
-                )}
-              >
-                {title}
-              </h2>
-              <p className={cn("mb-6 opacity-80", descriptionClassName)}>
-                {description}
-              </p>
-              {ctaText && ctaUrl && (
-                <a href={ctaUrl}>
-                  <Button
-                    variant="default"
-                    className={cn(
-                      "w-fit",
-                      variantClasses.button,
-                      variantClasses.buttonText,
-                      ctaClassName
-                    )}
-                  >
-                    {ctaText}
-                  </Button>
-                </a>
-              )}
-
-              {/* Photographer attribution */}
-              {hasPhotographer && (
-                <div className="mt-2 text-xs opacity-70">
-                  Photo by{" "}
-                  {imageUrl.photographer_url ? (
-                    <a
-                      href={imageUrl.photographer_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:underline"
-                    >
-                      {imageUrl.photographer}
-                    </a>
-                  ) : (
-                    imageUrl.photographer
-                  )}
-                </div>
-              )}
+          <div className="container mx-auto px-6">
+            <div className="flex flex-col md:flex-row-reverse gap-8 md:gap-12 items-center">
+              <div className="w-full md:w-1/2">
+                <ImageWithOverlay />
+              </div>
+              <div className="w-full md:w-1/2">
+                <ContentSection />
+              </div>
             </div>
           </div>
         );
     }
   };
 
-  return renderContent();
+  return <section className="py-16 md:py-24">{renderLayout()}</section>;
 }

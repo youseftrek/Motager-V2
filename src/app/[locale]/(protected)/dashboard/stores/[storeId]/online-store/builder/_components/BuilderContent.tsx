@@ -5,11 +5,17 @@ import { GripVertical, LayoutTemplate, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useBuilder } from "@/providers/builder-context-provider";
 import { Reorder, motion, useDragControls } from "framer-motion";
+import { ThemeProvider } from "@/components/themes/minimal-theme/settings/ThemeContext";
+import { MINIMAL_THEME_SETTINGS } from "@/components/themes/minimal-theme/settings";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const DraggableSection = ({ section, Component }: any) => {
   const controls = useDragControls();
-  const { dispatch } = useBuilder();
+  const { dispatch, state } = useBuilder();
+
+  // Get theme colors from state or use defaults
+  const themeColors =
+    state.themeSettings?.colors || MINIMAL_THEME_SETTINGS.colors;
 
   return (
     <Reorder.Item
@@ -20,7 +26,7 @@ const DraggableSection = ({ section, Component }: any) => {
       className="list-none"
     >
       <motion.div className="group relative border hover:border-primary border-dashed rounded-md w-full h-max overflow-hidden transition-all duration-200 border-spacing-1">
-        {Component && <Component {...section.data} />}
+        {Component && <Component {...section.data} themeColors={themeColors} />}
         <div className="top-1 right-1.5 left-1.5 absolute flex justify-between items-center gap-1 opacity-0 group-hover:opacity-100 p-1 rounded-sm h-max text-xs transition-all duration-200">
           <div className="flex items-center gap-2">
             <Button
@@ -87,27 +93,29 @@ export const BuilderContent = () => {
   };
 
   return (
-    <Reorder.Group
-      axis="y"
-      values={sections}
-      onReorder={handleReorder}
-      className="flex flex-col gap-4"
-    >
-      {sections.length ? (
-        sections.map((section) => (
-          <DraggableSection
-            key={section.id}
-            section={section}
-            Component={state.loadedComponents[section.type]}
-          />
-        ))
-      ) : (
-        <div className="flex flex-col justify-center items-center w-f h-[calc(100vh-100px)] lg:h-[calc(100vh-130px)]">
-          <LayoutTemplate size={100} />
-          <h3 className="font-semibold text-2xl">Empty Tamplate</h3>
-          <p className="text-muted-foreground">Start building your theme</p>
-        </div>
-      )}
-    </Reorder.Group>
+    <ThemeProvider>
+      <Reorder.Group
+        axis="y"
+        values={sections}
+        onReorder={handleReorder}
+        className="flex flex-col gap-4"
+      >
+        {sections.length ? (
+          sections.map((section) => (
+            <DraggableSection
+              key={section.id}
+              section={section}
+              Component={state.loadedComponents[section.type]}
+            />
+          ))
+        ) : (
+          <div className="flex flex-col justify-center items-center w-f h-[calc(100vh-100px)] lg:h-[calc(100vh-130px)]">
+            <LayoutTemplate size={100} />
+            <h3 className="font-semibold text-2xl">Empty Tamplate</h3>
+            <p className="text-muted-foreground">Start building your theme</p>
+          </div>
+        )}
+      </Reorder.Group>
+    </ThemeProvider>
   );
 };

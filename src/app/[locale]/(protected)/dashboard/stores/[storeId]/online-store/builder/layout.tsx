@@ -33,7 +33,21 @@ const BuilderLayout = ({ children }: Props) => {
       try {
         setLoading(true);
         const theme = await getTheme(themeId);
-        dispatch({ type: "SELECT_THEME", payload: theme });
+
+        // Initialize theme with settings from server or default settings
+        dispatch({
+          type: "SELECT_THEME",
+          payload: theme,
+        });
+
+        // If theme has settings, update them separately
+        if (theme.themeSettings) {
+          dispatch({
+            type: "UPDATE_THEME_SETTINGS",
+            payload: theme.themeSettings,
+          });
+        }
+
         setThemeData(theme);
       } catch (error) {
         console.error("Error fetching theme data:", error);

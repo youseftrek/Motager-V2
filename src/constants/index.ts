@@ -1,4 +1,5 @@
 import {
+  Book,
   ChartNoAxesCombined,
   CircleDollarSign,
   Cog,
@@ -15,6 +16,7 @@ export const PUBLIC_ROUTES = {
   HOME: "/",
   ABOUT: "/about",
   PRICING: "/pricing",
+  DOCS: "/docs",
   LOGIN: "/auth/login",
   SIGNUP: "/auth/sign-up",
 };
@@ -35,9 +37,14 @@ export const LANDING_PAGE_NAV_LINKS = [
     href: PUBLIC_ROUTES.PRICING,
     icon: CircleDollarSign,
   },
+  {
+    name: "docs",
+    href: PUBLIC_ROUTES.DOCS,
+    icon: Book,
+  },
 ];
 
-export const BASE_URL = 'http://localhost:8080'
+export const BASE_URL = "http://localhost:8080";
 
 export const PROTECTED_ROUTES = {
   DASHBOARD: "/dashboard",
