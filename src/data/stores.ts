@@ -58,10 +58,11 @@ export async function createStore(data: any, token: any) {
         },
       }
     );
-
-    return response.data;
-  } catch (error) {
+    
+    return response; // return the full response object
+  } catch (error: any) {
     console.error("Error creating store:", error);
-    return { data: [] };
+    throw error; // This ensures the error is caught in onSubmit
   }
 }
+

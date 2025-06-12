@@ -52,7 +52,7 @@ export default function PricingPage({ plans, user }: { plans: Plan[]; user: any 
 
           <div className="flex items-baseline mt-4 text-gray-900 dark:text-gray-50">
             <span className={cn("font-extrabold text-4xl tracking-tight", isUserPlan ? "text-green-500" : "")}>
-              ${billingCycle === "monthly" ? plan.price : (Number.parseFloat(plan.price) * 10).toFixed(2)}
+               {billingCycle === "monthly" ? plan.price : (Number.parseFloat(plan.price) * 10).toFixed(2)} EGP
             </span>
             <span className="ml-1 font-semibold text-muted-foreground text-xl">{t("plans.starter.period")}</span>
           </div>
@@ -83,7 +83,7 @@ export default function PricingPage({ plans, user }: { plans: Plan[]; user: any 
                 Current Plan
               </div>
             ) : (
-              <Link href={PUBLIC_ROUTES.SIGNUP} className={cn(buttonVariants({ size: "lg" }), "w-full")}>
+              <Link href={`/payment/${plan.id}`} className={cn(buttonVariants({ size: "lg" }), "w-full")}>
                 {t("plans.starter.cta")}
               </Link>
             )}

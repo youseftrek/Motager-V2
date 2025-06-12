@@ -79,17 +79,18 @@ const ClientForm = ({ categories, token }: Props) => {
 
   const onSubmit = async (data: StoreSchemaFields) => {
     try {
-      const response = await createStore(data, token);
-      console.log(response);
-      toast.success(t("successMessage"));
-
-      // Redirect to stores page
-      router.push("/dashboard/stores");
+      const response = await createStore(data, token);      
+      if (response && response.data) {
+        console.log("Store created successfully:", response.data);
+        toast.success(t("successMessage"));
+        router.push("/dashboard/stores");
+      }
     } catch (error) {
       console.error("Error creating store:", error);
       toast.error(t("errorMessage"));
     }
   };
+  
 
   return (
     <div className="p-2 md:p-4 h-[calc(100vh-64px)] lg:h-[calc(100vh-70px)]">
