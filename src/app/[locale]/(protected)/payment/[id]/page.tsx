@@ -7,5 +7,6 @@ type Props = { params: Promise<{ id: string }> };
 export default async function PaymentPage({ params }: Props) {
   const { id } = await params;
   const user = await getSession();
-  return <PaymentClientPage id={id} user={user} />;
+  const plans = await getPlans();
+  return <PaymentClientPage id={id} user={user} plans={plans} />;
 }

@@ -23,10 +23,13 @@ export type ProductFormData = {
   name: string;
   description: string;
   published: boolean;
-  starting_at_price: number;
-  category_id: number;
+  startPrice: number;
+  category: {
+    id:number;
+  };
   has_variants: boolean;
-  media: string[]; // URLs to media files
+  main_image_url:string;
+  images_url: string[]; // URLs to media files
   variants: Variant[];
   variant_combinations: VariantCombination[];
 };
@@ -36,10 +39,13 @@ const initialFormData: ProductFormData = {
   name: "",
   description: "",
   published: true,
-  starting_at_price: 0,
-  category_id: 0,
+  startPrice: 0,
+  main_image_url:"",
+  category: {
+    id: 0, 
+  },
   has_variants: false,
-  media: [],
+  images_url: [],
   variants: [],
   variant_combinations: [],
 };
@@ -194,7 +200,7 @@ export function ProductFormProvider({ children }: { children: ReactNode }) {
         id,
         combination,
         stock: 0,
-        price: formData.starting_at_price,
+        price: formData.startPrice,
         compare_at_price: 0,
         cost_per_item: 0,
         profit: 0,

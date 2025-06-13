@@ -53,7 +53,7 @@ export function AppSidebar() {
             <ModeToggle buttonVariant="outline" className="shrink-0" />
             <LanguageSelect buttonVariant="outline" className="shrink-0" />
             <Link
-              href="#"
+              href="/contact"
               className={cn(buttonVariants({ variant: "outline" }), "w-full")}
             >
               <Headset />

@@ -5,6 +5,8 @@ import axios from "axios";
 import { useRouter } from "@/i18n/routing";
 import { toast } from "sonner";
 import { IUser } from "@/types/auth/auth";
+import { useDispatch } from "react-redux";
+import { setReduxUser } from "@/redux/features/auth/authSlice";
 
 type AuthContextType = {
   user: IUser | null;
@@ -19,12 +21,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const dispatch = useDispatch()
 
   const fetchCurrentUser = async () => {
     try {
       setLoading(true);
       const response = await axios.get("/api/me");
       setUser(response.data.user);
+      dispatch(setReduxUser(response.data));
     } catch (error) {
       setUser(null);
     } finally {

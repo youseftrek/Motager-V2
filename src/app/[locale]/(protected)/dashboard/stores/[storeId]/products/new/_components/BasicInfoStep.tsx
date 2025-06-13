@@ -35,18 +35,18 @@ export default function BasicInfoStep() {
   ];
 
   const handleRemoveMedia = (index: number) => {
-    const newMedia = [...formData.media];
+    const newMedia = [...formData.images_url];
     newMedia.splice(index, 1);
-    updateFormData({ media: newMedia });
+    updateFormData({ images_url: newMedia });
   };
 
   const handleAddMedia = (mediaUrls: string[]) => {
-    const newMedia = [...formData.media, ...mediaUrls];
-    updateFormData({ media: newMedia });
+    const newMedia = [...formData.images_url, ...mediaUrls];
+    updateFormData({ images_url: newMedia });
   };
 
   const handleReorderMedia = (newOrder: string[]) => {
-    updateFormData({ media: newOrder });
+    updateFormData({ images_url: newOrder });
   };
 
   return (
@@ -88,7 +88,7 @@ export default function BasicInfoStep() {
       <div className="space-y-2">
         <div className="flex justify-between items-center">
           <Label>Media</Label>
-          {formData.media.length > 0 && (
+          {formData.images_url.length > 0 && (
             <p className="text-muted-foreground text-sm">
               Drag to reorder. First image is the main product image.
             </p>
@@ -96,14 +96,14 @@ export default function BasicInfoStep() {
         </div>
 
         <div className="gap-4 grid grid-cols-1 mt-2">
-          {formData.media.length > 0 ? (
+          {formData.images_url.length > 0 ? (
             <Reorder.Group
               axis="y"
-              values={formData.media}
+              values={formData.images_url}
               onReorder={handleReorderMedia}
               className="space-y-2"
             >
-              {formData.media.map((media, index) => (
+              {formData.images_url.map((media, index) => (
                 <Reorder.Item
                   key={media}
                   value={media}
@@ -181,9 +181,9 @@ export default function BasicInfoStep() {
       <div className="space-y-2">
         <Label htmlFor="category">Category</Label>
         <Select
-          value={formData.category_id.toString()}
+          value={formData.category.id.toString()}
           onValueChange={(value) =>
-            updateFormData({ category_id: Number.parseInt(value) })
+            updateFormData({ category:{ id:Number.parseInt(value) }})
           }
         >
           <SelectTrigger>
@@ -205,10 +205,10 @@ export default function BasicInfoStep() {
           id="starting_at_price"
           type="number"
           step="0.01"
-          value={formData.starting_at_price || ""}
+          value={formData.startPrice || ""}
           onChange={(e) =>
             updateFormData({
-              starting_at_price: Number.parseFloat(e.target.value) || 0,
+              startPrice: Number.parseFloat(e.target.value) || 0,
             })
           }
           placeholder="0.00"

@@ -1,6 +1,6 @@
 import { IRegister } from "@/types/auth/auth";
 import { baseApi } from "../../app/baseApi";
-import { setUser } from "./authSlice";
+import { setReduxUser } from "./authSlice";
 import { UserRegisterSchemaType } from "@/validations/user-register";
 
 const authApi = baseApi.injectEndpoints({
@@ -14,7 +14,7 @@ const authApi = baseApi.injectEndpoints({
       async onQueryStarted(_args, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          dispatch(setUser(data));
+          dispatch(setReduxUser(data));
         } catch (error) {
           console.log(error);
         }
