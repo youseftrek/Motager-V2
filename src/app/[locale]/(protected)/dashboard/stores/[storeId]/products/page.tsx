@@ -28,7 +28,7 @@ const ProductsPage = async ({ params }: PageProps) => {
         defaultHide={["id" , "category" , "published" , "images_url"]}
         sortableCols={["products", "name"]}
         ImgCols={["main_image_url"]}
-        priority={{ image: 1 }}
+        priority={{ main_image_url: 1 }}
       />
     </AnimatedDashboardPage>
   );

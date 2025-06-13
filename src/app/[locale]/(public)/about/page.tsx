@@ -1,31 +1,288 @@
-"use client";
+import Image from "next/image"
+import Link from "next/link"
+import { ArrowRight, CheckCircle, Globe, ShieldCheck, Store, Wallet } from 'lucide-react'
 
-import { useTranslations } from "next-intl";
-import AnimatedDashboardPage from "../../(protected)/dashboard/_components/AnimatedDashboardPage";
+import { Button } from "@/components/ui/button"
 
 export default function AboutPage() {
-  const t = useTranslations("AboutPage");
-
   return (
-    <div className="mx-auto px-4 py-16 container">
-      <AnimatedDashboardPage>
-        <div className="mx-auto mb-16 max-w-3xl text-center">
-          <h1 className="mb-6 font-bold text-4xl">{t("title")}</h1>
-          <p className="text-muted-foreground text-xl">{t("description")}</p>
-        </div>
-
-        <div className="gap-12 grid md:grid-cols-2 mx-auto max-w-5xl">
-          <div className="bg-card shadow-sm p-8 rounded-lg">
-            <h2 className="mb-4 font-semibold text-2xl">{t("mission")}</h2>
-            <p className="text-muted-foreground">{t("missionText")}</p>
+      <div className="min-h-screen bg-black text-white flex flex-col">
+        
+        {/* Hero Section */}
+        <section className="relative py-20 px-4 md:px-6 lg:px-8 overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(22,163,74,0.15),rgba(0,0,0,0)_50%)]" />
+            <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-green-500/50 to-transparent" />
           </div>
-
-          <div className="bg-card shadow-sm p-8 rounded-lg">
-            <h2 className="mb-4 font-semibold text-2xl">{t("vision")}</h2>
-            <p className="text-muted-foreground">{t("visionText")}</p>
+          
+          <div className="max-w-5xl mx-auto text-center relative z-10">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6">
+              About <span className="text-green-500">Motager</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto">
+              Empowering Egyptian entrepreneurs to build thriving online businesses
+            </p>
           </div>
-        </div>
-      </AnimatedDashboardPage>
-    </div>
-  );
+        </section>
+        
+        {/* Mission Section */}
+        <section className="py-16 px-4 md:px-6 lg:px-8 relative">
+          <div className="max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div>
+                <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
+                <p className="text-gray-300 mb-6">
+                  At Motager, we're on a mission to revolutionize e-commerce in Egypt by providing local entrepreneurs with powerful, accessible tools to establish and grow their online presence.
+                </p>
+                <p className="text-gray-300">
+                  We believe that every business, regardless of size, deserves the opportunity to thrive in the digital marketplace. By removing technical barriers and offering a platform tailored specifically for the Egyptian market, we're empowering the next generation of business owners to reach customers across the country and beyond.
+                </p>
+              </div>
+              <div className="relative rounded-lg overflow-hidden border border-green-500/20">
+                <div className="absolute inset-0 bg-green-500/10" />
+                <Image 
+                  src="/images/women-using-motager.png" 
+                  alt="Egyptian entrepreneurs using Motager platform" 
+                  width={600} 
+                  height={600}
+                  className="w-full h-auto relative z-10"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* Features Section */}
+        <section className="py-16 px-4 md:px-6 lg:px-8 bg-black/50 relative">
+          <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(22,163,74,0.1),rgba(0,0,0,0)_50%)]" />
+          </div>
+          
+          <div className="max-w-5xl mx-auto relative z-10">
+            <h2 className="text-3xl font-bold mb-12 text-center">Key Features</h2>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="bg-black/40 p-6 rounded-lg border border-green-500/20 hover:border-green-500/40 transition-all">
+                <div className="bg-green-500/10 p-3 rounded-full w-fit mb-4">
+                  <Globe className="h-6 w-6 text-green-500" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3">Arabic-First Interface</h3>
+                <p className="text-gray-300">
+                  Built specifically for the Egyptian market with full Arabic language support and right-to-left design considerations.
+                </p>
+              </div>
+              
+              <div className="bg-black/40 p-6 rounded-lg border border-green-500/20 hover:border-green-500/40 transition-all">
+                <div className="bg-green-500/10 p-3 rounded-full w-fit mb-4">
+                  <Wallet className="h-6 w-6 text-green-500" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3">Local Payment Solutions</h3>
+                <p className="text-gray-300">
+                  Integrated payment gateways optimized for Egyptian customers, including cash on delivery, mobile wallets, and local card processors.
+                </p>
+              </div>
+              
+              <div className="bg-black/40 p-6 rounded-lg border border-green-500/20 hover:border-green-500/40 transition-all">
+                <div className="bg-green-500/10 p-3 rounded-full w-fit mb-4">
+                  <Store className="h-6 w-6 text-green-500" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3">Customizable Storefronts</h3>
+                <p className="text-gray-300">
+                  Beautiful, responsive store designs that can be fully customized to match your brand identity without any coding knowledge.
+                </p>
+              </div>
+              
+              <div className="bg-black/40 p-6 rounded-lg border border-green-500/20 hover:border-green-500/40 transition-all">
+                <div className="bg-green-500/10 p-3 rounded-full w-fit mb-4">
+                  <ShieldCheck className="h-6 w-6 text-green-500" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3">Secure Infrastructure</h3>
+                <p className="text-gray-300">
+                  Enterprise-grade security to protect your business and customer data, with compliance for local Egyptian regulations.
+                </p>
+              </div>
+              
+              <div className="bg-black/40 p-6 rounded-lg border border-green-500/20 hover:border-green-500/40 transition-all">
+                <div className="bg-green-500/10 p-3 rounded-full w-fit mb-4">
+                  <CheckCircle className="h-6 w-6 text-green-500" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3">Egyptian Pound Support</h3>
+                <p className="text-gray-300">
+                  Full support for EGP currency, with automatic tax calculations and compliance with local financial requirements.
+                </p>
+              </div>
+              
+              <div className="bg-black/40 p-6 rounded-lg border border-green-500/20 hover:border-green-500/40 transition-all">
+                <div className="bg-green-500/10 p-3 rounded-full w-fit mb-4">
+                  <ArrowRight className="h-6 w-6 text-green-500" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3">Growth Tools</h3>
+                <p className="text-gray-300">
+                  Marketing tools optimized for the Egyptian market, including social media integration, SEO features, and local advertising options.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* Benefits Section */}
+        <section className="py-16 px-4 md:px-6 lg:px-8 relative">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-3xl font-bold mb-12 text-center">Why Choose Motager</h2>
+            
+            <div className="grid md:grid-cols-2 gap-12">
+              <div>
+                <ul className="space-y-6">
+                  <li className="flex gap-4">
+                    <div className="flex-shrink-0 mt-1">
+                      <div className="h-6 w-6 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">Cost-Effective Solution</h3>
+                      <p className="text-gray-300">
+                        Affordable pricing plans designed specifically for the Egyptian market, with no hidden fees and transparent pricing.
+                      </p>
+                    </div>
+                  </li>
+                  
+                  <li className="flex gap-4">
+                    <div className="flex-shrink-0 mt-1">
+                      <div className="h-6 w-6 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">User-Friendly Interface</h3>
+                      <p className="text-gray-300">
+                        Intuitive design that makes it easy for anyone to set up and manage their online store, regardless of technical expertise.
+                      </p>
+                    </div>
+                  </li>
+                  
+                  <li className="flex gap-4">
+                    <div className="flex-shrink-0 mt-1">
+                      <div className="h-6 w-6 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">Local Support</h3>
+                      <p className="text-gray-300">
+                        Egyptian-based customer support team that understands the local market and can provide assistance in Arabic and English.
+                      </p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              
+              <div>
+                <ul className="space-y-6">
+                  <li className="flex gap-4">
+                    <div className="flex-shrink-0 mt-1">
+                      <div className="h-6 w-6 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">Wider Customer Reach</h3>
+                      <p className="text-gray-300">
+                        Tools to help you reach customers across Egypt and beyond, with features designed to optimize for local search and discovery.
+                      </p>
+                    </div>
+                  </li>
+                  
+                  <li className="flex gap-4">
+                    <div className="flex-shrink-0 mt-1">
+                      <div className="h-6 w-6 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">Scalable Platform</h3>
+                      <p className="text-gray-300">
+                        Start small and grow big—our platform scales with your business, from your first sale to your millionth customer.
+                      </p>
+                    </div>
+                  </li>
+                  
+                  <li className="flex gap-4">
+                    <div className="flex-shrink-0 mt-1">
+                      <div className="h-6 w-6 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">Continuous Innovation</h3>
+                      <p className="text-gray-300">
+                        Regular updates and new features based on feedback from Egyptian merchants and evolving market needs.
+                      </p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* Economic Impact Section */}
+        <section className="py-16 px-4 md:px-6 lg:px-8 bg-black/50 relative">
+          <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(22,163,74,0.1),rgba(0,0,0,0)_50%)]" />
+          </div>
+          
+          <div className="max-w-5xl mx-auto relative z-10">
+            <h2 className="text-3xl font-bold mb-8 text-center">Our Commitment to Egypt</h2>
+            
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="relative rounded-lg overflow-hidden border border-green-500/20">
+                <div className="absolute inset-0 bg-green-500/10" />
+                <Image 
+                  src="/images/man-using-motager.png" 
+                  alt="Egyptian marketplace" 
+                  width={600} 
+                  height={600}
+                  className="w-full h-auto relative z-10"
+                />
+              </div>
+              
+              <div>
+                <p className="text-gray-300 mb-6">
+                  Motager is more than just an e-commerce platform—we're committed to fostering economic growth and digital transformation across Egypt.
+                </p>
+                <p className="text-gray-300 mb-6">
+                  By providing accessible tools for entrepreneurs to establish and grow their online businesses, we're helping to create jobs, support local industries, and contribute to Egypt's digital economy.
+                </p>
+                <p className="text-gray-300">
+                  We actively collaborate with local businesses, educational institutions, and government initiatives to promote digital literacy and entrepreneurship throughout Egypt, ensuring that the benefits of e-commerce are accessible to all.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* CTA Section */}
+        <section className="py-20 px-4 md:px-6 lg:px-8 relative">
+          <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(22,163,74,0.2),rgba(0,0,0,0)_50%)]" />
+          </div>
+          
+          <div className="max-w-4xl mx-auto text-center relative z-10">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Start Your E-commerce Journey?</h2>
+            <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+              Join thousands of Egyptian entrepreneurs who are growing their businesses with Motager.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" className="bg-green-500 hover:bg-green-600 text-white">
+                Start Free Trial
+              </Button>
+              <Button size="lg" variant="outline" className="border-green-500 text-green-500 hover:bg-green-500/10">
+                View Demo Store
+              </Button>
+            </div>
+          </div>
+        </section>
+      </div>
+  )
 }
