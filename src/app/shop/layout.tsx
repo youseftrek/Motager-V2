@@ -7,6 +7,7 @@ import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "../api/uploadthing/core";
 import { connection } from "next/server";
+import "./globals.css";
 
 const FONT_EN = Outfit({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],

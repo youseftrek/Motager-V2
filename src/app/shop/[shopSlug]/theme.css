@@ -1,0 +1,89 @@
+:root {
+  /* Font variables */
+  --font-outfit: "Outfit", sans-serif;
+  --font-headings: var(--font-outfit);
+  --font-body: var(--font-outfit);
+
+  /* Theme colors - these will override the main global colors */
+  /* Color variables - defaults */
+  --color-main: hsl(var(--primary));
+
+  /* Background colors */
+  --color-bg-primary: hsl(var(--background));
+  --color-bg-secondary: hsl(var(--secondary));
+
+  /* Button colors - Primary */
+  --color-btn-primary-bg: hsl(var(--primary));
+  --color-btn-primary-hover: hsl(var(--ring));
+  --color-btn-primary-text: hsl(var(--primary-foreground));
+
+  /* Button colors - Secondary */
+  --color-btn-secondary-bg: hsl(var(--secondary));
+  --color-btn-secondary-hover: hsl(var(--muted));
+  --color-btn-secondary-text: hsl(var(--secondary-foreground));
+
+  /* Button colors - Tertiary */
+  --color-btn-tertiary-bg: transparent;
+  --color-btn-tertiary-hover: hsl(var(--accent));
+  --color-btn-tertiary-text: hsl(var(--primary));
+
+  /* Text colors */
+  --color-text-primary: hsl(var(--foreground));
+  --color-text-secondary: hsl(var(--muted-foreground));
+  --color-text-inverted: hsl(var(--primary-foreground));
+
+  /* Border radius */
+  --radius-none: 0;
+  --radius-small: var(--radius);
+  --radius-medium: calc(var(--radius) * 1.5);
+  --radius-large: calc(var(--radius) * 2);
+}
+
+.store-theme {
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+}
+
+.store-theme h1,
+.store-theme h2,
+.store-theme h3,
+.store-theme h4,
+.store-theme h5,
+.store-theme h6 {
+  font-family: var(--font-headings);
+}
+
+/* Button styles */
+.store-theme .btn-primary {
+  background-color: var(--color-btn-primary-bg);
+  color: var(--color-btn-primary-text);
+  border-radius: var(--radius-medium);
+  transition: background-color 0.3s ease;
+}
+
+.store-theme .btn-primary:hover {
+  background-color: var(--color-btn-primary-hover);
+}
+
+.store-theme .btn-secondary {
+  background-color: var(--color-btn-secondary-bg);
+  color: var(--color-btn-secondary-text);
+  border-radius: var(--radius-medium);
+  transition: background-color 0.3s ease;
+}
+
+.store-theme .btn-secondary:hover {
+  background-color: var(--color-btn-secondary-hover);
+}
+
+.store-theme .btn-tertiary {
+  background-color: var(--color-btn-tertiary-bg);
+  color: var(--color-btn-tertiary-text);
+  border-radius: var(--radius-medium);
+  transition: background-color 0.3s ease;
+}
+
+.store-theme .btn-tertiary:hover {
+  background-color: var(--color-btn-tertiary-hover);
+}

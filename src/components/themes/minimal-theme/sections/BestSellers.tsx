@@ -1,3 +1,5 @@
+"use client";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -29,6 +31,10 @@ import {
   textSize,
 } from "@/hooks/use-responsive-classes";
 import { useDeviceView } from "@/providers/device-view-context";
+import { useAppDispatch } from "@/redux/app/hooks";
+import { addToCart } from "@/redux/features/cart/cartSlice";
+import { toast } from "sonner";
+import { useParams } from "next/navigation";
 
 // Add custom CSS for pagination
 import "./swiper-custom.css";
@@ -232,6 +238,11 @@ export default function BestSellersSlider({
     undefined
   );
 
+  // Redux
+  const dispatch = useAppDispatch();
+  const { shopSlug } = useParams();
+  const storeSlug = shopSlug as string;
+
   // Extract theme colors
   const colors = extractThemeColors(themeColors);
 
@@ -284,6 +295,22 @@ export default function BestSellersSlider({
         ? prev.filter((id) => id !== productId)
         : [...prev, productId]
     );
+  };
+
+  const handleAddToCart = (product: any) => {
+    dispatch(
+      addToCart({
+        item: {
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.image,
+          category: product.category,
+        },
+        storeSlug,
+      })
+    );
+    toast.success(`${product.name} added to cart`);
   };
 
   const getCardClass = () => {
@@ -501,6 +528,7 @@ export default function BestSellersSlider({
                           size="sm"
                           className="flex-1"
                           colors={colors}
+                          onClick={() => handleAddToCart(product)}
                         >
                           <ShoppingCart size={16} className="mr-2" />
                           Add

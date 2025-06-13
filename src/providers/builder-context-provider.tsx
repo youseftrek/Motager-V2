@@ -32,6 +32,7 @@ export type State = {
 
 type Action =
   | { type: "SELECT_THEME"; payload: Theme }
+  | { type: "LOAD_INITIAL_THEME"; payload: Theme }
   | { type: "SELECT_PAGE"; payload: Page }
   | { type: "ADD_SECTION"; payload: Section }
   | {
@@ -99,13 +100,14 @@ function historyReducer(
     }
 
     case "SET_SELECTED_SECTION":
-    case "LOAD_COMPONENTS": {
+    case "LOAD_COMPONENTS":
+    case "LOAD_INITIAL_THEME": {
       // Don't add these actions to history
       const newPresent = builderReducer(present, action);
       return {
-        past,
+        past: [],
         present: newPresent,
-        future,
+        future: [],
       };
     }
 
@@ -123,14 +125,15 @@ function historyReducer(
 
 function builderReducer(state: State, action: Action): State {
   switch (action.type) {
-    case "SELECT_THEME": {
+    case "SELECT_THEME":
+    case "LOAD_INITIAL_THEME": {
       const availableSections = action.payload.pages[0].sections;
       return {
         ...state,
         selectedTheme: action.payload,
         selectedPage: action.payload.pages[0],
         availableSections,
-        themeSettings: MINIMAL_THEME_SETTINGS,
+        themeSettings: action.payload.themeSettings || MINIMAL_THEME_SETTINGS,
       };
     }
 
