@@ -20,6 +20,7 @@ import { useProductForm } from "@/providers/product-form";
 import Image from "next/image";
 import MediaUploadModal from "@/components/shared/MediaUpload";
 import ImagePreviewModal from "@/components/shared/ImagePreview";
+import { toast } from "sonner";
 
 export default function BasicInfoStep() {
   const { formData, updateFormData } = useProductForm();
@@ -41,8 +42,19 @@ export default function BasicInfoStep() {
   };
 
   const handleAddMedia = (mediaUrls: string[]) => {
-    const newMedia = [...formData.media, ...mediaUrls];
-    updateFormData({ media: newMedia });
+    // Filter out any duplicates
+    const newUrls = mediaUrls.filter((url) => !formData.media.includes(url));
+
+    if (newUrls.length > 0) {
+      const newMedia = [...formData.media, ...newUrls];
+      updateFormData({ media: newMedia });
+
+      toast.success(
+        `${newUrls.length} image${
+          newUrls.length > 1 ? "s" : ""
+        } added to product`
+      );
+    }
   };
 
   const handleReorderMedia = (newOrder: string[]) => {
@@ -232,6 +244,8 @@ export default function BasicInfoStep() {
         open={isMediaModalOpen}
         onOpenChange={setIsMediaModalOpen}
         handleAddMedia={handleAddMedia}
+        multiple={true}
+        bucketName="product-images"
       />
 
       <ImagePreviewModal
