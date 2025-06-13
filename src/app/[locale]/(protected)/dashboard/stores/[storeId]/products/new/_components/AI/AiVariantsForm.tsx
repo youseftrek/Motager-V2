@@ -399,6 +399,8 @@ const AiVariantsForm = ({ onGenerationSuccess }: AiVariantsFormProps = {}) => {
           open={isMediaModalOpen}
           onOpenChange={setIsMediaModalOpen}
           handleAddMedia={handleAddMedia}
+          multiple={true}
+          bucketName="product-images"
         />
 
         <DialogFooter>

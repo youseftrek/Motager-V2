@@ -233,6 +233,8 @@ const AiBasicInfoForm = ({ onGenerationSuccess }: AiBasicInfoFormProps) => {
           open={isMediaModalOpen}
           onOpenChange={setIsMediaModalOpen}
           handleAddMedia={handleAddMedia}
+          multiple={true}
+          bucketName="product-images"
         />
 
         <DialogFooter>

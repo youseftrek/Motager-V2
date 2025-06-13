@@ -6,13 +6,23 @@ export async function checkAiStatus(): Promise<{
   message: string;
 }> {
   try {
-    const res = await axios.get(API_URLS.AI_STATUS);
-    return res.data;
+    const res = await axios.get(API_URLS.AI_STATUS, {
+      timeout: 5000,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+
+    return {
+      success: res.data?.success || false,
+      message: res.data?.message || "AI status check completed",
+    };
   } catch (error) {
-    console.error("error getting ai status: ", error);
+    console.error("Error getting AI status: ", error);
     return {
       success: false,
-      message: "something went wrong while fetching the model's status",
+      message: "Something went wrong while fetching the model's status",
     };
   }
 }
