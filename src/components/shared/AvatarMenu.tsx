@@ -106,7 +106,7 @@ const AvatarMenu = ({ user }: Props) => {
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Link
-            href={PUBLIC_ROUTES.ABOUT}
+            href='/contact'
             className="flex items-center gap-2 w-full cursor-pointer"
           >
             <HelpCircle size={18} />

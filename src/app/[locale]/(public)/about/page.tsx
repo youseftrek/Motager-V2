@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 
 export default function AboutPage() {
   return (
-      <div className="min-h-screen bg-black text-white flex flex-col">
+      <div className="min-h-screen text-white flex flex-col">
         
         {/* Hero Section */}
         <section className="relative py-20 px-4 md:px-6 lg:px-8 overflow-hidden">
@@ -41,7 +41,7 @@ export default function AboutPage() {
               <div className="relative rounded-lg overflow-hidden border border-green-500/20">
                 <div className="absolute inset-0 bg-green-500/10" />
                 <Image 
-                  src="/images/women-using-motager.png" 
+                  src="/images/motager women.png" 
                   alt="Egyptian entrepreneurs using Motager platform" 
                   width={600} 
                   height={600}
@@ -53,7 +53,7 @@ export default function AboutPage() {
         </section>
         
         {/* Features Section */}
-        <section className="py-16 px-4 md:px-6 lg:px-8 bg-black/50 relative">
+        <section className="py-16 px-4 md:px-6 lg:px-8  relative">
           <div className="absolute inset-0 z-0">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(22,163,74,0.1),rgba(0,0,0,0)_50%)]" />
           </div>
@@ -227,7 +227,7 @@ export default function AboutPage() {
         </section>
         
         {/* Economic Impact Section */}
-        <section className="py-16 px-4 md:px-6 lg:px-8 bg-black/50 relative">
+        <section className="py-16 px-4 md:px-6 lg:px-8  relative">
           <div className="absolute inset-0 z-0">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(22,163,74,0.1),rgba(0,0,0,0)_50%)]" />
           </div>

@@ -3,6 +3,7 @@ import {
   ChartNoAxesCombined,
   CircleDollarSign,
   Cog,
+  Headset,
   House,
   Info,
   Package,
@@ -19,6 +20,7 @@ export const PUBLIC_ROUTES = {
   DOCS: "/docs",
   LOGIN: "/auth/login",
   SIGNUP: "/auth/sign-up",
+  CONTACT:"/contact"
 };
 
 export const LANDING_PAGE_NAV_LINKS = [
@@ -41,6 +43,11 @@ export const LANDING_PAGE_NAV_LINKS = [
     name: "docs",
     href: PUBLIC_ROUTES.DOCS,
     icon: Book,
+  },
+  {
+    name: "contact",
+    href: PUBLIC_ROUTES.CONTACT,
+    icon: Headset,
   },
 ];
 

@@ -23,9 +23,7 @@ const parseTokenFromCookie = (): string | null => {
 
 const initialState: IAuthState = {
   user: parseUserFromCookie(),
-  access_token: parseTokenFromCookie(),
-  refresh_token: null,
-  expires_in: null,
+  token: parseTokenFromCookie(),
 };
 
 const cookieConfig = {
@@ -35,53 +33,44 @@ const cookieConfig = {
 
 // Interface for the API response payload
 interface IAuthPayload {
-  user_id: number;
-  stores: any[];
-  email: string;
-  image: string;
-  name: string;
-  access_token: string;
-  refresh_token: string;
-  expires_in: number;
+  token:string;
+  user:any
 }
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<IAuthPayload>) => {
+    setReduxUser: (state, action: PayloadAction<IAuthPayload>) => {
+      console.log(action.payload); 
+
+      
       // Extract user data from the payload
       const userData: IUser = {
-        user_id: action.payload.user_id,
-        stores: action.payload.stores,
-        email: action.payload.email,
-        image: action.payload.image,
-        name: action.payload.name,
+        user_id: action.payload.user.user_id,
+        stores: action.payload.user.stores,
+        email: action.payload.user.email,
+        image: action.payload.user.image,
+        name: action.payload.user.name,
       };      
 
       state.user = userData;
-      state.access_token = action.payload.access_token;
-      state.refresh_token = action.payload.refresh_token;
-      state.expires_in = action.payload.expires_in;
-
-      // Store in cookies
+      state.token = action.payload.token;
       setCookie("user", JSON.stringify(userData), cookieConfig);
       setCookie(
         "token",
-        JSON.stringify(action.payload.access_token),
+        JSON.stringify(action.payload.token),
         cookieConfig
       );
     },
     logoutUser: (state) => {
       state.user = null;
-      state.access_token = null;
-      state.refresh_token = null;
-      state.expires_in = null;
+      state.token = null
       deleteCookie("user");
       deleteCookie("token");
     },
   },
 });
 
-export const { setUser, logoutUser } = authSlice.actions;
+export const { setReduxUser, logoutUser } = authSlice.actions;
 export default authSlice.reducer; // Export the reducer, not the slice

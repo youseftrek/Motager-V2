@@ -10,6 +10,8 @@ import VariantsStep from "./VariantsStep";
 import SkusStep from "./SkuStep";
 import ReviewStep from "./ReviewStep";
 import AiDialogForm from "./AiDialogForm";
+import { useCreateProductMutation } from "@/redux/features/products/productsApi";
+import { useParams } from "next/navigation";
 
 type Props = {
   isModelReady: boolean;
@@ -19,13 +21,14 @@ export default function ProductForm({ isModelReady }: Props) {
   const { currentStep, nextStep, prevStep, isLastStep, isFirstStep, formData } =
     useProductForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const {storeId} = useParams();
+  const [createProduct , {data , isLoading}] = useCreateProductMutation()
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      // In a real application, you would submit the form data to your API here
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
       console.log("Submitting product data:", formData);
+      formData['main_image_url'] = 'https://example.com/storage/products/nike-air-max-270-main.jpg';
+      await createProduct({storeId:Number(storeId) , data:formData})
       alert("Product submitted successfully!");
     } catch (error) {
       console.error("Error submitting product:", error);

@@ -30,7 +30,8 @@
       "home": "Home",
       "about": "About",
       "pricing": "Pricing",
-      "docs": "Docs"
+      "docs": "Docs",
+      "contact":" Contact"
     },
     "cta": "Login / Signup",
     "MobileMenu": {

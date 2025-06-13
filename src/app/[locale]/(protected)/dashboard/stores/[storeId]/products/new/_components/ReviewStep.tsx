@@ -43,7 +43,7 @@ export default function ReviewStep() {
             </div>
             <div>
               <p className="text-muted-foreground text-sm">Category ID</p>
-              <p className="font-medium">{formData.category_id}</p>
+              <p className="font-medium">{formData.category.id}</p>
             </div>
             <div className="md:col-span-2">
               <p className="text-muted-foreground text-sm">Description</p>
@@ -52,7 +52,7 @@ export default function ReviewStep() {
             <div>
               <p className="text-muted-foreground text-sm">Starting Price</p>
               <p className="font-medium">
-                ${formData.starting_at_price.toFixed(2)}
+                ${formData.startPrice.toFixed(2)}
               </p>
             </div>
             <div>
@@ -63,11 +63,11 @@ export default function ReviewStep() {
             </div>
           </div>
 
-          {formData.media.length > 0 && (
+          {formData.images_url.length > 0 && (
             <div className="mt-4">
               <p className="mb-2 text-muted-foreground text-sm">Media</p>
               <div className="gap-2 grid grid-cols-4">
-                {formData.media.map((media, index) => (
+                {formData.images_url.map((media, index) => (
                   <Image
                     key={index}
                     src={media || "/placeholder.svg"}

@@ -8,9 +8,7 @@ export interface IUser {
 
 export interface IAuthState {
   user: IUser | null;
-  access_token: string | null;
-  refresh_token: string | null;
-  expires_in: number | null;
+  token: string | null;
 }
 export interface IRegister  {
   email: string
