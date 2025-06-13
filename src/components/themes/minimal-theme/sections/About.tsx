@@ -1,6 +1,11 @@
 import React from "react";
 import { extractThemeColors, ThemeColors } from "../theme-utils";
 import { ThemedHeading, ThemedText } from "../theme-components";
+import {
+  useResponsiveClasses,
+  textSize,
+  padding,
+} from "@/hooks/use-responsive-classes";
 
 export type AboutProps = {
   title: string;
@@ -68,6 +73,26 @@ export default function About({
   // Extract theme colors
   const colors = extractThemeColors(themeColors);
 
+  // Use responsive classes
+  const paddingClass = useResponsiveClasses(padding.preview, padding.default);
+  const headingTextSizeClass = useResponsiveClasses(
+    {
+      mobile: "text-3xl",
+      tablet: "text-4xl",
+      desktop: "text-5xl",
+    },
+    "text-3xl sm:text-4xl md:text-5xl"
+  );
+
+  const bodyTextSizeClass = useResponsiveClasses(
+    {
+      mobile: "text-lg",
+      tablet: "text-xl",
+      desktop: "text-2xl",
+    },
+    "text-lg md:text-xl lg:text-2xl"
+  );
+
   // Use theme colors if no explicit colors are provided
   const bgColor = backgroundColor || colors.background.secondary;
   const txtColor = textColor || colors.text.primary;
@@ -85,7 +110,7 @@ export default function About({
 
   return (
     <section
-      className={`px-6 py-16 md:py-24 relative overflow-hidden ${getAlignmentClass()}`}
+      className={`py-16 md:py-24 relative overflow-hidden ${getAlignmentClass()}`}
       style={{ backgroundColor: bgColor, color: txtColor }}
     >
       {/* Background Pattern */}
@@ -110,10 +135,12 @@ export default function About({
         </svg>
       </div>
 
-      <div className="z-10 relative mx-auto max-w-4xl container">
+      <div
+        className={`z-10 relative mx-auto max-w-4xl container ${paddingClass}`}
+      >
         <ThemedHeading
           level={2}
-          className="mb-6 font-bold text-4xl md:text-5xl tracking-tight"
+          className={`mb-6 font-bold tracking-tight ${headingTextSizeClass}`}
           colors={colors}
         >
           {title}
@@ -136,7 +163,7 @@ export default function About({
 
         <ThemedText
           variant="secondary"
-          className="opacity-90 mx-auto max-w-3xl text-xl md:text-2xl leading-relaxed"
+          className={`opacity-90 mx-auto max-w-3xl leading-relaxed ${bodyTextSizeClass}`}
           colors={colors}
         >
           {description}

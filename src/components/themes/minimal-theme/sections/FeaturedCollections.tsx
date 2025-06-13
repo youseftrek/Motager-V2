@@ -2,6 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { extractThemeColors, ThemeColors } from "../theme-utils";
 import { ThemedHeading, ThemedText } from "../theme-components";
+import {
+  useResponsiveClasses,
+  gridCols,
+  gap,
+  textSize,
+} from "@/hooks/use-responsive-classes";
 
 export type Collection = {
   id: string;
@@ -94,6 +100,17 @@ export default function FeaturedCollections({
   // Extract theme colors
   const colors = extractThemeColors(themeColors);
 
+  // Use responsive classes that work in both preview mode and real devices
+  const gridColsClass = useResponsiveClasses(
+    gridCols.preview,
+    gridCols.default
+  );
+  const gapClass = useResponsiveClasses(gap.preview, gap.default);
+  const textSizeClass = useResponsiveClasses(
+    textSize.preview,
+    textSize.default
+  );
+
   // Use theme colors if no explicit colors are provided
   const overlay = overlayColor || colors.main;
 
@@ -102,7 +119,7 @@ export default function FeaturedCollections({
       <div className="mx-auto px-4 container">
         <ThemedHeading
           level={2}
-          className="mb-4 font-bold text-3xl text-center"
+          className={`mb-4 font-bold text-center ${textSizeClass}`}
           colors={colors}
         >
           {title}
@@ -114,7 +131,7 @@ export default function FeaturedCollections({
         >
           {description}
         </ThemedText>
-        <div className="gap-6 grid grid-cols-2 lg:grid-cols-4">
+        <div className={`grid ${gridColsClass} ${gapClass}`}>
           {collections.map((collection) => (
             <Link
               key={collection.id}
@@ -137,10 +154,10 @@ export default function FeaturedCollections({
                 />
               </div>
               <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-                <h3 className="mb-2 font-bold sm:text-xl">
+                <h3 className={`mb-2 font-bold ${textSizeClass}`}>
                   {collection.title}
                 </h3>
-                <p className="opacity-90 text-xs sm:text-sm">
+                <p className={`opacity-90 ${textSizeClass}`}>
                   {collection.description}
                 </p>
               </div>

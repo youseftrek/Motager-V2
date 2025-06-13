@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { getTheme } from "@/actions";
 import { useBuilder } from "@/providers/builder-context-provider";
 import Spinner from "@/components/ui/Spinner";
+import { DeviceViewProvider } from "@/providers/device-view-context";
 
 type Props = {
   children: React.ReactNode;
@@ -74,13 +75,15 @@ const BuilderLayout = ({ children }: Props) => {
   }
 
   return (
-    <SidebarProvider sidebarWidth="20rem">
-      <BilderSidebar />
-      <main className="flex justify-center mt-[63px] md:mt-[65px] lg:mt-[72px] w-full">
-        <BuilderNavbar />
-        <div className="p-2 lg:p-4 w-full">{children}</div>
-      </main>
-    </SidebarProvider>
+    <DeviceViewProvider isPreviewMode={true} isBuilderMode={true}>
+      <SidebarProvider sidebarWidth="20rem">
+        <BilderSidebar />
+        <main className="flex justify-center mt-[63px] md:mt-[65px] lg:mt-[72px] w-full">
+          <BuilderNavbar />
+          <div className="p-2 lg:p-4 w-full">{children}</div>
+        </main>
+      </SidebarProvider>
+    </DeviceViewProvider>
   );
 };
 

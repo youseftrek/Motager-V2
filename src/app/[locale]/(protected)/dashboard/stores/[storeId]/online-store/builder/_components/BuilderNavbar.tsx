@@ -19,30 +19,37 @@ import { ExitDialog } from "./ExitDialog";
 import { ModeToggle } from "@/components/shared/ModeToggle";
 import { useBuilder } from "@/providers/builder-context-provider";
 import { getTheme, saveThemeSettings } from "@/actions";
+import { saveTheme } from "@/actions/saveTheme";
+import { useParams } from "next/navigation";
+import { useDeviceView } from "@/providers/device-view-context";
 
 const BuilderNavbar = () => {
   const { canRedo, canUndo, undo, redo, state } = useBuilder();
-  const handleSave = async () => {
-    console.log("#$#$#$#$#$#$#$#$#", state);
-    try {
-      // First save theme settings
-      if (state.themeSettings) {
-        await saveThemeSettings(state.themeSettings);
-      }
+  const { storeId } = useParams();
+  const [isSaving, setIsSaving] = useState(false);
+  const { activeDevice, setActiveDevice } = useDeviceView();
 
-      // Then save the theme
-      const res = await getTheme(state.selectedTheme?.id, {
-        ...state.selectedTheme!,
+  const handleSave = async () => {
+    try {
+      setIsSaving(true);
+      const res = await saveTheme({
+        availableSections: state.availableSections,
+        selectedTheme: state.selectedTheme,
         themeSettings: state.themeSettings,
+        storeId: storeId,
       });
 
-      if (res) toast.success("Theme saved successfully");
+      if (res.status) {
+        toast.success("Theme saved successfully");
+        setIsSaving(false);
+      }
     } catch (error) {
       console.error("Failed to save theme:", error);
       toast.error("Failed to save theme");
+      setIsSaving(false);
     }
   };
-  const [activeDevice, setActiveDevice] = useState("desktop");
+
   return (
     <div className="top-0 left-0 z-50 fixed bg-background/70 backdrop-blur-md w-full">
       <MaxWidthWrapper className="px-2 lg:px-4 max-w-[100%]">
@@ -134,8 +141,13 @@ const BuilderNavbar = () => {
                   <Eye />
                 </Button>
               </TooltipChildren>
-              <Button size="sm" onClick={handleSave} disabled={!canUndo}>
-                <Save /> Save
+              <Button
+                size="sm"
+                onClick={handleSave}
+                disabled={!canUndo}
+                loading={isSaving}
+              >
+                {!isSaving && <Save />} Save
               </Button>
             </div>
           </nav>

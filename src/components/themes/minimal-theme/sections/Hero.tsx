@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { extractThemeColors } from "../theme-utils";
 import { ThemedButton, ThemedHeading, ThemedText } from "../theme-components";
+import { useResponsiveClasses } from "@/hooks/use-responsive-classes";
 
 export type ImageObject = {
   src: string;
@@ -91,8 +92,36 @@ export default function Hero({
   // Extract theme colors
   const colors = extractThemeColors(themeColors);
 
+  // Use responsive classes
+  const titleSizeClass = useResponsiveClasses(
+    {
+      mobile: "text-4xl",
+      tablet: "text-5xl",
+      desktop: "text-6xl",
+    },
+    "text-4xl sm:text-5xl md:text-6xl lg:text-7xl"
+  );
+
+  const heroHeightClass = useResponsiveClasses(
+    {
+      mobile: "h-[60vh]",
+      tablet: "h-[70vh]",
+      desktop: "h-screen",
+    },
+    "h-[70vh] md:h-screen"
+  );
+
+  const buttonSizeClass = useResponsiveClasses(
+    {
+      mobile: "min-w-[120px]",
+      tablet: "min-w-[140px]",
+      desktop: "min-w-[150px]",
+    },
+    "min-w-[120px] md:min-w-[150px]"
+  );
+
   return (
-    <section className="relative w-full h-[70vh] md:h-screen overflow-hidden">
+    <section className={`relative w-full ${heroHeightClass} overflow-hidden`}>
       {/* Background Image */}
       <Image
         src={imageUrl}
@@ -125,7 +154,7 @@ export default function Hero({
 
           <ThemedHeading
             level={1}
-            className="max-w-3xl font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight"
+            className={`max-w-3xl font-bold ${titleSizeClass} tracking-tight`}
             style={{ color: colors.text.inverted }}
             colors={colors}
           >
@@ -136,7 +165,7 @@ export default function Hero({
             <ThemedButton
               variant="primary"
               size="lg"
-              className="min-w-[150px]"
+              className={buttonSizeClass}
               colors={colors}
             >
               {button1Text}
@@ -145,7 +174,7 @@ export default function Hero({
             <ThemedButton
               variant="tertiary"
               size="lg"
-              className="min-w-[150px]"
+              className={buttonSizeClass}
               colors={colors}
             >
               {button2Text}

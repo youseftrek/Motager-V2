@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { extractThemeColors } from "../theme-utils";
 import { ThemedButton, ThemedHeading, ThemedText } from "../theme-components";
+import { useDeviceView } from "@/providers/device-view-context";
+import { useResponsiveClasses } from "@/hooks/use-responsive-classes";
 
 export type FooterLink = {
   text: string;
@@ -299,13 +301,126 @@ export default function Footer({
   themeColors,
 }: FooterProps) {
   const [email, setEmail] = useState("");
+  const deviceView = useDeviceView();
+
+  // State for responsive content
+  const [visibleColumns, setVisibleColumns] = useState<FooterColumn[]>(columns);
+  const [visibleSocialLinks, setVisibleSocialLinks] =
+    useState<SocialLink[]>(socialLinks);
+  const [currentLayout, setCurrentLayout] = useState<"stacked" | "grid">(
+    "grid"
+  );
+
+  // Enhanced responsive classes with device-specific sizing
+  const containerPaddingClass = useResponsiveClasses(
+    {
+      mobile: "px-4 py-12",
+      tablet: "px-6 py-14",
+      desktop: "px-4 py-16",
+    },
+    "px-4 py-12 md:px-6 md:py-14 lg:px-4 lg:py-16"
+  );
+
+  const textSizeClass = useResponsiveClasses(
+    {
+      mobile: "text-sm",
+      tablet: "text-base",
+      desktop: "text-base",
+    },
+    "text-sm md:text-base"
+  );
+
+  const headingSizeClass = useResponsiveClasses(
+    {
+      mobile: "text-xs",
+      tablet: "text-sm",
+      desktop: "text-sm",
+    },
+    "text-xs md:text-sm"
+  );
+
+  const companyNameSizeClass = useResponsiveClasses(
+    {
+      mobile: "text-lg",
+      tablet: "text-xl",
+      desktop: "text-xl",
+    },
+    "text-lg md:text-xl"
+  );
+
+  const logoSizeClass = useResponsiveClasses(
+    {
+      mobile: "h-8 w-8",
+      tablet: "h-10 w-10",
+      desktop: "h-10 w-10",
+    },
+    "h-8 w-8 md:h-10 md:w-10"
+  );
+
+  const socialIconSizeClass = useResponsiveClasses(
+    {
+      mobile: "w-8 h-8",
+      tablet: "w-9 h-9",
+      desktop: "w-9 h-9",
+    },
+    "w-8 h-8 md:w-9 md:h-9"
+  );
+
+  const gapClass = useResponsiveClasses(
+    {
+      mobile: "gap-6",
+      tablet: "gap-8",
+      desktop: "gap-8",
+    },
+    "gap-6 md:gap-8"
+  );
+
+  // Responsive layout management
+  useEffect(() => {
+    if (deviceView?.isPreviewMode) {
+      const activeDevice = deviceView.activeDevice;
+
+      switch (activeDevice) {
+        case "mobile":
+          // Mobile: Stack everything vertically, limit columns and social links
+          setCurrentLayout("stacked");
+          setVisibleColumns(columns.slice(0, 2)); // Show only first 2 columns
+          setVisibleSocialLinks(socialLinks.slice(0, 4)); // Show only first 4 social links
+          break;
+
+        case "tablet":
+          // Tablet: Use grid but with fewer columns
+          setCurrentLayout("grid");
+          setVisibleColumns(columns.slice(0, 3)); // Show first 3 columns
+          setVisibleSocialLinks(socialLinks); // Show all social links
+          break;
+
+        case "desktop":
+        default:
+          // Desktop: Show everything
+          setCurrentLayout("grid");
+          setVisibleColumns(columns);
+          setVisibleSocialLinks(socialLinks);
+          break;
+      }
+    } else {
+      // Default responsive behavior
+      setCurrentLayout("grid");
+      setVisibleColumns(columns);
+      setVisibleSocialLinks(socialLinks);
+    }
+  }, [
+    deviceView?.activeDevice,
+    deviceView?.isPreviewMode,
+    columns,
+    socialLinks,
+  ]);
 
   // Extract theme colors
   const colors = extractThemeColors(themeColors);
 
   // Get style based on selected theme
   const getFooterStyles = () => {
-    // Default styles for each theme
     const styleMap = {
       light: {
         background: backgroundColor || colors.background.primary,
@@ -348,6 +463,82 @@ export default function Footer({
 
   const styles = getFooterStyles();
 
+  // Device-aware column grid class
+  const getColumnGridClass = () => {
+    if (deviceView?.isPreviewMode) {
+      switch (deviceView.activeDevice) {
+        case "mobile":
+          return "grid-cols-1";
+        case "tablet":
+          return "grid-cols-2";
+        case "desktop":
+          return "grid-cols-3";
+        default:
+          return "grid-cols-3";
+      }
+    }
+    return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
+  };
+
+  // Device-aware main grid class
+  const getMainGridClass = () => {
+    if (currentLayout === "stacked") {
+      return "grid grid-cols-1 gap-8";
+    }
+
+    if (deviceView?.isPreviewMode) {
+      switch (deviceView.activeDevice) {
+        case "mobile":
+          return "grid grid-cols-1 gap-6";
+        case "tablet":
+          return "grid grid-cols-1 md:grid-cols-2 gap-8";
+        case "desktop":
+          return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8";
+        default:
+          return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8";
+      }
+    }
+    return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8";
+  };
+
+  // Device-aware company section span
+  const getCompanySectionSpan = () => {
+    if (currentLayout === "stacked") return "";
+
+    if (deviceView?.isPreviewMode && deviceView.activeDevice === "desktop") {
+      return "lg:col-span-4";
+    }
+    return "lg:col-span-4";
+  };
+
+  // Device-aware links section span
+  const getLinksSectionSpan = () => {
+    if (currentLayout === "stacked") return "";
+
+    if (deviceView?.isPreviewMode && deviceView.activeDevice === "desktop") {
+      return showNewsletter ? "lg:col-span-5" : "lg:col-span-8";
+    }
+    return showNewsletter ? "lg:col-span-5" : "lg:col-span-8";
+  };
+
+  // Device-aware newsletter section span
+  const getNewsletterSectionSpan = () => {
+    if (currentLayout === "stacked") return "";
+
+    if (deviceView?.isPreviewMode && deviceView.activeDevice === "desktop") {
+      return "lg:col-span-3";
+    }
+    return "lg:col-span-3";
+  };
+
+  // Device-aware bottom bar layout
+  const getBottomBarClass = () => {
+    if (deviceView?.isPreviewMode && deviceView.activeDevice === "mobile") {
+      return "flex flex-col justify-center items-center text-center gap-4";
+    }
+    return "flex flex-col md:flex-row justify-between items-center gap-4";
+  };
+
   // Handle newsletter submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -355,9 +546,12 @@ export default function Footer({
     setEmail("");
   };
 
-  // Social media icon component
+  // Social media icon component with responsive sizing
   const SocialIcon = ({ platform }: { platform: string }) => {
-    const iconSize = 20;
+    const iconSize =
+      deviceView?.isPreviewMode && deviceView.activeDevice === "mobile"
+        ? 18
+        : 20;
     const iconColor = styles.text;
 
     const renderIcon = () => {
@@ -521,28 +715,35 @@ export default function Footer({
     return renderIcon();
   };
 
-  // Wave SVG divider
-  const WaveDivider = () => (
-    <div className="absolute top-0 left-0 w-full overflow-hidden leading-[0] rotate-180">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 1200 120"
-        preserveAspectRatio="none"
-        className="relative block w-full h-[60px]"
-        style={{ fill: styles.wave }}
-      >
-        <path
-          d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
-          opacity=".25"
-        ></path>
-        <path
-          d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z"
-          opacity=".5"
-        ></path>
-        <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"></path>
-      </svg>
-    </div>
-  );
+  // Wave SVG divider with responsive height
+  const WaveDivider = () => {
+    const waveHeight =
+      deviceView?.isPreviewMode && deviceView.activeDevice === "mobile"
+        ? "40px"
+        : "60px";
+
+    return (
+      <div className="absolute top-0 left-0 w-full overflow-hidden leading-[0] rotate-180">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+          className="relative block w-full"
+          style={{ height: waveHeight, fill: styles.wave }}
+        >
+          <path
+            d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
+            opacity=".25"
+          ></path>
+          <path
+            d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z"
+            opacity=".5"
+          ></path>
+          <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"></path>
+        </svg>
+      </div>
+    );
+  };
 
   return (
     <footer
@@ -557,13 +758,13 @@ export default function Footer({
       {/* Wave Divider */}
       {showWave && <WaveDivider />}
 
-      <div className="container mx-auto px-4 py-16 relative">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8">
+      <div className={cn("container mx-auto relative", containerPaddingClass)}>
+        <div className={getMainGridClass()}>
           {/* Company Info */}
-          <div className="lg:col-span-4 space-y-6">
+          <div className={cn("space-y-6", getCompanySectionSpan())}>
             <div className="flex items-center gap-3">
               {logoUrl && (
-                <div className="h-10 w-auto relative">
+                <div className={cn("relative", logoSizeClass)}>
                   <Image
                     src={logoUrl}
                     alt={companyName}
@@ -575,7 +776,7 @@ export default function Footer({
               )}
               <ThemedHeading
                 level={3}
-                className="text-xl font-bold"
+                className={cn("font-bold", companyNameSizeClass)}
                 colors={colors}
                 style={{ color: styles.text }}
               >
@@ -585,7 +786,7 @@ export default function Footer({
 
             <ThemedText
               variant="secondary"
-              className="text-sm"
+              className={textSizeClass}
               colors={colors}
               style={{ color: styles.secondaryText }}
             >
@@ -594,13 +795,16 @@ export default function Footer({
 
             {/* Social Links */}
             <div className="flex flex-wrap gap-3">
-              {socialLinks.map((social, index) => (
+              {visibleSocialLinks.map((social, index) => (
                 <a
                   key={index}
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 flex items-center justify-center rounded-full border transition-all hover:scale-110"
+                  className={cn(
+                    "flex items-center justify-center rounded-full border transition-all hover:scale-110",
+                    socialIconSizeClass
+                  )}
                   style={{ borderColor: styles.border }}
                   aria-label={social.platform}
                 >
@@ -615,12 +819,22 @@ export default function Footer({
           </div>
 
           {/* Footer Columns */}
-          <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-3 gap-8">
-            {columns.map((column, index) => (
+          <div
+            className={cn(
+              "grid",
+              getColumnGridClass(),
+              gapClass,
+              getLinksSectionSpan()
+            )}
+          >
+            {visibleColumns.map((column, index) => (
               <div key={index} className="space-y-4">
                 <ThemedHeading
                   level={4}
-                  className="text-sm font-semibold uppercase tracking-wider"
+                  className={cn(
+                    "font-semibold uppercase tracking-wider",
+                    headingSizeClass
+                  )}
                   colors={colors}
                   style={{ color: styles.text }}
                 >
@@ -631,10 +845,11 @@ export default function Footer({
                     <li key={linkIndex}>
                       <Link
                         href={link.url}
-                        className="text-sm hover:translate-x-1 transition-transform inline-block"
+                        className="hover:translate-x-1 transition-transform inline-block"
                       >
                         <ThemedText
                           variant="secondary"
+                          className={textSizeClass}
                           colors={colors}
                           style={{ color: styles.secondaryText }}
                         >
@@ -650,10 +865,13 @@ export default function Footer({
 
           {/* Newsletter */}
           {showNewsletter && (
-            <div className="lg:col-span-3 space-y-4">
+            <div className={cn("space-y-4", getNewsletterSectionSpan())}>
               <ThemedHeading
                 level={4}
-                className="text-sm font-semibold uppercase tracking-wider"
+                className={cn(
+                  "font-semibold uppercase tracking-wider",
+                  headingSizeClass
+                )}
                 colors={colors}
                 style={{ color: styles.text }}
               >
@@ -661,7 +879,7 @@ export default function Footer({
               </ThemedHeading>
               <ThemedText
                 variant="secondary"
-                className="text-sm"
+                className={textSizeClass}
                 colors={colors}
                 style={{ color: styles.secondaryText }}
               >
@@ -674,7 +892,13 @@ export default function Footer({
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full px-3 py-2 text-sm rounded-md focus:outline-none focus:ring-2 transition-colors"
+                  className={cn(
+                    "w-full px-3 py-2 rounded-md focus:outline-none focus:ring-2 transition-colors",
+                    deviceView?.isPreviewMode &&
+                      deviceView.activeDevice === "mobile"
+                      ? "text-sm"
+                      : "text-sm"
+                  )}
                   style={{
                     backgroundColor: "rgba(255,255,255,0.1)",
                     borderColor: styles.border,
@@ -684,7 +908,12 @@ export default function Footer({
                 <ThemedButton
                   type="submit"
                   variant={style === "light" ? "primary" : "tertiary"}
-                  size="sm"
+                  size={
+                    deviceView?.isPreviewMode &&
+                    deviceView.activeDevice === "mobile"
+                      ? "sm"
+                      : "sm"
+                  }
                   className="w-full"
                   colors={colors}
                 >
@@ -697,27 +926,37 @@ export default function Footer({
 
         {/* Bottom Bar */}
         <div
-          className="flex flex-col md:flex-row justify-between items-center mt-16 pt-8 gap-4"
+          className={cn(
+            "mt-16 pt-8",
+            deviceView?.isPreviewMode && deviceView.activeDevice === "mobile"
+              ? "mt-12 pt-6"
+              : "",
+            getBottomBarClass()
+          )}
           style={{ borderTop: `1px solid ${styles.border}` }}
         >
           <ThemedText
             variant="secondary"
-            className="text-sm"
+            className={textSizeClass}
             colors={colors}
             style={{ color: styles.secondaryText }}
           >
             {copyrightText.replace("Your Company", companyName)}
           </ThemedText>
 
-          <div className="flex flex-wrap justify-center gap-6">
+          <div
+            className={cn(
+              "flex gap-6",
+              deviceView?.isPreviewMode && deviceView.activeDevice === "mobile"
+                ? "flex-col items-center gap-3"
+                : "flex-wrap justify-center"
+            )}
+          >
             {legalLinks.map((link, index) => (
-              <Link
-                key={index}
-                href={link.url}
-                className="text-sm hover:underline"
-              >
+              <Link key={index} href={link.url} className="hover:underline">
                 <ThemedText
                   variant="secondary"
+                  className={textSizeClass}
                   colors={colors}
                   style={{ color: styles.secondaryText }}
                 >

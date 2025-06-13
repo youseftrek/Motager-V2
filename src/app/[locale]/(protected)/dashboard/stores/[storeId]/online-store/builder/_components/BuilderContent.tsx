@@ -7,6 +7,8 @@ import { useBuilder } from "@/providers/builder-context-provider";
 import { Reorder, motion, useDragControls } from "framer-motion";
 import { ThemeProvider } from "@/components/themes/minimal-theme/settings/ThemeContext";
 import { MINIMAL_THEME_SETTINGS } from "@/components/themes/minimal-theme/settings";
+import { useDeviceView } from "@/providers/device-view-context";
+import { cn } from "@/lib/utils";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const DraggableSection = ({ section, Component }: any) => {
@@ -83,6 +85,7 @@ const DraggableSection = ({ section, Component }: any) => {
 
 export const BuilderContent = () => {
   const { state, dispatch } = useBuilder();
+  const { activeDevice } = useDeviceView();
   const sections = state.selectedPage?.body || [];
 
   const handleReorder = (reorderedSections: typeof sections) => {
@@ -92,30 +95,51 @@ export const BuilderContent = () => {
     });
   };
 
+  const getDeviceWidth = () => {
+    switch (activeDevice) {
+      case "mobile":
+        return "max-w-[375px]";
+      case "tablet":
+        return "max-w-[768px]";
+      case "desktop":
+        return "max-w-full";
+      default:
+        return "max-w-full";
+    }
+  };
+
   return (
     <ThemeProvider>
-      <Reorder.Group
-        axis="y"
-        values={sections}
-        onReorder={handleReorder}
-        className="flex flex-col gap-4"
-      >
-        {sections.length ? (
-          sections.map((section) => (
-            <DraggableSection
-              key={section.id}
-              section={section}
-              Component={state.loadedComponents[section.type]}
-            />
-          ))
-        ) : (
-          <div className="flex flex-col justify-center items-center w-f h-[calc(100vh-100px)] lg:h-[calc(100vh-130px)]">
-            <LayoutTemplate size={100} />
-            <h3 className="font-semibold text-2xl">Empty Tamplate</h3>
-            <p className="text-muted-foreground">Start building your theme</p>
-          </div>
-        )}
-      </Reorder.Group>
+      <div className="flex justify-center w-full">
+        <div
+          className={cn("w-full transition-all duration-300", getDeviceWidth())}
+        >
+          <Reorder.Group
+            axis="y"
+            values={sections}
+            onReorder={handleReorder}
+            className="flex flex-col gap-4"
+          >
+            {sections.length ? (
+              sections.map((section) => (
+                <DraggableSection
+                  key={section.id}
+                  section={section}
+                  Component={state.loadedComponents[section.type]}
+                />
+              ))
+            ) : (
+              <div className="flex flex-col justify-center items-center w-full h-[calc(100vh-100px)] lg:h-[calc(100vh-130px)]">
+                <LayoutTemplate size={100} />
+                <h3 className="font-semibold text-2xl">Empty Template</h3>
+                <p className="text-muted-foreground">
+                  Start building your theme
+                </p>
+              </div>
+            )}
+          </Reorder.Group>
+        </div>
+      </div>
     </ThemeProvider>
   );
 };

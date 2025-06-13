@@ -20,9 +20,15 @@ import {
   ChevronRight,
   ChevronLeft,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { extractThemeColors } from "../theme-utils";
 import { ThemedButton, ThemedHeading, ThemedText } from "../theme-components";
+import {
+  useResponsiveClasses,
+  padding,
+  textSize,
+} from "@/hooks/use-responsive-classes";
+import { useDeviceView } from "@/providers/device-view-context";
 
 // Add custom CSS for pagination
 import "./swiper-custom.css";
@@ -220,6 +226,11 @@ export default function BestSellersSlider({
   themeColors,
 }: BestSellersSliderProps) {
   const [likedProducts, setLikedProducts] = useState<number[]>([]);
+  const deviceView = useDeviceView();
+  const swiperRef = useRef<any>(null);
+  const [slidesPerView, setSlidesPerView] = useState<number | undefined>(
+    undefined
+  );
 
   // Extract theme colors
   const colors = extractThemeColors(themeColors);
@@ -234,6 +245,38 @@ export default function BestSellersSlider({
   const bgColor = backgroundColor || primaryBg;
   const txtColor = textColor || primaryText;
   const bulletClr = bulletColor || colors.buttons.primary.background;
+
+  // Update slides per view when device changes
+  useEffect(() => {
+    if (deviceView?.isPreviewMode) {
+      let newSlidesPerView: number;
+
+      switch (deviceView.activeDevice) {
+        case "mobile":
+          newSlidesPerView = 1;
+          break;
+        case "tablet":
+          newSlidesPerView = 2;
+          break;
+        case "desktop":
+        default:
+          newSlidesPerView = 4;
+          break;
+      }
+
+      setSlidesPerView(newSlidesPerView);
+
+      // Force swiper to update
+      if (swiperRef.current && swiperRef.current.swiper) {
+        setTimeout(() => {
+          swiperRef.current.swiper.params.slidesPerView = newSlidesPerView;
+          swiperRef.current.swiper.update();
+        }, 0);
+      }
+    } else {
+      setSlidesPerView(undefined);
+    }
+  }, [deviceView?.activeDevice, deviceView?.isPreviewMode]);
 
   const toggleLike = (productId: number) => {
     setLikedProducts((prev) =>
@@ -337,9 +380,10 @@ export default function BestSellersSlider({
           )}
 
           <Swiper
+            ref={swiperRef}
             modules={[Navigation, Pagination, Autoplay, EffectCreative]}
             spaceBetween={20}
-            slidesPerView={1}
+            slidesPerView={slidesPerView}
             navigation={{
               nextEl: ".swiper-button-next",
               prevEl: ".swiper-button-prev",
@@ -361,17 +405,21 @@ export default function BestSellersSlider({
                   }
                 : false
             }
-            breakpoints={{
-              640: {
-                slidesPerView: 2,
-              },
-              768: {
-                slidesPerView: 3,
-              },
-              1024: {
-                slidesPerView: 4,
-              },
-            }}
+            breakpoints={
+              !deviceView?.isPreviewMode
+                ? {
+                    640: {
+                      slidesPerView: 2,
+                    },
+                    768: {
+                      slidesPerView: 3,
+                    },
+                    1024: {
+                      slidesPerView: 4,
+                    },
+                  }
+                : undefined
+            }
             {...getSwiperEffect()}
             className="mb-8"
           >

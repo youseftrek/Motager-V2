@@ -40,17 +40,18 @@ const SignUpForm = () => {
       address: "",
     },
   });
-  const [register , {data , isLoading , isError}] = useRegisterUserMutation();
+  const [register, { data, isLoading, isError }] = useRegisterUserMutation();
 
   async function onSubmit(values: z.infer<typeof UserRegisterSchema>) {
-      try {
-        const res = await register(values);
-        if (res.data) {
-          router.push(PROTECTED_ROUTES.STORES);
-        }
-      } catch (error) {
-        toast.error("An unexpected error occurred.");
+    try {
+      const res = await register(values);
+      if (res.data) {
+        router.push(PROTECTED_ROUTES.STORES);
+        toast.success("User registered successfully");
       }
+    } catch (error) {
+      toast.error("An unexpected error occurred.");
+    }
   }
 
   return (

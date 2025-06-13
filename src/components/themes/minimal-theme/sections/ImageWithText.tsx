@@ -1,10 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { extractThemeColors } from "../theme-utils";
 import { ThemedButton, ThemedHeading, ThemedText } from "../theme-components";
 import { ArrowRight, ChevronRight } from "lucide-react";
+import { useDeviceView } from "@/providers/device-view-context";
+import { useResponsiveClasses } from "@/hooks/use-responsive-classes";
 
 export type ImageObject = {
   src: string;
@@ -171,6 +173,10 @@ export default function ImageWithText({
   // Theme colors
   themeColors,
 }: ImageWithTextProps) {
+  // Get device view context
+  const deviceView = useDeviceView();
+  const [currentLayout, setCurrentLayout] = useState(layout);
+
   // Extract theme colors
   const colors = extractThemeColors(themeColors);
 
@@ -179,8 +185,50 @@ export default function ImageWithText({
   const imageAltText =
     typeof imageUrl === "string" ? imageAlt : imageUrl.alt || imageAlt;
 
+  // Use responsive classes
+  const titleSizeClass = useResponsiveClasses(
+    {
+      mobile: "text-2xl",
+      tablet: "text-3xl",
+      desktop: "text-4xl",
+    },
+    "text-2xl md:text-3xl lg:text-4xl"
+  );
+
+  const descriptionSizeClass = useResponsiveClasses(
+    {
+      mobile: "text-base",
+      tablet: "text-lg",
+      desktop: "text-lg",
+    },
+    "text-base md:text-lg"
+  );
+
+  // Update layout based on device view in preview mode
+  useEffect(() => {
+    if (deviceView?.isPreviewMode) {
+      // For mobile devices, force stacked layout for better mobile experience
+      if (
+        deviceView.activeDevice === "mobile" &&
+        layout !== "overlay" &&
+        layout !== "parallax"
+      ) {
+        setCurrentLayout("stacked");
+      } else {
+        setCurrentLayout(layout);
+      }
+    } else {
+      setCurrentLayout(layout);
+    }
+  }, [deviceView?.activeDevice, deviceView?.isPreviewMode, layout]);
+
   // Get image height class
   const getImageHeightClass = () => {
+    // Adjust height based on device in preview mode
+    if (deviceView?.isPreviewMode && deviceView.activeDevice === "mobile") {
+      return "h-[250px]";
+    }
+
     switch (imageHeight) {
       case "small":
         return "h-[300px]";
@@ -293,7 +341,7 @@ export default function ImageWithText({
 
       <ThemedHeading
         level={2}
-        className="text-3xl md:text-4xl lg:text-5xl font-bold"
+        className={`font-bold ${titleSizeClass}`}
         colors={colors}
         style={isOverlay ? { color: "#ffffff" } : {}}
       >
@@ -302,7 +350,7 @@ export default function ImageWithText({
 
       <ThemedText
         variant={isOverlay ? "inverted" : "secondary"}
-        className="text-base md:text-lg leading-relaxed max-w-xl"
+        className={`leading-relaxed max-w-xl ${descriptionSizeClass}`}
         colors={colors}
       >
         {description}
@@ -340,7 +388,7 @@ export default function ImageWithText({
 
   // Render different layouts
   const renderLayout = () => {
-    switch (layout) {
+    switch (currentLayout) {
       case "overlay":
         return (
           <div className="relative w-full overflow-hidden rounded-lg">
