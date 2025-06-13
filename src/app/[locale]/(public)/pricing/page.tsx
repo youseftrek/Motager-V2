@@ -4,6 +4,11 @@ import { getPlans } from "@/data/plans";
 import { getUser } from "@/data/user";
 import { getSession } from "@/actions/getSession";
 
+export const metadata = {
+  title: "Pricing Plans | Motager",
+  description: "Choose the perfect plan for your business needs",
+};
+
 const Pricing = async () => {
   const plans = await getPlans();
   const userSession = await getSession();
@@ -11,10 +16,11 @@ const Pricing = async () => {
     String(userSession.user?.user_id),
     userSession.token ?? ""
   );
+
   return (
-    <div>
+    <main>
       <PricingPage plans={plans} user={user} />
-    </div>
+    </main>
   );
 };
 
