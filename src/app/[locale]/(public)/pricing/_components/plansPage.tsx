@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Check, Sparkles, Zap, Shield, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
@@ -143,7 +143,12 @@ export default function PricingPage({
         )}
 
         {isUserPlan && (
-          <Badge className="absolute top-1 right-1">Current Plan</Badge>
+          <Badge
+            variant="secondary"
+            className="absolute border-primary top-1 right-1"
+          >
+            Current Plan
+          </Badge>
         )}
 
         <div className={cn("p-8", isPopular && "pt-12")}>

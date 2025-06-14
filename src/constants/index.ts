@@ -20,7 +20,7 @@ export const PUBLIC_ROUTES = {
   DOCS: "/docs",
   LOGIN: "/auth/login",
   SIGNUP: "/auth/sign-up",
-  CONTACT:"/contact"
+  CONTACT: "/contact",
 };
 
 export const LANDING_PAGE_NAV_LINKS = [
@@ -51,7 +51,7 @@ export const LANDING_PAGE_NAV_LINKS = [
   },
 ];
 
-export const BASE_URL = "http://localhost:8080";
+export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const PROTECTED_ROUTES = {
   DASHBOARD: "/dashboard",
@@ -65,6 +65,7 @@ export const PROTECTED_ROUTES = {
   DISCOUNTS: "/discounts",
   SETTINGS: "/settings",
   ONLINE_STORE: "/online-store",
+  PRICING: "/pricing",
 };
 
 export const DASHBOARD_SIDEBAR_LINKS_DASGBOARDLINKS = [

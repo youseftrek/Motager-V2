@@ -22,6 +22,7 @@ export default function VariantsStep() {
     addVariantValue,
     removeVariantValue,
     updateVariantValue,
+    generateVariantCombinations,
   } = useProductForm();
   const [newVariantName, setNewVariantName] = useState("");
   const [newVariantValues, setNewVariantValues] = useState<
@@ -51,6 +52,11 @@ export default function VariantsStep() {
 
     addVariantValue(variantIndex, value);
 
+    // Regenerate variant combinations when adding a new value
+    if (formData.variants.some((v) => v.values.length > 0)) {
+      setTimeout(generateVariantCombinations, 0);
+    }
+
     // Clear input field
     setNewVariantValues((prev) => ({
       ...prev,
@@ -75,6 +81,9 @@ export default function VariantsStep() {
 
     // Add the color as a variant value
     addVariantValue(variantIndex, customColor);
+
+    // Regenerate variant combinations
+    setTimeout(generateVariantCombinations, 0);
   };
 
   // Start editing a color
@@ -109,6 +118,9 @@ export default function VariantsStep() {
       editingColor.valueIndex,
       customColor
     );
+
+    // Regenerate variant combinations
+    setTimeout(generateVariantCombinations, 0);
 
     // Reset editing state
     setEditingColor(null);

@@ -16,6 +16,7 @@ export type VariantCombination = {
   cost_per_item: number;
   profit: number;
   margin: number;
+  image_url?: string;
 };
 
 export type ProductFormData = {
@@ -25,13 +26,23 @@ export type ProductFormData = {
   published: boolean;
   startPrice: number;
   category: {
-    id:number;
+    id: number;
   };
   has_variants: boolean;
-  main_image_url:string;
+  main_image_url: string;
   images_url: string[]; // URLs to media files
   variants: Variant[];
   variant_combinations: VariantCombination[];
+  skus?: {
+    stock: number;
+    price: number;
+    compare_at_price: number;
+    cost_per_item: number;
+    profit: number;
+    margin: number;
+    image_url?: string;
+    variants?: { name: string; value: string }[];
+  }[];
 };
 
 const initialFormData: ProductFormData = {
@@ -40,14 +51,26 @@ const initialFormData: ProductFormData = {
   description: "",
   published: true,
   startPrice: 0,
-  main_image_url:"",
+  main_image_url: "",
   category: {
-    id: 0, 
+    id: 0,
   },
   has_variants: false,
   images_url: [],
   variants: [],
-  variant_combinations: [],
+  variant_combinations: [
+    {
+      id: "single",
+      combination: {},
+      stock: 0,
+      price: 0,
+      compare_at_price: 0,
+      cost_per_item: 0,
+      profit: 0,
+      margin: 0,
+    },
+  ],
+  skus: [],
 };
 
 type ProductFormContextType = {
@@ -245,6 +268,24 @@ export function ProductFormProvider({ children }: { children: ReactNode }) {
     if (currentStep < totalSteps - 1) {
       // If we're on step 1 (variants) and has_variants is false, skip to step 3 (review)
       if (currentStep === 0 && !formData.has_variants) {
+        // Ensure we have at least one variant combination for non-variant products
+        if (formData.variant_combinations.length === 0) {
+          setFormData((prev) => ({
+            ...prev,
+            variant_combinations: [
+              {
+                id: "single",
+                combination: {},
+                stock: 0,
+                price: prev.startPrice,
+                compare_at_price: 0,
+                cost_per_item: 0,
+                profit: 0,
+                margin: 0,
+              },
+            ],
+          }));
+        }
         setCurrentStep(2);
       } else if (currentStep === 1) {
         // Generate variant combinations when moving from variants to SKUs step

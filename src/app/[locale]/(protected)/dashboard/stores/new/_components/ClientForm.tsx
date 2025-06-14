@@ -79,7 +79,7 @@ const ClientForm = ({ categories, token }: Props) => {
 
   const onSubmit = async (data: StoreSchemaFields) => {
     try {
-      const response = await createStore(data, token);      
+      const response = await createStore(data, token);
       if (response && response.data) {
         console.log("Store created successfully:", response.data);
         toast.success(t("successMessage"));
@@ -90,7 +90,6 @@ const ClientForm = ({ categories, token }: Props) => {
       toast.error(t("errorMessage"));
     }
   };
-  
 
   return (
     <div className="p-2 md:p-4 h-[calc(100vh-64px)] lg:h-[calc(100vh-70px)]">

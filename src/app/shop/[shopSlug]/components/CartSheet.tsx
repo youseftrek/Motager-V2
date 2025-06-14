@@ -231,13 +231,15 @@ export default function CartSheet({ themeColors }: CartSheetProps) {
                     View Cart
                   </ThemedButton>
                 </Link>
-                <ThemedButton
-                  variant="secondary"
-                  className="w-full"
-                  colors={colors}
-                >
-                  Checkout
-                </ThemedButton>
+                <Link href={`/shop/${shopSlug}/cart/checkout`}>
+                  <ThemedButton
+                    variant="secondary"
+                    className="w-full"
+                    colors={colors}
+                  >
+                    Checkout
+                  </ThemedButton>
+                </Link>
               </div>
             </div>
           </div>

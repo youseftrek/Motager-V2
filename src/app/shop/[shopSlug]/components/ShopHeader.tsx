@@ -37,9 +37,6 @@ export default function ShopHeader({ themeColors }: ShopHeaderProps) {
   const navItems = [
     { name: "Home", href: `/shop/${shopSlug}` },
     { name: "Products", href: `/shop/${shopSlug}/products` },
-    { name: "Collections", href: `/shop/${shopSlug}/collections` },
-    { name: "About", href: `/shop/${shopSlug}/about` },
-    { name: "Contact", href: `/shop/${shopSlug}/contact` },
   ];
 
   return (

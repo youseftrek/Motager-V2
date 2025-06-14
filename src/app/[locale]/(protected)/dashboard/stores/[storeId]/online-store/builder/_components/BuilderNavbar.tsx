@@ -49,7 +49,6 @@ const BuilderNavbar = () => {
         }
       } catch (error) {
         console.error("Failed to fetch theme:", error);
-        toast.error("Failed to load theme");
       } finally {
         setIsLoading(false);
       }
@@ -184,12 +183,7 @@ const BuilderNavbar = () => {
                     <Eye />
                   </Button>
                 </TooltipChildren>
-                <Button
-                  size="sm"
-                  onClick={handleSave}
-                  disabled={!canUndo}
-                  loading={isSaving}
-                >
+                <Button size="sm" onClick={handleSave} loading={isSaving}>
                   {!isSaving && <Save />} Save
                 </Button>
               </div>

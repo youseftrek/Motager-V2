@@ -1,18 +1,28 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Badge } from "@/components/ui/badge"
-import { CheckCircle, Download, Home, User, Calendar, Hash, CreditCard, Mail, Phone } from "lucide-react"
-import { Link } from "@/i18n/routing"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import {
+  CheckCircle,
+  Download,
+  Home,
+  User,
+  Calendar,
+  Hash,
+  CreditCard,
+  Mail,
+  Phone,
+} from "lucide-react";
+import { Link } from "@/i18n/routing";
 
-export default function PaymentSuccessPage({data}:any) {
+export default function PaymentSuccessPage({ data }: any) {
   // Mock transaction data - in real app this would come from props or API
 
   const user = data.data.userPlanPayment.user;
   const plan = data.data.userPlanPayment.plan;
-  const charge = data.data.charge;  
+  const charge = data.data.charge;
   const transactionData = {
     amount: plan.price,
     items: [
@@ -26,17 +36,16 @@ export default function PaymentSuccessPage({data}:any) {
     subtotal: plan.price,
     tax: 0,
     total: plan.price,
-  }
+  };
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp);
-    return date.toLocaleString('en-US', {
-      timeZone: 'UTC',
+    return date.toLocaleString("en-US", {
+      timeZone: "UTC",
       hour12: false,
     });
   };
   return (
     <div className="min-h-screen bg-background">
-
       <main className="container py-8 mx-auto mt-5 ">
         <div className="max-w-4xl mx-auto">
           {/* Success Header */}
@@ -44,10 +53,12 @@ export default function PaymentSuccessPage({data}:any) {
             <div className="inline-flex items-center justify-center w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 rounded-full mb-4">
               <CheckCircle className="w-12 h-12 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">Payment Successful!</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-2">
+              Payment Successful!
+            </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Thank you for choosing Motager! Your payment has been processed successfully and your store features are
-              now active.
+              Thank you for choosing Motager! Your payment has been processed
+              successfully and your store features are now active.
             </p>
           </div>
 
@@ -81,7 +92,9 @@ export default function PaymentSuccessPage({data}:any) {
                     Date & Time
                   </span>
                   <div className="text-right">
-                    <div className="font-medium">{formatDate(charge.transaction.date.completed)}</div>
+                    <div className="font-medium">
+                      {formatDate(charge.transaction.date.completed)}
+                    </div>
                   </div>
                 </div>
 
@@ -90,7 +103,9 @@ export default function PaymentSuccessPage({data}:any) {
                     <CreditCard className="w-4 h-4" />
                     Payment Method
                   </span>
-                  <span className="font-mono">**** **** **** {charge.card.last_four}</span>
+                  <span className="font-mono">
+                    **** **** **** {charge.card.last_four}
+                  </span>
                 </div>
 
                 <div className="flex justify-between items-center">
@@ -122,12 +137,20 @@ export default function PaymentSuccessPage({data}:any) {
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
                           <h4 className="font-medium">{item.name}</h4>
-                          <p className="text-sm text-muted-foreground">{item.description}</p>
-                          <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {item.description}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Qty: {item.quantity}
+                          </p>
                         </div>
-                        <span className="font-medium">{Number(plan.price).toFixed(2)}</span>
+                        <span className="font-medium">
+                          {Number(plan.price).toFixed(2)}
+                        </span>
                       </div>
-                      {index < transactionData.items.length - 1 && <Separator className="mt-3" />}
+                      {index < transactionData.items.length - 1 && (
+                        <Separator className="mt-3" />
+                      )}
                     </div>
                   ))}
 
@@ -136,7 +159,9 @@ export default function PaymentSuccessPage({data}:any) {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>Subtotal</span>
-                      <span>${Number(transactionData.subtotal).toFixed(2)}</span>
+                      <span>
+                        ${Number(transactionData.subtotal).toFixed(2)}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Tax</span>
@@ -156,7 +181,7 @@ export default function PaymentSuccessPage({data}:any) {
           {/* Action Buttons */}
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/dashboard/stores">
-              <Button size="lg" className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white">
+              <Button size="lg" className="w-full sm:w-auto text-white">
                 <User className="w-4 h-4 mr-2" />
                 Go to Dashboard
               </Button>
@@ -165,7 +190,7 @@ export default function PaymentSuccessPage({data}:any) {
             <Button
               variant="outline"
               size="lg"
-              className="w-full sm:w-auto border-emerald-200 hover:bg-emerald-50 dark:border-emerald-800 dark:hover:bg-emerald-900/20"
+              className="w-full sm:w-auto border-primary/20 hover:bg-primary/10"
             >
               <Download className="w-4 h-4 mr-2" />
               Download Receipt
@@ -175,7 +200,7 @@ export default function PaymentSuccessPage({data}:any) {
               <Button
                 variant="ghost"
                 size="lg"
-                className="w-full sm:w-auto hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
+                className="w-full sm:w-auto hover:bg-primary/10"
               >
                 <Home className="w-4 h-4 mr-2" />
                 Return Home
@@ -189,14 +214,15 @@ export default function PaymentSuccessPage({data}:any) {
               <div className="text-center space-y-4">
                 <h3 className="font-semibold text-xl">What's Next?</h3>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  Your Motager Pro features are now active! You'll receive a confirmation email shortly with your
-                  receipt and getting started guide. Ready to build your dream store?
+                  Your Motager Pro features are now active! You'll receive a
+                  confirmation email shortly with your receipt and getting
+                  started guide. Ready to build your dream store?
                 </p>
 
                 <div className="grid gap-4 md:grid-cols-3 mt-6">
-                  <div className="text-center p-4 rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
-                    <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/40 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">1</span>
+                  <div className="text-center p-4 rounded-lg bg-primary/10">
+                    <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <span className="text-primary font-bold">1</span>
                     </div>
                     <h4 className="font-medium mb-1">Set Up Your Store</h4>
                     <p className="text-sm text-muted-foreground">
@@ -204,41 +230,60 @@ export default function PaymentSuccessPage({data}:any) {
                     </p>
                   </div>
 
-                  <div className="text-center p-4 rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
-                    <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/40 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">2</span>
+                  <div className="text-center p-4 rounded-lg bg-primary/10">
+                    <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <span className="text-primary font-bold">2</span>
                     </div>
                     <h4 className="font-medium mb-1">Add Your Products</h4>
-                    <p className="text-sm text-muted-foreground">Upload products and set up your inventory</p>
+                    <p className="text-sm text-muted-foreground">
+                      Upload products and set up your inventory
+                    </p>
                   </div>
 
-                  <div className="text-center p-4 rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
-                    <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/40 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">3</span>
+                  <div className="text-center p-4 rounded-lg bg-primary/10">
+                    <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <span className="text-primary font-bold">3</span>
                     </div>
                     <h4 className="font-medium mb-1">Launch & Sell</h4>
-                    <p className="text-sm text-muted-foreground">Go live and start selling to customers worldwide</p>
+                    <p className="text-sm text-muted-foreground">
+                      Go live and start selling to customers worldwide
+                    </p>
                   </div>
                 </div>
 
                 <div className="pt-4 border-t">
-                  <p className="text-sm text-muted-foreground mb-4">Need help getting started?</p>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Need help getting started?
+                  </p>
                   <div className="flex flex-col sm:flex-row gap-2 justify-center">
                     <Link href="/support">
-                      <Button variant="link" className="text-emerald-600 hover:text-emerald-700">
+                      <Button
+                        variant="link"
+                        className="text-emerald-600 hover:text-emerald-700"
+                      >
                         <Phone className="w-4 h-4 mr-1" />
                         Contact Support
                       </Button>
                     </Link>
-                    <span className="text-muted-foreground hidden sm:inline">•</span>
+                    <span className="text-muted-foreground hidden sm:inline">
+                      •
+                    </span>
                     <Link href="/help">
-                      <Button variant="link" className="text-emerald-600 hover:text-emerald-700">
+                      <Button
+                        variant="link"
+                        className="text-emerald-600 hover:text-emerald-700"
+                      >
                         Help Center
                       </Button>
                     </Link>
-                    <span className="text-muted-foreground hidden sm:inline">•</span>
+                    <span className="text-muted-foreground hidden sm:inline">
+                      •
+                    </span>
                     <Link href="/tutorials">
-                      <Button variant="link" className="text-emerald-600 hover:text-emerald-700">
+                      <Button
+                        variant="link"
+                        className="text-emerald-600 hover:text-emerald-700"
+                      >
                         Video Tutorials
                       </Button>
                     </Link>
@@ -264,5 +309,5 @@ export default function PaymentSuccessPage({data}:any) {
         </div>
       </main>
     </div>
-  )
+  );
 }

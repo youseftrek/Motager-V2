@@ -305,7 +305,7 @@
     "currencyPlaceholder": "اختر العملة",
 
     "descriptionHelp": "قدم وصفًا تفصيليًا لمتجرك لجذب العملاء.",
-    "creating": "جاري الإنشاء...",
+    "creating": "جاري الإنشاء",
     "successMessage": "تم إنشاء المتجر بنجاح!",
     "errorMessage": "فشل إنشاء المتجر. يرجى المحاولة مرة أخرى.",
     "nameRequired": "اسم المتجر مطلوب",

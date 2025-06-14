@@ -1,6 +1,12 @@
 "use client";
 
-import { HelpCircle, LogOut, Store, UserRoundPen } from "lucide-react";
+import {
+  DollarSign,
+  HelpCircle,
+  LogOut,
+  Store,
+  UserRoundPen,
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button, buttonVariants } from "../ui/button";
 import {
@@ -97,6 +103,15 @@ const AvatarMenu = ({ user }: Props) => {
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Link
+            href={`${PROTECTED_ROUTES.PRICING}`}
+            className="flex items-center gap-2 w-full cursor-pointer"
+          >
+            <DollarSign size={18} />
+            <span>Pricing</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link
             href={PROTECTED_ROUTES.DASHBOARD}
             className="flex items-center gap-2 w-full cursor-pointer"
           >
@@ -106,7 +121,7 @@ const AvatarMenu = ({ user }: Props) => {
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Link
-            href='/contact'
+            href="/contact"
             className="flex items-center gap-2 w-full cursor-pointer"
           >
             <HelpCircle size={18} />

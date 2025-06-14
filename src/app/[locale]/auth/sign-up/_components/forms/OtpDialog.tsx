@@ -41,10 +41,13 @@ const OtpDialog = ({ open, email }: Props) => {
     try {
       console.log(email, otp);
 
-      const res = await axios.post("http://localhost:8080/user/verify-email", {
-        email,
-        otp,
-      });
+      const res = await axios.post(
+        process.env.NEXT_PUBLIC_BASE_URL + "/user/verify-email",
+        {
+          email,
+          otp,
+        }
+      );
 
       if (res.status === 200) {
         toast.success("Email verified successfully");
@@ -60,7 +63,9 @@ const OtpDialog = ({ open, email }: Props) => {
 
   const handleResend = async () => {
     try {
-      await axios.post("http://localhost:8080/resend-otp", { email });
+      await axios.post(process.env.NEXT_PUBLIC_BASE_URL + "/resend-otp", {
+        email,
+      });
       toast.success("OTP resent successfully");
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to resend OTP");

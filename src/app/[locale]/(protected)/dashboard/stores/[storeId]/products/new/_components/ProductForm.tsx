@@ -37,11 +37,10 @@ export default function ProductForm({ isModelReady }: Props) {
       }
     } catch (error) {
       console.error("Error submitting product:", error);
-      toast.error("Failed to submit product. Please try again.");
+      toast.error("Failed to create product");
     } finally {
       setIsSubmitting(false);
     }
-  };
 
   // Get the step labels based on whether the product has variants
   const getStepLabel = (step: number) => {
@@ -142,4 +141,5 @@ export default function ProductForm({ isModelReady }: Props) {
       </Card>
     </div>
   );
+  }
 }

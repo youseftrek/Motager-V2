@@ -38,12 +38,6 @@ export async function getTheme(themeId?: string, theme?: Theme) {
         initialValues: [],
         body: [],
       },
-      {
-        name: "Product Page",
-        sections: ["SingleProduct"],
-        initialValues: [],
-        body: [],
-      },
     ],
   };
 

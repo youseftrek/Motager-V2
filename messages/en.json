@@ -31,7 +31,7 @@
       "about": "About",
       "pricing": "Pricing",
       "docs": "Docs",
-      "contact":" Contact"
+      "contact": " Contact"
     },
     "cta": "Login / Signup",
     "MobileMenu": {
@@ -305,7 +305,7 @@
     "currencyPlaceholder": "Select currency",
     "planPlaceholder": "Select a plan",
     "descriptionHelp": "Provide a detailed description of your store to attract customers.",
-    "creating": "Creating...",
+    "creating": "Creating",
     "successMessage": "Store created successfully!",
     "errorMessage": "Failed to create store. Please try again.",
     "nameRequired": "Store name is required",

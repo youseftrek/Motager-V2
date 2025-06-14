@@ -27,6 +27,13 @@ export default function ReviewStep() {
     return yiq >= 128; // Returns true if color is light
   };
 
+  // Get the single SKU for non-variant products
+  const singleSku =
+    !formData.has_variants && formData.variant_combinations.length > 0
+      ? formData.variant_combinations.find((vc) => vc.id === "single") ||
+        formData.variant_combinations[0]
+      : null;
+
   return (
     <div className="space-y-6">
       <h2 className="font-bold text-2xl">Review Product</h2>
@@ -51,9 +58,7 @@ export default function ReviewStep() {
             </div>
             <div>
               <p className="text-muted-foreground text-sm">Starting Price</p>
-              <p className="font-medium">
-                ${formData.startPrice.toFixed(2)}
-              </p>
+              <p className="font-medium">${formData.startPrice.toFixed(2)}</p>
             </div>
             <div>
               <p className="text-muted-foreground text-sm">Status</p>

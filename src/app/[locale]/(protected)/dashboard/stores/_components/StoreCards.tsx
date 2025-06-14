@@ -113,9 +113,15 @@ export default function StoreCards({ stores }: Props) {
 
             <Link href={store.href || "#"} target="_blank">
               <TooltipChildren message={t("storeInfo.visit")}>
-                <Button variant="outline" size="icon" className="h-8 w-8">
+                <a
+                  href={`/shop/${store.slug}`}
+                  target="_blank"
+                  className={cn(
+                    buttonVariants({ size: "icon", variant: "outline" })
+                  )}
+                >
                   <Eye size={16} />
-                </Button>
+                </a>
               </TooltipChildren>
             </Link>
           </CardFooter>

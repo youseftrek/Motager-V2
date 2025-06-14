@@ -38,15 +38,53 @@ export default function BasicInfoStep() {
     const newMedia = [...formData.images_url];
     newMedia.splice(index, 1);
     updateFormData({ images_url: newMedia });
+
+    // Update main_image_url if the first image is removed
+    if (index === 0 && newMedia.length > 0) {
+      updateFormData({ main_image_url: newMedia[0] });
+    } else if (newMedia.length === 0) {
+      updateFormData({ main_image_url: "" });
+    }
   };
 
   const handleAddMedia = (mediaUrls: string[]) => {
     const newMedia = [...formData.images_url, ...mediaUrls];
-    updateFormData({ images_url: newMedia , main_image_url: newMedia[0] || "" });
+    updateFormData({ images_url: newMedia });
+
+    // Set the first image as the main image if there isn't one already
+    if (!formData.main_image_url && newMedia.length > 0) {
+      updateFormData({ main_image_url: newMedia[0] });
+    }
   };
 
   const handleReorderMedia = (newOrder: string[]) => {
-    updateFormData({ images_url: newOrder , main_image_url: newOrder[0] || "" });
+    updateFormData({ images_url: newOrder });
+
+    // Update main_image_url to be the first image in the new order
+    if (newOrder.length > 0) {
+      updateFormData({ main_image_url: newOrder[0] });
+    }
+  };
+
+  const handleVariantsToggle = (checked: boolean) => {
+    updateFormData({
+      has_variants: checked,
+      // Reset variant combinations if toggling off variants
+      variant_combinations: !checked
+        ? [
+            {
+              id: "single",
+              combination: {},
+              stock: 0,
+              price: formData.startPrice,
+              compare_at_price: 0,
+              cost_per_item: 0,
+              profit: 0,
+              margin: 0,
+            },
+          ]
+        : [],
+    });
   };
 
   return (
@@ -183,7 +221,7 @@ export default function BasicInfoStep() {
         <Select
           value={formData.category.id.toString()}
           onValueChange={(value) =>
-            updateFormData({ category:{ id:Number.parseInt(value) }})
+            updateFormData({ category: { id: Number.parseInt(value) } })
           }
         >
           <SelectTrigger>
@@ -219,9 +257,7 @@ export default function BasicInfoStep() {
         <Switch
           id="has_variants"
           checked={formData.has_variants}
-          onCheckedChange={(checked) =>
-            updateFormData({ has_variants: checked })
-          }
+          onCheckedChange={handleVariantsToggle}
         />
         <Label htmlFor="has_variants" className="font-medium">
           This product has multiple options, like different sizes or colors

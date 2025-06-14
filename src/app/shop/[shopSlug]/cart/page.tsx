@@ -316,14 +316,15 @@ export default function CartPage() {
                     </div>
                   </div>
                 </div>
-
-                <ThemedButton
-                  variant="primary"
-                  className="w-full"
-                  colors={colors}
-                >
-                  Proceed to Checkout
-                </ThemedButton>
+                <Link href={`/shop/${shopSlug}/cart/checkout`}>
+                  <ThemedButton
+                    variant="primary"
+                    className="w-full"
+                    colors={colors}
+                  >
+                    Proceed to Checkout
+                  </ThemedButton>
+                </Link>
               </div>
             </div>
           </div>

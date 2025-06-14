@@ -7,7 +7,7 @@ import axios from "axios";
 export async function signup(values: z.infer<typeof UserRegisterSchema>) {
   const { firstName, lastName, email, password, phoneNumber } = values;
 
-  const res = await axios.post("http://localhost:8080/register", {
+  const res = await axios.post(process.env.NEXT_PUBLIC_BASE_URL + "/register", {
     firstName,
     lastName,
     email,
