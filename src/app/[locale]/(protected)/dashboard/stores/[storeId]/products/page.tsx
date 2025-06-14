@@ -25,7 +25,8 @@ const ProductsPage = async ({ params }: PageProps) => {
         showActions
         data={products}
         pageSize={8}
-        defaultHide={["id" , "category" , "published" , "images_url"]}
+        defaultHide={["id" , "category" , "published" , "images_url"  ]}
+        hiddenCols={['collection_ids' , 'has_variants']}
         sortableCols={["products", "name"]}
         ImgCols={["main_image_url"]}
         priority={{ main_image_url: 1 }}

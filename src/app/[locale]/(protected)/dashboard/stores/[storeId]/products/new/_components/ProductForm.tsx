@@ -20,20 +20,20 @@ type Props = {
 };
 
 export default function ProductForm({ isModelReady }: Props) {
-  const { currentStep, nextStep, prevStep, isLastStep, isFirstStep, formData } =
-    useProductForm();
+  const { currentStep, nextStep, prevStep, isLastStep, isFirstStep, formData } =useProductForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {storeId} = useParams();
-  const [createProduct , {data , isLoading}] = useCreateProductMutation();
+  const [createProduct , {data , isLoading , isError}] = useCreateProductMutation();
   const router = useRouter();
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
       console.log("Submitting product data:", formData);
       await createProduct({storeId:Number(storeId) , data:formData});
-      if(data){
+      if(!isError){
         toast.success("Product created successfully");
         router.push(`/dashboard/stores/${storeId}/products`);
+        setIsSubmitting(false)
       }
     } catch (error) {
       console.error("Error submitting product:", error);
@@ -41,6 +41,7 @@ export default function ProductForm({ isModelReady }: Props) {
     } finally {
       setIsSubmitting(false);
     }
+  }
 
   // Get the step labels based on whether the product has variants
   const getStepLabel = (step: number) => {
@@ -141,5 +142,5 @@ export default function ProductForm({ isModelReady }: Props) {
       </Card>
     </div>
   );
-  }
 }
+
