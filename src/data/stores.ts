@@ -58,11 +58,22 @@ export async function createStore(data: any, token: any) {
         },
       }
     );
-    
+
+    const updateTokenResponse = await axios.post(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/refresh`,
+      {
+        ...response.data.tokens,
+      },
+      {
+        headers: { Authorization: `${token}` },
+      }
+    );
+
+    console.log("updateTokenResponse: ", updateTokenResponse);
+
     return response; // return the full response object
   } catch (error: any) {
     console.error("Error creating store:", error);
     throw error; // This ensures the error is caught in onSubmit
   }
 }
-

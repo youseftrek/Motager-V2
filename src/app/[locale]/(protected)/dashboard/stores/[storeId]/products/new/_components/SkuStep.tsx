@@ -59,16 +59,23 @@ export default function SkusStep() {
 
   // If product doesn't have variants, show a simple form for a single SKU
   if (!formData.has_variants) {
-    const singleSku = formData.variant_combinations[0] || {
+    const singleSku = formData.variant_combinations.find(
+      (vc) => vc.id === "single"
+    ) || {
       id: "single",
       combination: {},
       stock: 0,
-      price: formData.starting_at_price,
+      price: formData.startPrice,
       compare_at_price: 0,
       cost_per_item: 0,
       profit: 0,
       margin: 0,
     };
+
+    // If the single SKU doesn't exist in the variant_combinations array, add it
+    if (!formData.variant_combinations.some((vc) => vc.id === "single")) {
+      updateVariantCombination("single", singleSku);
+    }
 
     return (
       <div className="space-y-6">

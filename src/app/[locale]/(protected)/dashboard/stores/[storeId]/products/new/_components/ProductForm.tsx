@@ -21,14 +21,75 @@ export default function ProductForm({ isModelReady }: Props) {
   const { currentStep, nextStep, prevStep, isLastStep, isFirstStep, formData } =
     useProductForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const {storeId} = useParams();
-  const [createProduct , {data , isLoading}] = useCreateProductMutation()
+  const { storeId } = useParams();
+  const [createProduct, { data, isLoading }] = useCreateProductMutation();
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      console.log("Submitting product data:", formData);
-      formData['main_image_url'] = 'https://example.com/storage/products/nike-air-max-270-main.jpg';
-      await createProduct({storeId:Number(storeId) , data:formData})
+      // Basic validation
+      if (
+        !formData.name ||
+        !formData.description ||
+        formData.category.id === 0
+      ) {
+        alert(
+          "Please fill in all required fields: Product Name, Description, and Category"
+        );
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (formData.images_url.length === 0) {
+        alert("Please add at least one product image");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Format data for submission
+      const formattedData = { ...formData };
+
+      // Set main image as the first image if available
+      if (formData.images_url.length > 0) {
+        formattedData.main_image_url = formData.images_url[0];
+      }
+
+      // Convert variant_combinations to skus format
+      formattedData.skus = formData.variant_combinations.map((vc) => {
+        const sku: {
+          stock: number;
+          price: number;
+          compare_at_price: number;
+          cost_per_item: number;
+          profit: number;
+          margin: number;
+          image_url: string;
+          variants?: { name: string; value: string }[];
+        } = {
+          stock: vc.stock,
+          price: vc.price,
+          compare_at_price: vc.compare_at_price,
+          cost_per_item: vc.cost_per_item,
+          profit: vc.profit,
+          margin: vc.margin,
+          image_url:
+            formData.images_url.length > 0 ? formData.images_url[0] : "",
+        };
+
+        // Add variants if the product has variants
+        if (formData.has_variants) {
+          sku.variants = Object.entries(vc.combination).map(
+            ([name, value]) => ({
+              name,
+              value,
+            })
+          );
+        }
+
+        return sku;
+      });
+
+      console.log("Submitting product data:", formattedData);
+      await createProduct({ storeId: Number(storeId), data: formattedData });
       alert("Product submitted successfully!");
     } catch (error) {
       console.error("Error submitting product:", error);
