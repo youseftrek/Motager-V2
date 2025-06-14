@@ -42,11 +42,11 @@ export default function BasicInfoStep() {
 
   const handleAddMedia = (mediaUrls: string[]) => {
     const newMedia = [...formData.images_url, ...mediaUrls];
-    updateFormData({ images_url: newMedia });
+    updateFormData({ images_url: newMedia , main_image_url: newMedia[0] || "" });
   };
 
   const handleReorderMedia = (newOrder: string[]) => {
-    updateFormData({ images_url: newOrder });
+    updateFormData({ images_url: newOrder , main_image_url: newOrder[0] || "" });
   };
 
   return (

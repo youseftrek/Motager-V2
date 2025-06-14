@@ -68,6 +68,8 @@ export function MediaModal({
           data: { publicUrl },
         } = supabase.storage.from(bucketName).getPublicUrl(file.name);
 
+        console.log(imageFiles);
+        
         imageFiles.push({
           id: file.id || file.name,
           name: file.name,
@@ -100,7 +102,8 @@ export function MediaModal({
         const fileName = `${Date.now()}-${Math.random()
           .toString(36)
           .substring(2)}.${fileExt}`;
-
+          console.log(fileName);
+          
         const { data, error } = await supabase.storage
           .from(bucketName)
           .upload(fileName, file, {

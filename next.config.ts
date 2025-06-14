@@ -18,6 +18,10 @@ const nextConfig = {
         protocol: "https" as const,
         hostname: "rfehfdthjyysdkpzspzl.supabase.co",
       },
+      {
+        protocol: "https" as const,
+        hostname: "example.com",
+      },
     ],
   },
   eslint: {

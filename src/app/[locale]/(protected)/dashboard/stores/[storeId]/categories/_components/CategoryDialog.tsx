@@ -30,6 +30,7 @@ import { categorySchema } from "@/validations/category";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { createStoreCategory } from "@/data/categories";
+import { useRouter } from "@/i18n/routing";
 
 type CategoryFormValues = z.infer<typeof categorySchema>;
 
@@ -49,6 +50,7 @@ export default function CategoryDialog({
 }: CategoryDialogProps) {
   const t = useTranslations("CategoriesPage.dialog");
   const [open, setOpen] = useState(false);  
+  const router = useRouter();
   // Set up the form with React Hook Form and Zod resolver
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(categorySchema),
@@ -87,6 +89,7 @@ export default function CategoryDialog({
       await handleCreateCategory(data as { name: string; description: string });
     }
     setOpen(false);
+    router.push(`/dashboard/stores/${id}/categories`);
     form.reset();
   };
 

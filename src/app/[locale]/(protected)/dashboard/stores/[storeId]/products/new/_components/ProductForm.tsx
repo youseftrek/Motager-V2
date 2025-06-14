@@ -12,6 +12,8 @@ import ReviewStep from "./ReviewStep";
 import AiDialogForm from "./AiDialogForm";
 import { useCreateProductMutation } from "@/redux/features/products/productsApi";
 import { useParams } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
+import { toast, Toaster } from "sonner";
 
 type Props = {
   isModelReady: boolean;
@@ -22,17 +24,20 @@ export default function ProductForm({ isModelReady }: Props) {
     useProductForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {storeId} = useParams();
-  const [createProduct , {data , isLoading}] = useCreateProductMutation()
+  const [createProduct , {data , isLoading}] = useCreateProductMutation();
+  const router = useRouter();
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
       console.log("Submitting product data:", formData);
-      formData['main_image_url'] = 'https://example.com/storage/products/nike-air-max-270-main.jpg';
-      await createProduct({storeId:Number(storeId) , data:formData})
-      alert("Product submitted successfully!");
+      await createProduct({storeId:Number(storeId) , data:formData});
+      if(data){
+        toast.success("Product created successfully");
+        router.push(`/dashboard/stores/${storeId}/products`);
+      }
     } catch (error) {
       console.error("Error submitting product:", error);
-      alert("Failed to submit product. Please try again.");
+      toast.error("Failed to submit product. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
