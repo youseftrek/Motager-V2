@@ -52,7 +52,7 @@ export default function VariantsStep() {
 
     addVariantValue(variantIndex, value);
 
-    // Regenerate variant combinations when adding a new value
+    // Regenerate SKUs when adding a new value
     if (formData.variants.some((v) => v.values.length > 0)) {
       setTimeout(generateVariantCombinations, 0);
     }

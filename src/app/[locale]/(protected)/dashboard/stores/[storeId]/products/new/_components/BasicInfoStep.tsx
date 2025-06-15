@@ -20,19 +20,17 @@ import { useProductForm } from "@/providers/product-form";
 import Image from "next/image";
 import MediaUploadModal from "@/components/shared/MediaUpload";
 import ImagePreviewModal from "@/components/shared/ImagePreview";
+import { Category } from "@/types/category";
 
-export default function BasicInfoStep() {
+type Props = {
+  categories: Category[];
+};
+
+export default function BasicInfoStep({ categories }: Props) {
   const { formData, updateFormData } = useProductForm();
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const dragControls = useDragControls();
-
-  // Mock data for categories
-  const categories = [
-    { id: 1, name: "Electronics" },
-    { id: 2, name: "Smartphones" },
-    { id: 3, name: "Accessories" },
-  ];
 
   const handleRemoveMedia = (index: number) => {
     const newMedia = [...formData.images_url];
@@ -69,18 +67,17 @@ export default function BasicInfoStep() {
   const handleVariantsToggle = (checked: boolean) => {
     updateFormData({
       has_variants: checked,
-      // Reset variant combinations if toggling off variants
-      variant_combinations: !checked
+      // Reset skus if toggling off variants
+      skus: !checked
         ? [
             {
-              id: "single",
-              combination: {},
               stock: 0,
               price: formData.startPrice,
               compare_at_price: 0,
               cost_per_item: 0,
               profit: 0,
               margin: 0,
+              variants: [],
             },
           ]
         : [],
@@ -220,9 +217,17 @@ export default function BasicInfoStep() {
         <Label htmlFor="category">Category</Label>
         <Select
           value={formData.category.id.toString()}
-          onValueChange={(value) =>
-            updateFormData({ category: { id: Number.parseInt(value) } })
-          }
+          onValueChange={(value) => {
+            const selectedCategory = categories.find(
+              (c) => c.id.toString() === value
+            );
+            updateFormData({
+              category: {
+                id: Number.parseInt(value),
+                slug: selectedCategory?.slug || "",
+              },
+            });
+          }}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select a category" />
@@ -265,6 +270,7 @@ export default function BasicInfoStep() {
       </div>
 
       <MediaUploadModal
+        storeId={formData.store_id}
         open={isMediaModalOpen}
         onOpenChange={setIsMediaModalOpen}
         handleAddMedia={handleAddMedia}

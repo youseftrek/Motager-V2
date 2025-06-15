@@ -16,16 +16,18 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/utils/supabase";
 import { toast } from "sonner";
-
+import { addImageToStoreGallary } from "@/data/add-image-to-store-gallary";
+import { getStoreMediaGallary } from "@/data/get-store-media-gallary";
+import { useAuth } from "@/hooks";
+// Define MediaFile type locally to ensure it has all required properties
 interface MediaFile {
   id: string;
-  name: string;
-  url: string;
-  size: number;
-  created_at: string;
+  imageUrl: string;
 }
+import Image from "next/image";
 
 interface MediaModalProps {
+  storeId: number;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSelect: (selectedImages: MediaFile[]) => void;
@@ -34,6 +36,7 @@ interface MediaModalProps {
 }
 
 export function MediaModal({
+  storeId,
   open,
   onOpenChange,
   onSelect,
@@ -46,47 +49,33 @@ export function MediaModal({
   const [images, setImages] = useState<MediaFile[]>([]);
   const [selectedImages, setSelectedImages] = useState<MediaFile[]>([]);
   const [uploadedImages, setUploadedImages] = useState<MediaFile[]>([]);
+  const { token } = useAuth();
 
   // Fetch images from Supabase
   const fetchImages = useCallback(async () => {
     setLoading(true);
     try {
-      const { data: files, error } = await supabase.storage
-        .from(bucketName)
-        .list("", {
-          limit: 100,
-          offset: 0,
-          sortBy: { column: "created_at", order: "desc" },
-        });
+      const files = await getStoreMediaGallary(storeId, token!);
 
-      if (error) throw error;
+      // Ensure each file has required properties
+      const imageFiles: MediaFile[] = files.map((file: any) => ({
+        id:
+          file.id ||
+          `file-${Date.now()}-${Math.random().toString(36).substring(2)}`,
+        imageUrl: file.imageUrl || "",
+      }));
 
-      const imageFiles: MediaFile[] = [];
+      // Filter out any images with empty imageUrl
+      const validImageFiles = imageFiles.filter((file) => !!file.imageUrl);
 
-      for (const file of files || []) {
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from(bucketName).getPublicUrl(file.name);
-
-        console.log(imageFiles);
-
-        imageFiles.push({
-          id: file.id || file.name,
-          name: file.name,
-          url: publicUrl,
-          size: file.metadata?.size || 0,
-          created_at: file.created_at || new Date().toISOString(),
-        });
-      }
-
-      setImages(imageFiles);
+      setImages(validImageFiles);
     } catch (error) {
       console.error("Error fetching images:", error);
       toast.error("Failed to fetch images from library");
     } finally {
       setLoading(false);
     }
-  }, [bucketName, toast]);
+  }, [storeId, token, toast]);
 
   // Upload files to Supabase
   const handleFileUpload = async (files: FileList) => {
@@ -119,15 +108,18 @@ export function MediaModal({
 
         uploadedFiles.push({
           id: fileName,
-          name: fileName,
-          url: publicUrl,
-          size: file.size,
-          created_at: new Date().toISOString(),
+          imageUrl: publicUrl,
         });
       }
 
       // Refresh the library
       await fetchImages();
+      const res = await addImageToStoreGallary(
+        storeId,
+        uploadedFiles[0].imageUrl,
+        token!
+      );
+      console.log("THIS IS THE RES:: ", res);
 
       toast.success(`${uploadedFiles.length} file(s) uploaded successfully`);
 
@@ -265,11 +257,15 @@ export function MediaModal({
                         onClick={() => toggleImageSelection(image)}
                       >
                         <div className="aspect-square relative overflow-hidden rounded-t-lg">
-                          <img
-                            src={image.url || "/placeholder.svg"}
-                            alt={image.name}
-                            className="w-full h-full object-cover"
-                          />
+                          <div className="w-full h-full p-1">
+                            <Image
+                              src={image.imageUrl || "/images/noImage.png"}
+                              alt={image.imageUrl || "Image"}
+                              className="w-full h-full object-cover"
+                              width={300}
+                              height={300}
+                            />
+                          </div>
                           {isSelected && (
                             <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
                               <div className="bg-primary text-primary-foreground rounded-full p-1">
@@ -277,14 +273,6 @@ export function MediaModal({
                               </div>
                             </div>
                           )}
-                        </div>
-                        <div className="p-2">
-                          <p className="text-xs font-medium truncate">
-                            {image.name}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {formatFileSize(image.size)}
-                          </p>
                         </div>
                       </Card>
                     );
@@ -361,10 +349,12 @@ export function MediaModal({
                           onClick={() => toggleUploadedImageSelection(image)}
                         >
                           <div className="aspect-square relative overflow-hidden rounded-t-lg">
-                            <img
-                              src={image.url || "/placeholder.svg"}
-                              alt={image.name}
+                            <Image
+                              src={image.imageUrl || "/images/noImage.png"}
+                              alt={image.imageUrl || "Image"}
                               className="w-full h-full object-cover"
+                              width={300}
+                              height={300}
                             />
                             {isSelected && (
                               <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
@@ -376,10 +366,7 @@ export function MediaModal({
                           </div>
                           <div className="p-2">
                             <p className="text-xs font-medium truncate">
-                              {image.name}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {formatFileSize(image.size)}
+                              {image.imageUrl}
                             </p>
                           </div>
                         </Card>

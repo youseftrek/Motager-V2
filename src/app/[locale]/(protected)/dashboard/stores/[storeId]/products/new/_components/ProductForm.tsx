@@ -14,12 +14,14 @@ import { useCreateProductMutation } from "@/redux/features/products/productsApi"
 import { useParams } from "next/navigation";
 import { useRouter } from "@/i18n/routing";
 import { toast } from "sonner";
+import { Category } from "@/types/category";
 
 type Props = {
   isModelReady: boolean;
+  categories: Category[];
 };
 
-export default function ProductForm({ isModelReady }: Props) {
+export default function ProductForm({ isModelReady, categories }: Props) {
   const { currentStep, nextStep, prevStep, isLastStep, isFirstStep, formData } =
     useProductForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,9 +35,9 @@ export default function ProductForm({ isModelReady }: Props) {
       formData.skus = formData.skus.map((sku) => {
         return {
           ...sku,
-          image_url: formData.main_image_url
-        }
-      })
+          image_url: formData.main_image_url,
+        };
+      });
       console.log("Submitting product data:", formData);
       await createProduct({ storeId: Number(storeId), data: formData });
       if (!isError) {
@@ -115,7 +117,7 @@ export default function ProductForm({ isModelReady }: Props) {
       </div>
 
       <Card styled className="relative p-6">
-        {currentStep === 0 && <BasicInfoStep />}
+        {currentStep === 0 && <BasicInfoStep categories={categories} />}
         {currentStep === 1 && <VariantsStep />}
         {currentStep === 2 && <SkusStep />}
         {currentStep === 3 && <ReviewStep />}

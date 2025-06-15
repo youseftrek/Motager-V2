@@ -46,6 +46,7 @@ export type ProductFormData = {
       value: string;
     }[];
   }[];
+  variant_combinations?: VariantCombination[];
 };
 
 const initialFormData: ProductFormData = {
@@ -63,6 +64,7 @@ const initialFormData: ProductFormData = {
   has_variants: false,
   variants: [],
   skus: [],
+  variant_combinations: [],
 };
 
 type ProductFormContextType = {
@@ -80,7 +82,8 @@ type ProductFormContextType = {
     newValue: string
   ) => void;
   generateSkus: () => void;
-  updateSku: (index: number, data: Partial<ProductFormData['skus'][0]>) => void;
+  generateVariantCombinations: () => void;
+  updateSku: (index: number, data: Partial<ProductFormData["skus"][0]>) => void;
   nextStep: () => void;
   prevStep: () => void;
   goToStep: (step: number) => void;
@@ -258,7 +261,59 @@ export function ProductFormProvider({ children }: { children: ReactNode }) {
     }));
   };
 
-  const updateSku = (index: number, data: Partial<ProductFormData['skus'][0]>) => {
+  // Generate variant combinations
+  const generateVariantCombinations = () => {
+    if (formData.variants.length === 0) return;
+
+    // Helper function to generate combinations
+    const generateCombinations = (
+      variants: Variant[],
+      current: Record<string, string> = {},
+      index = 0
+    ): Record<string, string>[] => {
+      if (index === variants.length) {
+        return [current];
+      }
+
+      const variant = variants[index];
+      const combinations: Record<string, string>[] = [];
+
+      for (const value of variant.values) {
+        const newCurrent = { ...current, [variant.name]: value };
+        combinations.push(
+          ...generateCombinations(variants, newCurrent, index + 1)
+        );
+      }
+
+      return combinations;
+    };
+
+    const combinations = generateCombinations(formData.variants);
+
+    // Create variant combinations with default values
+    const variantCombinations = combinations.map((combination, index) => {
+      return {
+        id: `variant-${index}`,
+        combination,
+        stock: 0,
+        price: formData.startPrice,
+        compare_at_price: 0,
+        cost_per_item: 0,
+        profit: 0,
+        margin: 0,
+      };
+    });
+
+    setFormData((prev) => ({
+      ...prev,
+      variant_combinations: variantCombinations,
+    }));
+  };
+
+  const updateSku = (
+    index: number,
+    data: Partial<ProductFormData["skus"][0]>
+  ) => {
     setFormData((prev) => {
       const newSkus = [...prev.skus];
       newSkus[index] = {
@@ -308,6 +363,7 @@ export function ProductFormProvider({ children }: { children: ReactNode }) {
         removeVariantValue,
         updateVariantValue,
         generateSkus,
+        generateVariantCombinations,
         updateSku,
         nextStep,
         prevStep,

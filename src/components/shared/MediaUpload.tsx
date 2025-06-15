@@ -1,20 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { X, ImageIcon } from "lucide-react";
 import { MediaModal } from "../media-modal";
 
-interface MediaFile {
+export interface MediaFile {
   id: string;
-  name: string;
-  url: string;
-  size: number;
-  created_at: string;
+  imageUrl: string;
 }
 
 interface MediaUploadModalProps {
+  storeId: number;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   handleAddMedia: (urls: string[]) => void;
@@ -23,6 +18,7 @@ interface MediaUploadModalProps {
 }
 
 export default function MediaUploadModal({
+  storeId,
   open,
   onOpenChange,
   handleAddMedia,
@@ -35,7 +31,7 @@ export default function MediaUploadModal({
     setSelectedImages(images);
 
     // Extract URLs from the selected images
-    const imageUrls = images.map((img) => img.url);
+    const imageUrls = images.map((img) => img.imageUrl);
 
     // Pass the URLs to the parent component
     handleAddMedia(imageUrls);
@@ -43,6 +39,7 @@ export default function MediaUploadModal({
 
   return (
     <MediaModal
+      storeId={storeId}
       open={open}
       onOpenChange={onOpenChange}
       onSelect={handleImageSelect}
