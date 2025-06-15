@@ -29,9 +29,8 @@ export default function ReviewStep() {
 
   // Get the single SKU for non-variant products
   const singleSku =
-    !formData.has_variants && formData.variant_combinations.length > 0
-      ? formData.variant_combinations.find((vc) => vc.id === "single") ||
-        formData.variant_combinations[0]
+    !formData.has_variants && formData.skus.length > 0
+      ? formData.skus[0]
       : null;
 
   return (
@@ -145,7 +144,7 @@ export default function ReviewStep() {
         </Card>
       )}
 
-      {formData.variant_combinations.length > 0 && (
+      {formData.skus.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>
@@ -154,15 +153,15 @@ export default function ReviewStep() {
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
-              {formData.variant_combinations.map((combination, index) => (
-                <div key={combination.id}>
+              {formData.skus.map((sku, index) => (
+                <div key={index}>
                   {formData.has_variants && (
                     <div className="flex flex-wrap gap-2 mb-4">
-                      {Object.entries(combination.combination).map(
+                        {Object.entries(sku.variants).map(
                         ([name, value]) => {
                           // Check if this is a color variant and value is a hex color
                           const isColorValue =
-                            name.toLowerCase() === "color" && isHexColor(value);
+                            name.toLowerCase() === "color" && isHexColor(value.value);
 
                           return (
                             <Badge
@@ -174,11 +173,11 @@ export default function ReviewStep() {
                               style={
                                 isColorValue
                                   ? {
-                                      backgroundColor: value,
-                                      color: isLightColor(value)
+                                      backgroundColor: value.value,
+                                      color: isLightColor(value.value)
                                         ? "#000"
                                         : "#fff",
-                                      border: isLightColor(value)
+                                      border: isLightColor(value.value)
                                         ? "1px solid #00000022"
                                         : "none",
                                     }
@@ -188,10 +187,10 @@ export default function ReviewStep() {
                               {isColorValue && (
                                 <span
                                   className="inline-block border border-white/40 rounded-full w-3 h-3"
-                                  style={{ backgroundColor: value }}
+                                  style={{ backgroundColor: value.value }}
                                 />
                               )}
-                              {name}: {value}
+                              {name}: {value.value || value.name}
                             </Badge>
                           );
                         }
@@ -202,12 +201,12 @@ export default function ReviewStep() {
                   <div className="gap-4 grid grid-cols-1 md:grid-cols-3 mb-4">
                     <div>
                       <p className="text-muted-foreground text-sm">Stock</p>
-                      <p className="font-medium">{combination.stock}</p>
+                      <p className="font-medium">{sku.stock}</p>
                     </div>
                     <div>
                       <p className="text-muted-foreground text-sm">Price</p>
                       <p className="font-medium">
-                        ${combination.price.toFixed(2)}
+                        ${sku.price.toFixed(2)}
                       </p>
                     </div>
                     <div>
@@ -215,8 +214,8 @@ export default function ReviewStep() {
                         Compare At Price
                       </p>
                       <p className="font-medium">
-                        {combination.compare_at_price > 0
-                          ? `$${combination.compare_at_price.toFixed(2)}`
+                        {sku.compare_at_price > 0
+                          ? `$${sku.compare_at_price.toFixed(2)}`
                           : "-"}
                       </p>
                     </div>
@@ -225,24 +224,24 @@ export default function ReviewStep() {
                         Cost Per Item
                       </p>
                       <p className="font-medium">
-                        ${combination.cost_per_item.toFixed(2)}
+                        ${sku.cost_per_item.toFixed(2)}
                       </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground text-sm">Profit</p>
                       <p className="font-medium">
-                        ${combination.profit.toFixed(2)}
+                        ${sku.profit.toFixed(2)}
                       </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground text-sm">Margin</p>
                       <p className="font-medium">
-                        {combination.margin.toFixed(2)}%
+                        {sku.margin.toFixed(2)}%
                       </p>
                     </div>
                   </div>
 
-                  {index < formData.variant_combinations.length - 1 && (
+                  {index < formData.skus.length - 1 && (
                     <Separator className="my-4" />
                   )}
                 </div>

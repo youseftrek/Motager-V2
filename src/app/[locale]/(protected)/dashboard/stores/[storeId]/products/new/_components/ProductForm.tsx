@@ -28,6 +28,12 @@ export default function ProductForm({ isModelReady }: Props) {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
+      formData.skus = formData.skus.map((sku) => {
+        return {
+          ...sku,
+          image_url: formData.main_image_url
+        }
+      })
       console.log("Submitting product data:", formData);
       await createProduct({storeId:Number(storeId) , data:formData});
       if(!isError){

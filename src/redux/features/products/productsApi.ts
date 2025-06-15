@@ -9,6 +9,10 @@ export const productsApi = baseApi.injectEndpoints({
                 body:data,
             }),
         }),
+
+        getStoreProductsBySlug: build.query<any, {storeSlug:string}>({
+            query: ({storeSlug}) => `/stores/slug/${storeSlug}/products`,
+        })
     }),
 })
-export const {useCreateProductMutation} = productsApi
+export const {useCreateProductMutation ,useGetStoreProductsBySlugQuery } = productsApi

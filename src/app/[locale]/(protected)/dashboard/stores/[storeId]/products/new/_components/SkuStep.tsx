@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { useProductForm, VariantCombination } from "@/providers/product-form";
+import { useProductForm } from "@/providers/product-form";
 import {
   Accordion,
   AccordionContent,
@@ -14,7 +14,7 @@ import {
 import { useTranslations } from "next-intl";
 
 export default function SkusStep() {
-  const { formData, updateVariantCombination } = useProductForm();
+  const { formData, updateSku } = useProductForm();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const t = useTranslations("ProductsPage.skuManagement");
 
@@ -25,18 +25,12 @@ export default function SkusStep() {
   };
 
   const handleInputChange = (
-    id: string,
-    field: keyof VariantCombination,
+    index: number,
+    field: string,
     value: string
   ) => {
     const numValue = Number.parseFloat(value) || 0;
-
-    if (field === "price" || field === "cost_per_item") {
-      // These fields will trigger profit and margin recalculation in the context
-      updateVariantCombination(id, { [field]: numValue });
-    } else {
-      updateVariantCombination(id, { [field]: numValue });
-    }
+    updateSku(index, { [field]: numValue });
   };
 
   // Helper function to determine if a value is a hex color
@@ -59,22 +53,19 @@ export default function SkusStep() {
 
   // If product doesn't have variants, show a simple form for a single SKU
   if (!formData.has_variants) {
-    const singleSku = formData.variant_combinations.find(
-      (vc) => vc.id === "single"
-    ) || {
-      id: "single",
-      combination: {},
+    const singleSku = formData.skus[0] || {
       stock: 0,
       price: formData.startPrice,
       compare_at_price: 0,
       cost_per_item: 0,
       profit: 0,
       margin: 0,
+      variants: [],
     };
 
-    // If the single SKU doesn't exist in the variant_combinations array, add it
-    if (!formData.variant_combinations.some((vc) => vc.id === "single")) {
-      updateVariantCombination("single", singleSku);
+    // If the single SKU doesn't exist in the skus array, add it
+    if (formData.skus.length === 0) {
+      updateSku(0, singleSku);
     }
 
     return (
@@ -89,9 +80,7 @@ export default function SkusStep() {
               type="number"
               value={singleSku.stock || ""}
               onChange={(e) =>
-                updateVariantCombination(singleSku.id, {
-                  stock: Number.parseInt(e.target.value) || 0,
-                })
+                handleInputChange(0, "stock", e.target.value)
               }
             />
           </div>
@@ -103,35 +92,31 @@ export default function SkusStep() {
               step="0.01"
               value={singleSku.price || ""}
               onChange={(e) =>
-                handleInputChange(singleSku.id, "price", e.target.value)
+                handleInputChange(0, "price", e.target.value)
               }
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="compare_price">Compare At Price ($)</Label>
+            <Label htmlFor="compare_at_price">Compare at Price ($)</Label>
             <Input
-              id="compare_price"
+              id="compare_at_price"
               type="number"
               step="0.01"
               value={singleSku.compare_at_price || ""}
               onChange={(e) =>
-                handleInputChange(
-                  singleSku.id,
-                  "compare_at_price",
-                  e.target.value
-                )
+                handleInputChange(0, "compare_at_price", e.target.value)
               }
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="cost">{t("costPerItem")}</Label>
+            <Label htmlFor="cost_per_item">Cost per Item ($)</Label>
             <Input
-              id="cost"
+              id="cost_per_item"
               type="number"
               step="0.01"
               value={singleSku.cost_per_item || ""}
               onChange={(e) =>
-                handleInputChange(singleSku.id, "cost_per_item", e.target.value)
+                handleInputChange(0, "cost_per_item", e.target.value)
               }
             />
           </div>
@@ -160,8 +145,8 @@ export default function SkusStep() {
     );
   }
 
-  // If no variant combinations have been generated yet
-  if (formData.variant_combinations.length === 0) {
+  // If no SKUs have been generated yet
+  if (formData.skus.length === 0) {
     return (
       <div className="space-y-6">
         <h2 className="font-bold text-2xl">{t("title")}</h2>
@@ -180,136 +165,122 @@ export default function SkusStep() {
       </p>
 
       <Accordion type="multiple" value={expandedItems} className="space-y-2">
-        {formData.variant_combinations.map((combination) => (
+        {formData.skus.map((sku, index) => (
           <AccordionItem
-            key={combination.id}
-            value={combination.id}
+            key={index}
+            value={index.toString()}
             className="border rounded-lg"
           >
             <AccordionTrigger
-              onClick={() => handleToggleAccordion(combination.id)}
+              onClick={() => handleToggleAccordion(index.toString())}
               className="px-4 hover:no-underline"
             >
               <div className="flex flex-wrap items-center gap-2 text-left">
-                {Object.entries(combination.combination).map(
-                  ([name, value]) => {
-                    // Check if this is a color variant and the value is a hex color
-                    const isColorValue =
-                      name.toLowerCase() === "color" && isHexColor(value);
-
-                    return (
-                      <Badge
-                        key={name}
-                        variant="outline"
-                        className={`px-2 py-1 flex items-center gap-1.5`}
-                        style={
-                          isColorValue
-                            ? {
-                                backgroundColor: value,
-                                color: isLightColor(value) ? "#000" : "#fff",
-                                border: isLightColor(value)
-                                  ? "1px solid #00000022"
-                                  : "none",
-                              }
-                            : {}
-                        }
-                      >
-                        {/* Show color swatch for color variants */}
-                        {isColorValue && (
-                          <span
-                            className="inline-block border border-white/40 rounded-full w-3 h-3"
-                            style={{ backgroundColor: value }}
-                          />
-                        )}
-                        {name}: {value}
-                      </Badge>
-                    );
-                  }
-                )}
+                {sku.variants.map((variant) => {
+                  const isColorValue = variant.name.toLowerCase() === "color" && isHexColor(variant.value);
+                  return (
+                    <Badge
+                      key={variant.name}
+                      variant="outline"
+                      className={`px-2 py-1 flex items-center gap-1.5`}
+                      style={
+                        isColorValue
+                          ? {
+                              backgroundColor: variant.value,
+                              color: isLightColor(variant.value) ? "#000" : "#fff",
+                              border: isLightColor(variant.value)
+                                ? "1px solid #00000022"
+                                : "none",
+                            }
+                          : {}
+                      }
+                    >
+                      {isColorValue && (
+                        <span
+                          className="inline-block border border-white/40 rounded-full w-3 h-3"
+                          style={{ backgroundColor: variant.value }}
+                        />
+                      )}
+                      {variant.name}: {variant.value}
+                    </Badge>
+                  );
+                })}
               </div>
             </AccordionTrigger>
             <AccordionContent className="px-4 pb-4">
               <div className="gap-4 grid grid-cols-1 md:grid-cols-2 pt-2">
                 <div className="space-y-2">
-                  <Label htmlFor={`${combination.id}-stock`}>Stock</Label>
+                  <Label htmlFor={`${index}-stock`}>Stock</Label>
                   <Input
-                    id={`${combination.id}-stock`}
+                    id={`${index}-stock`}
                     type="number"
-                    value={combination.stock || ""}
+                    value={sku.stock || ""}
                     onChange={(e) =>
-                      handleInputChange(combination.id, "stock", e.target.value)
+                      handleInputChange(index, "stock", e.target.value)
                     }
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor={`${combination.id}-price`}>Price ($)</Label>
+                  <Label htmlFor={`${index}-price`}>Price ($)</Label>
                   <Input
-                    id={`${combination.id}-price`}
+                    id={`${index}-price`}
                     type="number"
                     step="0.01"
-                    value={combination.price || ""}
+                    value={sku.price || ""}
                     onChange={(e) =>
-                      handleInputChange(combination.id, "price", e.target.value)
+                      handleInputChange(index, "price", e.target.value)
                     }
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor={`${combination.id}-compare-price`}>
+                  <Label htmlFor={`${index}-compare-price`}>
                     Compare At Price ($)
                   </Label>
                   <Input
-                    id={`${combination.id}-compare-price`}
+                    id={`${index}-compare-price`}
                     type="number"
                     step="0.01"
-                    value={combination.compare_at_price || ""}
+                    value={sku.compare_at_price || ""}
                     onChange={(e) =>
-                      handleInputChange(
-                        combination.id,
-                        "compare_at_price",
-                        e.target.value
-                      )
+                      handleInputChange(index, "compare_at_price", e.target.value)
                     }
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor={`${combination.id}-cost`}>
+                  <Label htmlFor={`${index}-cost`}>
                     {t("costPerItem")}
                   </Label>
                   <Input
-                    id={`${combination.id}-cost`}
+                    id={`${index}-cost`}
                     type="number"
                     step="0.01"
-                    value={combination.cost_per_item || ""}
+                    value={sku.cost_per_item || ""}
                     onChange={(e) =>
-                      handleInputChange(
-                        combination.id,
-                        "cost_per_item",
-                        e.target.value
-                      )
+                      handleInputChange(index, "cost_per_item", e.target.value)
                     }
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor={`${combination.id}-profit`}>
+                  <Label htmlFor={`${index}-profit`}>
                     {t("profit")}
                   </Label>
                   <Input
-                    id={`${combination.id}-profit`}
+                    id={`${index}-profit`}
                     type="number"
                     step="0.01"
-                    value={combination.profit.toFixed(2)}
+                    value={sku.profit.toFixed(2)}
                     disabled
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor={`${combination.id}-margin`}>
+                  <Label htmlFor={`${index}-margin`}>
                     {t("margin")}
                   </Label>
                   <Input
-                    id={`${combination.id}-margin`}
+                    id={`${index}-margin`}
                     type="number"
                     step="0.01"
-                    value={combination.margin.toFixed(2)}
+                    value={sku.margin.toFixed(2)}
                     disabled
                   />
                 </div>

@@ -9,7 +9,6 @@ export default async function Home() {
   return (
     <MaxWidthWrapper className="pt-20 lg:pt-10">
       <Hero isAuthenticated={isAuthenticated} />
-      <MotagerBusinessCard/>
     </MaxWidthWrapper>
   );
 }
