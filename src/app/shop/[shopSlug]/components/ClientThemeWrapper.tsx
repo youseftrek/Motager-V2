@@ -10,6 +10,12 @@ interface ClientThemeWrapperProps {
   sectionProps: any;
 }
 
+// Define the ThemePatch object to mock device view hooks
+const ThemePatch = {
+  useDeviceView: () => ({ deviceView: "desktop", setDeviceView: () => {} }),
+  useResponsiveClasses: () => ({ deviceClass: "desktop" }),
+};
+
 // Mock the device view hooks for the theme components
 // This needs to be done before importing the components
 if (typeof window !== "undefined") {

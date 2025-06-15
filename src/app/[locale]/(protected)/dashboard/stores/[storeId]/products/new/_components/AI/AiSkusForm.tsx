@@ -51,9 +51,7 @@ const AiSkusForm = ({ onGenerationSuccess }: AiSkusFormProps = {}) => {
     resolver: zodResolver(AiFormSchema),
     defaultValues: {
       starting_price:
-        formData.starting_at_price > 0
-          ? formData.starting_at_price.toString()
-          : "19.99",
+        formData.startPrice > 0 ? formData.startPrice.toString() : "19.99",
     },
   });
 
@@ -117,7 +115,7 @@ const AiSkusForm = ({ onGenerationSuccess }: AiSkusFormProps = {}) => {
         // Update the main form with the generated variant combinations
         updateFormData({
           variant_combinations: mockResponse.variant_combinations,
-          starting_at_price: startingPrice,
+          startPrice: startingPrice,
         });
 
         // Pass the generated data to parent component if callback exists

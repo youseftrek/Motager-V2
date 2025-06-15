@@ -13,17 +13,19 @@ import AiDialogForm from "./AiDialogForm";
 import { useCreateProductMutation } from "@/redux/features/products/productsApi";
 import { useParams } from "next/navigation";
 import { useRouter } from "@/i18n/routing";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 
 type Props = {
   isModelReady: boolean;
 };
 
 export default function ProductForm({ isModelReady }: Props) {
-  const { currentStep, nextStep, prevStep, isLastStep, isFirstStep, formData } =useProductForm();
+  const { currentStep, nextStep, prevStep, isLastStep, isFirstStep, formData } =
+    useProductForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const {storeId} = useParams();
-  const [createProduct , {data , isLoading , isError}] = useCreateProductMutation();
+  const { storeId } = useParams();
+  const [createProduct, { data, isLoading, isError }] =
+    useCreateProductMutation();
   const router = useRouter();
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -35,11 +37,11 @@ export default function ProductForm({ isModelReady }: Props) {
         }
       })
       console.log("Submitting product data:", formData);
-      await createProduct({storeId:Number(storeId) , data:formData});
-      if(!isError){
+      await createProduct({ storeId: Number(storeId), data: formData });
+      if (!isError) {
         toast.success("Product created successfully");
         router.push(`/dashboard/stores/${storeId}/products`);
-        setIsSubmitting(false)
+        setIsSubmitting(false);
       }
     } catch (error) {
       console.error("Error submitting product:", error);
@@ -47,7 +49,7 @@ export default function ProductForm({ isModelReady }: Props) {
     } finally {
       setIsSubmitting(false);
     }
-  }
+  };
 
   // Get the step labels based on whether the product has variants
   const getStepLabel = (step: number) => {
@@ -149,4 +151,3 @@ export default function ProductForm({ isModelReady }: Props) {
     </div>
   );
 }
-

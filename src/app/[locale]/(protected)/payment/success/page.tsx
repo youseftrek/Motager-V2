@@ -5,7 +5,7 @@ import PaymentSuccessPage from "./_components/PaymentSuccessPage";
 export default async function PaymentSuccess({
   searchParams,
 }: {
-  searchParams: { [key: string]: string };
+  searchParams: Promise<{ [key: string]: string }>;
 }) {
   const tap_id = (await searchParams).tap_id;
   const data = await updatePayment(String(tap_id));

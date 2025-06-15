@@ -69,7 +69,7 @@ export function MediaModal({
         } = supabase.storage.from(bucketName).getPublicUrl(file.name);
 
         console.log(imageFiles);
-        
+
         imageFiles.push({
           id: file.id || file.name,
           name: file.name,
@@ -102,8 +102,8 @@ export function MediaModal({
         const fileName = `${Date.now()}-${Math.random()
           .toString(36)
           .substring(2)}.${fileExt}`;
-          console.log(fileName);
-          
+        console.log(fileName);
+
         const { data, error } = await supabase.storage
           .from(bucketName)
           .upload(fileName, file, {
@@ -329,10 +329,10 @@ export function MediaModal({
                         }
                       }}
                     />
-                    <Button>
+                    <Button className="p-0 overflow-hidden">
                       <label
                         htmlFor="file-upload"
-                        className="cursor-pointer w-full h-full flex items-center justify-center"
+                        className="cursor-pointer w-full h-full flex items-center justify-center px-4 py-2"
                       >
                         Choose Files
                       </label>

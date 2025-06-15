@@ -1,4 +1,4 @@
-import { getSession } from "@/actions/get-session";
+import { getSession } from "@/actions/getSession";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
