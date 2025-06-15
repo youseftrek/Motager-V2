@@ -12,7 +12,7 @@ export const useAuth = () => {
 
   // Get auth state from Redux
   const user = useSelector((state: RootState) => state.auth.user);
-  const token = useSelector((state: RootState) => state.auth.access_token);
+  const token = useSelector((state: RootState) => state.auth.token);
   const isAuthenticated = !!user && !!token;
 
   // Login function
