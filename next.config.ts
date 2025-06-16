@@ -27,6 +27,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  
 };
 
 export default withNextIntl(nextConfig);

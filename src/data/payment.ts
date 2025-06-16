@@ -36,3 +36,22 @@ export async function updatePayment(tap_id:string) {
   }
 
 }
+
+export async function getCharge(tap_id: string) {
+  console.log("Fetching charge for tap_id:", tap_id);
+  
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/payment/order/${tap_id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_TAP_SECRET_KEY}`,
+        },
+      }
+    );    
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}

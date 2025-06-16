@@ -53,6 +53,10 @@ import {
   ConfirmationStep,
 } from "./components";
 import { useAppSelector } from "@/redux/app/hooks";
+import { useCreateOrderMutation } from "@/redux/features/orders/orderApi";
+import { useGetStoreBySlugQuery } from "@/redux/features/stores/storesApi";
+import { getSession } from "@/actions/getSession";
+import { useAuth } from "@/hooks";
 
 // Define validation schema with Zod
 const customerInfoSchema = z.object({
@@ -174,6 +178,8 @@ export default function CheckoutPage() {
   const [themeColors, setThemeColors] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const {data:store} = useGetStoreBySlugQuery(storeSlug);
+  const {token} = useAuth();
 
   // Checkout state
   const [currentStep, setCurrentStep] = useState(1);
@@ -206,7 +212,7 @@ export default function CheckoutPage() {
     shipping_method: "standard",
     newsletter: false,
   });
-
+  
   // Fetch theme colors
   useEffect(() => {
     const fetchThemeColors = async () => {
@@ -231,11 +237,13 @@ export default function CheckoutPage() {
     fetchThemeColors();
   }, [storeSlug]);
 
+  const [createOrder , {data , isLoading:isCreatingLoading , isError}] = useCreateOrderMutation()
+
   const colors = themeColors ? extractThemeColors(themeColors) : defaultColors;
 
   // Calculate totals
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + Number(item.price) * item.quantity,
+  const subtotal = items.reduce(
+    (sum, item) => sum + Number(item.price.replace(/[^0-9.]/g, "")) * item.quantity,
     0
   );
   const shipping =
@@ -317,8 +325,6 @@ export default function CheckoutPage() {
   const handlePlaceOrder = async () => {
     if (validateStep(3)) {
       setIsProcessing(true);
-
-      // Prepare order data in required format
       const orderData = {
         total_price: parseFloat(total.toFixed(2)),
         email: formData.email,
@@ -331,20 +337,21 @@ export default function CheckoutPage() {
         governorate: formData.governorate,
         postal_code: formData.postal_code,
         shipping_method: formData.shipping_method,
-        order_items: cartItems.map((item) => ({
+        order_items: items.map((item) => ({
           sku_id: item.sku_id,
-          price: item.price,
+          price: Number(item.price.replace(/[^0-9.]/g, "")),
           quantity: item.quantity,
         })),
+        store_id: store?.data?.id,
+        token
       };
-
-      console.log("Order Data:", orderData);
-
-      // Simulate order processing
-      setTimeout(() => {
-        setIsProcessing(false);
-        alert("Order placed successfully!");
-      }, 3000);
+      await createOrder(orderData);
+      setIsProcessing(false);
+      if(data){
+        console.log("Order created successfully:", data.data);
+        await localStorage.removeItem('cart')
+        window.location.assign(data.data.payment.transaction.url)
+      }
     }
   };
 

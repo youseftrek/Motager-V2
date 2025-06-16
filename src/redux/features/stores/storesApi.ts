@@ -10,7 +10,7 @@ const storesApi = baseApi.injectEndpoints({
 
     getStoreBySlug: builder.query<{data:Store}, string>({
       query: (slug) => `/store/slug/${slug}`,
-    })
+    }),
   }),
 });
 
