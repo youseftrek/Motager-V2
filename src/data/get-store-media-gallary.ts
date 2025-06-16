@@ -11,10 +11,21 @@ export const getStoreMediaGallary = async (storeId: number, token: string) => {
       }
     );
 
-    console.log("THIS IS THE RES:: ", res);
-    return res.data.data;
+    console.log("Gallery Response:", res.data);
+    
+    // Handle different response formats
+    if (res.data && res.data.data) {
+      return Array.isArray(res.data.data) ? res.data.data : [];
+    }
+    
+    // If the data is directly in the response
+    if (res.data && Array.isArray(res.data)) {
+      return res.data;
+    }
+    
+    return [];
   } catch (error) {
-    console.error(error);
-    return null;
+    console.error("Error fetching gallery:", error);
+    return [];
   }
 };

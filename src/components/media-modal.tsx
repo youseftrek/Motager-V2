@@ -101,14 +101,31 @@ export function MediaModal({
     setLoading(true);
     try {
       const files = await getStoreMediaGallary(storeId, token!);
+      
+      if (!files || files.length === 0) {
+        setImages([]);
+        setLoading(false);
+        return;
+      }
 
       // Ensure each file has required properties
-      const imageFiles: MediaFile[] = files.map((file: any) => ({
-        id:
-          file.id ||
-          `file-${Date.now()}-${Math.random().toString(36).substring(2)}`,
-        imageUrl: file.imageUrl || "",
-      }));
+      const imageFiles: MediaFile[] = files.map((file: any) => {
+        // Handle different response formats
+        if (typeof file === 'string') {
+          return {
+            id: `file-${Date.now()}-${Math.random().toString(36).substring(2)}`,
+            imageUrl: file,
+          };
+        }
+        
+        return {
+          id:
+            file.id ||
+            `file-${Date.now()}-${Math.random().toString(36).substring(2)}`,
+          imageUrl: typeof file.imageUrl === 'string' ? file.imageUrl : 
+            (Array.isArray(file.imageUrl) && file.imageUrl.length > 0 ? file.imageUrl[0] : ""),
+        };
+      });
 
       // Filter out any images with empty imageUrl
       const validImageFiles = imageFiles.filter((file) => !!file.imageUrl);
@@ -157,14 +174,21 @@ export function MediaModal({
         });
       }
 
-      // Refresh the library
-      await fetchImages();
-      const res = await addImageToStoreGallary(
-        storeId,
-        uploadedFiles.map((file) => file.imageUrl),
-        token!
-      );
-      console.log("THIS IS THE RES:: ", res);
+      // Add to store gallery
+      if (uploadedFiles.length > 0) {
+        const imageUrls = uploadedFiles.map((file) => file.imageUrl);
+        const res = await addImageToStoreGallary(
+          storeId,
+          imageUrls,
+          token!
+        );
+        console.log("THIS IS THE RES:: ", res);
+        
+        // Refresh the library after a short delay to ensure the API has processed the upload
+        setTimeout(() => {
+          fetchImages();
+        }, 500);
+      }
 
       toast.success(`${uploadedFiles.length} file(s) uploaded successfully`);
 

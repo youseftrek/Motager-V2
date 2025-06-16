@@ -130,11 +130,28 @@ export function ImageSelectDialog({
     try {
       const files = await getStoreMediaGallary(storeId, token);
       
+      if (!files || files.length === 0) {
+        setStoreImages([]);
+        setLibraryLoading(false);
+        return;
+      }
+      
       // Ensure each file has required properties
-      const imageFiles: MediaFile[] = files.map((file: any) => ({
-        id: file.id || `file-${Date.now()}-${Math.random().toString(36).substring(2)}`,
-        imageUrl: file.imageUrl || "",
-      }));
+      const imageFiles: MediaFile[] = files.map((file: any) => {
+        // Handle different response formats
+        if (typeof file === 'string') {
+          return {
+            id: `file-${Date.now()}-${Math.random().toString(36).substring(2)}`,
+            imageUrl: file,
+          };
+        }
+        
+        return {
+          id: file.id || `file-${Date.now()}-${Math.random().toString(36).substring(2)}`,
+          imageUrl: typeof file.imageUrl === 'string' ? file.imageUrl : 
+            (Array.isArray(file.imageUrl) && file.imageUrl.length > 0 ? file.imageUrl[0] : ""),
+        };
+      });
 
       // Filter out any images with empty imageUrl
       const validImageFiles = imageFiles.filter((file) => !!file.imageUrl);
@@ -235,19 +252,24 @@ export function ImageSelectDialog({
         const imageUrls = uploadedFiles.map((file) => file.imageUrl);
         await addImageToStoreGallary(
           storeId,
-          imageUrls,
+          imageUrls.length === 1 ? imageUrls[0] : imageUrls,
           token
         );
+        
+        // Refresh the library after a short delay to ensure the API has processed the upload
+        setTimeout(() => {
+          fetchStoreImages();
+        }, 500);
       }
-
-      // Refresh the library
-      await fetchStoreImages();
 
       toast.success(`${uploadedFiles.length} file(s) uploaded successfully`);
 
       // After successful upload, store uploaded files and auto-select them
       setUploadedImages(uploadedFiles);
-      setSelectedImage(uploadedFiles[0]);
+      // Only select the first uploaded image
+      if (uploadedFiles.length > 0) {
+        setSelectedImage(uploadedFiles[0]);
+      }
     } catch (error) {
       console.error("Error uploading files:", error);
       toast.error("Failed to upload files");
@@ -286,6 +308,7 @@ export function ImageSelectDialog({
   };
 
   const handleImageClick = (photo: PexelsPhoto | MediaFile) => {
+    // Always replace the currently selected image
     setSelectedImage(photo);
   };
 
@@ -494,7 +517,6 @@ export function ImageSelectDialog({
                   </div>
                   <input
                     type="file"
-                    multiple
                     accept="image/*"
                     className="hidden"
                     id="file-upload-dialog"
