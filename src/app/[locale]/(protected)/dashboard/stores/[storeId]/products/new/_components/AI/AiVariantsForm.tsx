@@ -396,6 +396,7 @@ const AiVariantsForm = ({ onGenerationSuccess }: AiVariantsFormProps = {}) => {
 
         {/* Media upload modal */}
         <MediaUploadModal
+        storeId={formData.store_id}
           open={isMediaModalOpen}
           onOpenChange={setIsMediaModalOpen}
           handleAddMedia={handleAddMedia}

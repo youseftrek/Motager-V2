@@ -242,6 +242,12 @@ const ClientForm = ({ categories, token }: Props) => {
                               <SelectItem value="usd">
                                 {t("currencies.usd")}
                               </SelectItem>
+                              <SelectItem value="egp">
+                                {t("currencies.egp")}
+                              </SelectItem>
+                              <SelectItem value="sar">
+                                {t("currencies.sar")}
+                              </SelectItem>
                               <SelectItem value="eur">
                                 {t("currencies.eur")}
                               </SelectItem>

@@ -63,3 +63,32 @@ export async function extractProductColors(values: {
     };
   }
 }
+
+export async function priceEstimation(values: {
+  product_name: string;
+  cost_price: number;
+  user_price: number;
+}) {
+  try {
+    const res = await axios.post(
+      "https://abdallah-03-marketpriceestimation.hf.space/market-prices-estimation",
+
+      values,
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log(res.data);
+    return {
+      success: res.data?.success || false,
+    };
+  } catch (error) {
+    console.error("error checking prices: ", error);
+    return {
+      success: false,
+    };
+  }
+}

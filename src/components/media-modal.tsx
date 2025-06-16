@@ -257,11 +257,11 @@ export function MediaModal({
                         onClick={() => toggleImageSelection(image)}
                       >
                         <div className="aspect-square relative overflow-hidden rounded-t-lg">
-                          <div className="w-full h-full p-1">
+                          <div className="w-full h-full">
                             <Image
                               src={image.imageUrl || "/images/noImage.png"}
                               alt={image.imageUrl || "Image"}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full rounded-md object-cover"
                               width={300}
                               height={300}
                             />
@@ -343,7 +343,7 @@ export function MediaModal({
                       return (
                         <Card
                           key={image.id}
-                          className={`relative cursor-pointer transition-all hover:shadow-md ${
+                          className={`relative p-0 cursor-pointer transition-all hover:shadow-md ${
                             isSelected ? "ring-2 ring-primary" : ""
                           }`}
                           onClick={() => toggleUploadedImageSelection(image)}
@@ -352,7 +352,7 @@ export function MediaModal({
                             <Image
                               src={image.imageUrl || "/images/noImage.png"}
                               alt={image.imageUrl || "Image"}
-                              className="w-full h-full object-cover"
+                              className="w-full rou h-full rounded-lg object-cover"
                               width={300}
                               height={300}
                             />
@@ -364,11 +364,7 @@ export function MediaModal({
                               </div>
                             )}
                           </div>
-                          <div className="p-2">
-                            <p className="text-xs font-medium truncate">
-                              {image.imageUrl}
-                            </p>
-                          </div>
+                          
                         </Card>
                       );
                     })}

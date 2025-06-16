@@ -11,6 +11,7 @@ import { getSession } from "@/actions/getSession";
 import { redirect } from "next/navigation";
 import { StoresInitializer } from "../../_components/StoresInitializer";
 import { Store } from "@/types/store";
+import Dashboard from "./_components/Dashboard";
 
 type StorePageProps = {
   params: Promise<{ storeId: string; locale: string }>;
@@ -24,8 +25,8 @@ export default async function StorePage({ params }: StorePageProps) {
     <>
       <StoresInitializer stores={storesResponse.data} />
       <AnimatedDashboardPage>
-        <UserBanner userName="User Name" />
-        <div className="mx-auto mt-7 w-full">
+        <UserBanner userName={user.name} />
+        {/* <div className="mx-auto mt-7 w-full">
           <Accordion
             type="single"
             collapsible
@@ -52,7 +53,8 @@ export default async function StorePage({ params }: StorePageProps) {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-        </div>
+        </div> */}
+        <Dashboard />
       </AnimatedDashboardPage>
     </>
   );

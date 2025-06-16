@@ -327,7 +327,9 @@
       "eur": "EUR (€)",
       "gbp": "GBP (£)",
       "jpy": "JPY (¥)",
-      "cad": "CAD ($)"
+      "cad": "CAD ($)",
+      "egp": "EGP (LE)",
+      "sar": "SAR (SR)"
     },
     "plans": {
       "basic": "Basic",

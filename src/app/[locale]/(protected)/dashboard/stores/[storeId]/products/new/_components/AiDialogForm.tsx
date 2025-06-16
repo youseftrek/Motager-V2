@@ -97,9 +97,9 @@ const AiDialogForm = ({ currStep, isModelReady = false }: Props) => {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[800px] max-h-[90%] overflow-y-auto">
-        <DialogHeader>
+        <DialogHeader className="ltr:text-left rtl:text-right">
           <DialogTitle>{getDialogTitle()}</DialogTitle>
-          <DialogDescription>{getDialogDescription()}</DialogDescription>
+          <DialogDescription className="ltr:text-left rtl:text-right">{getDialogDescription()}</DialogDescription>
         </DialogHeader>
 
         {renderDialogContent()}
