@@ -20,7 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Image as ImageIcon, Pipette, Plus, Trash } from "lucide-react";
+import { Pipette, Plus, Trash } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -221,13 +221,16 @@ export function EditSectionSheet() {
     setSectionData((prev) => ({
       ...prev,
       [key]: {
-        src: photo.src.original || photo.src.large2x || photo.src.large,
+        // Check if it's a Pexels photo (has src property) or MediaFile (has imageUrl property)
+        src: photo.src 
+          ? photo.src.original || photo.src.large2x || photo.src.large
+          : photo.imageUrl,
         alt: photo.alt || "",
-        width: photo.width,
-        height: photo.height,
-        photographer: photo.photographer,
-        photographer_url: photo.photographer_url,
-        pexels_url: photo.url,
+        width: photo.width || 800,
+        height: photo.height || 600,
+        photographer: photo.photographer || "",
+        photographer_url: photo.photographer_url || "",
+        pexels_url: photo.url || "",
       },
     }));
   };

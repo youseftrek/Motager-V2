@@ -50,7 +50,7 @@ export default function ThemeCard({ theme, isLoading, setIsLoading }: Props) {
         <div className="flex justify-center items-center gap-2">
           <Button
             className="w-full"
-            disabled={isLoading}
+            loading={isLoading}
             size="sm"
             onClick={handleChooseTheme}
           >

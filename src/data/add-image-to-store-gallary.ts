@@ -2,12 +2,12 @@ import axios from "axios";
 
 export const addImageToStoreGallary = async (
   storeId: number,
-  imageUrl: string,
+  imageUrl: string[],
   token: string
 ) => {
   try {
     const res = await axios.post(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/store/gallery`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/store/gallery/bulk`,
       { storeId, imageUrl },
       {
         headers: {
