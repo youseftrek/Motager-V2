@@ -38,7 +38,7 @@ import { useAppDispatch } from "@/redux/app/hooks";
 import { addToCart } from "@/redux/features/cart/cartSlice";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -48,6 +48,7 @@ import {
 
 // Add custom CSS for pagination
 import "./swiper-custom.css";
+import { useGetStoreProductsBySlugQuery } from "@/redux/features/products/productsApi";
 
 export type BestSellersSliderProps = {
   title?: string;
@@ -270,7 +271,7 @@ export default function BestSellersSlider({
   const dispatch = useAppDispatch();
   const { shopSlug } = useParams();
   const storeSlug = shopSlug as string;
-
+  const {data , isLoading}  = useGetStoreProductsBySlugQuery({storeSlug})
   // Extract theme colors
   const colors = extractThemeColors(themeColors);
 
@@ -325,21 +326,21 @@ export default function BestSellersSlider({
     );
   };
 
-  const handleAddToCart = (product: any) => {
-    dispatch(
-      addToCart({
-        item: {
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          image: product.image,
-          category: product.category,
-        },
-        storeSlug,
-      })
-    );
-    toast.success(`${product.name} added to cart`);
-  };
+  // const handleAddToCart = (product: any) => {
+  //   dispatch(
+  //     addToCart({
+  //       item: {
+  //         id: product.id,
+  //         name: product.name,
+  //         price: product.startPrice,
+  //         image: product.main_image_url,
+  //         category: product.category.slug,
+  //       },
+  //       storeSlug,
+  //     })
+  //   );
+  //   toast.success(`${product.name} added to cart`);
+  // };
 
   const getCardClass = () => {
     switch (cardStyle) {
@@ -479,7 +480,7 @@ export default function BestSellersSlider({
               {...getSwiperEffect()}
               className="mb-8"
             >
-              {products.map((product) => (
+              {data?.products.map((product:any) => (
                 <SwiperSlide key={product.id}>
                   <Card
                     className={cn(
@@ -489,10 +490,10 @@ export default function BestSellersSlider({
                   >
                     <div className="relative aspect-square overflow-hidden">
                       <Link
-                        href={`/shop/${storeSlug}/products/${product.slug}`}
+                        href={`/shop/${storeSlug}/products/${product.id}`}
                       >
                         <Image
-                          src={product.image}
+                          src={product.main_image_url}
                           alt={product.name}
                           fill
                           className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -569,7 +570,7 @@ export default function BestSellersSlider({
 
                       {/* Add to Cart Button */}
                       <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-                        <Button
+                        {/* <Button
                           size="sm"
                           className="rounded-full"
                           style={{
@@ -589,33 +590,34 @@ export default function BestSellersSlider({
                               colors.buttons.primary.background;
                           }}
                         >
-                          <ShoppingBag className="h-4 w-4 mr-2" />
-                          Add to Cart
-                        </Button>
-                      </div>
-
-                      {/* Badges */}
-                      {showSaleTag && product.sale && (
-                        <Badge
-                          className="absolute left-2 top-2"
-                          style={{
-                            backgroundColor:
-                              colors.buttons.secondary.background,
-                            color: colors.buttons.secondary.text,
-                          }}
-                        >
-                          Sale {product.salePercentage}
-                        </Badge>
-                      )}
-                      {product.isBestseller && (
-                        <Badge
-                          className="absolute left-2 top-10"
+                          
+                        </Button> */}
+                        <Link 
+                          className={cn(
+                            buttonVariants({
+                              variant:"secondary",
+                              size:"sm"
+                            })
+                          )}
                           style={{
                             backgroundColor: colors.buttons.primary.background,
                             color: colors.buttons.primary.text,
+                          }} href={`/shop/${shopSlug}/products/${product.id}`}>
+                            <ShoppingBag className="h-4 w-4 mr-2" />
+                            Add to Cart
+                        </Link>
+                      </div>
+
+                      {/* Badges */}
+                      {product.has_variants && (
+                        <Badge
+                          className="absolute left-2 top-2"
+                          style={{
+                            backgroundColor: colors.buttons.secondary.background,
+                            color: colors.buttons.secondary.text,
                           }}
                         >
-                          Best Seller
+                          Has Variants
                         </Badge>
                       )}
                     </div>
@@ -651,7 +653,7 @@ export default function BestSellersSlider({
                             color: colors.text.secondary,
                           }}
                         >
-                          {product.category}
+                          {product.category.slug}
                         </Badge>
                       </div>
 
@@ -662,10 +664,6 @@ export default function BestSellersSlider({
                         {product.description}
                       </p>
 
-                      <div className="mt-2">
-                        {showRating && renderRating(product.rating)}
-                      </div>
-
                       <div className="mt-4 flex items-center justify-between">
                         <div>
                           <ThemedText
@@ -673,17 +671,8 @@ export default function BestSellersSlider({
                             className="text-2xl font-bold"
                             colors={colors}
                           >
-                            {product.price}
+                            ${product.startPrice}
                           </ThemedText>
-                          {product.originalPrice && (
-                            <ThemedText
-                              variant="secondary"
-                              className="ml-2 text-sm line-through opacity-70"
-                              colors={colors}
-                            >
-                              {product.originalPrice}
-                            </ThemedText>
-                          )}
                         </div>
                       </div>
                     </CardContent>

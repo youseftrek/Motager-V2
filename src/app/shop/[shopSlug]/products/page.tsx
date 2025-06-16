@@ -23,6 +23,7 @@ import {
   filterProducts,
   sortProducts,
 } from "./utils/productUtils";
+import { useGetStoreProductsBySlugQuery } from "@/redux/features/products/productsApi";
 
 // Default theme colors to use if store data isn't available
 const defaultColors = {
@@ -149,6 +150,7 @@ export default function ProductsPage() {
   const [sortOption, setSortOption] = useState<string>("featured");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [wishlist, setWishlist] = useState<Set<number>>(new Set());
+  const {data , isLoading:isProductLoading}  = useGetStoreProductsBySlugQuery({storeSlug})
 
   // Fetch theme colors for the store
   useEffect(() => {
@@ -162,24 +164,28 @@ export default function ProductsPage() {
           setThemeColors(defaultColors);
         }
 
-        setProducts(mockProducts);
-        const productPriceRange = getPriceRange(mockProducts);
-        setPriceRange([productPriceRange.min, productPriceRange.max]);
+        if (data && data.products) {
+          setProducts(data.products);
+          const productPriceRange = getPriceRange(data.products);
+          setPriceRange([productPriceRange.min, productPriceRange.max]);
+        } else {
+          setProducts([]);
+          setPriceRange([0, 0]);
+        }
         setError(null);
       } catch (error) {
         console.error("Error fetching theme colors:", error);
         setError("Could not load store theme data. Using default theme.");
         setThemeColors(defaultColors);
-        setProducts(mockProducts);
-        const productPriceRange = getPriceRange(mockProducts);
-        setPriceRange([productPriceRange.min, productPriceRange.max]);
+        setProducts([]);
+        setPriceRange([0, 0]);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchThemeColors();
-  }, [storeSlug]);
+  }, [storeSlug, data]);
 
   // Extract theme colors
   const colors = themeColors ? extractThemeColors(themeColors) : defaultColors;

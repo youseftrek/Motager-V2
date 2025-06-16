@@ -43,6 +43,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { useGetStoreBySlugQuery } from "@/redux/features/stores/storesApi";
+import { useGetSingleProductQuery, useGetStoreProductsBySlugQuery } from "@/redux/features/products/productsApi";
+import { addToCart } from "@/redux/features/cart/cartSlice";
+import { toast } from "sonner";
+import { useDispatch } from "react-redux";
 
 // Default theme colors
 const defaultColors = {
@@ -61,92 +66,7 @@ const defaultColors = {
 };
 
 // Mock product data
-const mockProduct: Product & {
-  images: string[];
-  variants: Array<{ id: string; name: string; value: string }>;
-  reviews: Array<{
-    id: string;
-    name: string;
-    rating: number;
-    comment: string;
-    date: string;
-    avatar?: string;
-  }>;
-  features: string[];
-  specifications: Record<string, string>;
-} = {
-  id: 1,
-  name: "Premium Wireless Headphones",
-  description:
-    "Experience crystal-clear audio with our flagship wireless headphones featuring advanced noise cancellation and 30-hour battery life.",
-  slug: "premium-wireless-headphones",
-  published: true,
-  startPrice: 299.99,
-  main_image_url:
-    "https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg",
-  images_url: [
-    "https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg",
-  ],
-  images: [
-    "https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg",
-    "https://images.pexels.com/photos/1649771/pexels-photo-1649771.jpeg",
-    "https://images.pexels.com/photos/1037992/pexels-photo-1037992.jpeg",
-    "https://images.pexels.com/photos/1447254/pexels-photo-1447254.jpeg",
-  ],
-  category: { id: 1, slug: "electronics" },
-  variants: [
-    { id: "color", name: "Color", value: "Midnight Black" },
-    { id: "size", name: "Size", value: "Standard" },
-  ],
-  features: [
-    "Active Noise Cancellation with Transparency mode",
-    "30-hour battery life with quick charge",
-    "Premium memory foam ear cups",
-    "Bluetooth 5.3 with multipoint connection",
-    "Touch controls with voice assistant support",
-    "Foldable design with premium carrying case",
-  ],
-  specifications: {
-    "Driver Size": "40mm Dynamic",
-    "Frequency Response": "20Hz - 20kHz",
-    Impedance: "32 Ohms",
-    "Battery Life": "30 hours",
-    "Charging Time": "2 hours",
-    Weight: "290g",
-    Connectivity: "Bluetooth 5.3, USB-C",
-    "Noise Cancellation": "Active ANC up to 25dB",
-  },
-  reviews: [
-    {
-      id: "1",
-      name: "Sarah Johnson",
-      rating: 5,
-      comment:
-        "Absolutely amazing headphones! The sound quality is incredible and the noise cancellation works perfectly on flights.",
-      date: "2024-01-15",
-      avatar:
-        "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg",
-    },
-    {
-      id: "2",
-      name: "Mike Chen",
-      rating: 4,
-      comment:
-        "Great build quality and comfort. Battery life is exactly as advertised. Only minor issue is the touch controls can be overly sensitive.",
-      date: "2024-01-10",
-    },
-    {
-      id: "3",
-      name: "Emma Rodriguez",
-      rating: 5,
-      comment:
-        "Perfect for working from home. The transparency mode is fantastic for staying aware of my surroundings.",
-      date: "2024-01-08",
-      avatar:
-        "https://images.pexels.com/photos/762020/pexels-photo-762020.jpeg",
-    },
-  ],
-};
+
 
 // Mock related products
 const relatedProducts: Product[] = [
@@ -212,25 +132,76 @@ const relatedProducts: Product[] = [
   },
 ];
 
+interface Review {
+  id: string;
+  name: string;
+  rating: number;
+  comment: string;
+  date: string;
+  avatar?: string;
+}
+
+interface ProductWithDetails extends Product {
+  images_url: string[];
+  reviews?: Review[];
+  features?: string[];
+  specifications?: Record<string, string>;
+  skus: Array<{
+    id: number;
+    name: string;
+    price: number;
+    stock: number;
+    cost_per_item: number;
+    profit: number;
+    margin: number;
+    compare_at_price: number;
+    image_url: string;
+    variants: any[];
+  }>;
+  review_statistics:{
+    "total_reviews": number,
+    "average_rating": number,
+    "rating_5_count": number,
+    "rating_4_count": number,
+    "rating_3_count": number,
+    "rating_2_count": number,
+    "rating_1_count": number
+  }
+}
+
+// Helper to extract all variant types and values from skus
+function getVariantOptions(skus: ProductWithDetails['skus']) {
+  const variantMap: Record<string, Set<string>> = {};
+  skus.forEach((sku) => {
+    sku.variants.forEach((variant: { name: string; value: string }) => {
+      if (!variantMap[variant.name]) variantMap[variant.name] = new Set();
+      variantMap[variant.name].add(variant.value);
+    });
+  });
+  // Convert sets to arrays
+  return Object.fromEntries(
+    Object.entries(variantMap).map(([k, v]) => [k, Array.from(v)])
+  );
+}
+
 export default function SingleProductPage() {
   const { shopSlug, productSlug } = useParams();
   const storeSlug = shopSlug as string;
   const [themeColors, setThemeColors] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [product] = useState(mockProduct);
+  const {data:data} = useGetStoreBySlugQuery(storeSlug)
+  const { data: productData, isLoading:IsProductloading, isError } = useGetSingleProductQuery(
+    { id: Number(productSlug), storeId: data?.data?.id ?? 0 },
+    { skip: !data?.data?.id }
+  );
 
   // Product state
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
-  const [selectedVariants, setSelectedVariants] = useState<
-    Record<string, string>
-  >({
-    color: "Midnight Black",
-    size: "Standard",
-  });
-
+  const dispatch = useDispatch()
+  
   // Fetch theme colors
   useEffect(() => {
     const fetchThemeColors = async () => {
@@ -256,11 +227,9 @@ export default function SingleProductPage() {
   }, [storeSlug]);
 
   const colors = themeColors ? extractThemeColors(themeColors) : defaultColors;
-
   // Add CSS variables for styling
   useEffect(() => {
     if (colors) {
-      // Set CSS variable for ring color
       document.documentElement.style.setProperty(
         "--ring",
         colors.buttons.primary.background
@@ -272,24 +241,56 @@ export default function SingleProductPage() {
     };
   }, [colors]);
 
+  const product = productData as ProductWithDetails;
+  const averageRating = product?.review_statistics?.average_rating || 0;
+  const totalReviews = product?.review_statistics?.total_reviews || 0;
+
+  // State for selected variants
+  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>(() => {
+    const initial: Record<string, string> = {};
+    Object.keys(getVariantOptions(product?.skus ?? [])).forEach((type) => {
+      initial[type] = getVariantOptions(product?.skus ?? [])[type][0];
+    });
+    return initial;
+  });
+
+  // Find the SKU that matches the selected variants
+  const selectedSKU = product?.skus.find((sku) =>
+    sku.variants.every(
+      (variant: { name: string; value: string }) =>
+        selectedVariants[variant.name] === variant.value
+    )
+  ) || product?.skus[0];
+
+  // Update handleQuantityChange and handleAddToCart to use selectedSKU
   const handleQuantityChange = (delta: number) => {
-    setQuantity(Math.max(1, quantity + delta));
+    setQuantity(Math.max(1, Math.min(quantity + delta, selectedSKU?.stock || 0)));
   };
 
   const handleAddToCart = () => {
-    // Add to cart logic here
-    console.log("Added to cart:", {
-      product: product.id,
-      quantity,
-      variants: selectedVariants,
-    });
+    if (!selectedSKU) return;
+    
+    dispatch(
+      addToCart({
+        item: {
+          id: product.id,
+          name: product.name,
+          price: `$${selectedSKU.price.toFixed(2)}`,
+          image: selectedSKU.image_url || product.main_image_url,
+          category: product.category.slug,
+          sku_id: selectedSKU.id
+        },
+        storeSlug,
+      })
+    );
+    
+    toast.success(`${product.name} added to cart`);
   };
 
-  const averageRating =
-    product.reviews.reduce((acc, review) => acc + review.rating, 0) /
-    product.reviews.length;
+  const variantOptions = getVariantOptions(product?.skus ?? []);
+  const variantTypes = Object.keys(variantOptions);
 
-  if (isLoading) {
+  if (isLoading || IsProductloading) {
     return (
       <div
         className="flex items-center justify-center min-h-[90vh]"
@@ -306,6 +307,24 @@ export default function SingleProductPage() {
             style={{ color: colors?.text?.secondary || "#666" }}
           >
             Loading product...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !productData) {
+    return (
+      <div
+        className="flex items-center justify-center min-h-[90vh]"
+        style={{ backgroundColor: colors?.background?.primary || "#fff" }}
+      >
+        <div className="flex flex-col items-center space-y-4">
+          <p
+            className="font-medium text-red-500"
+            style={{ color: colors?.text?.secondary || "#666" }}
+          >
+            Error loading product. Please try again later.
           </p>
         </div>
       </div>
@@ -357,7 +376,7 @@ export default function SingleProductPage() {
               {/* Main Image */}
               <div className="relative aspect-square rounded-lg overflow-hidden group">
                 <Image
-                  src={product.images[selectedImage]}
+                  src={selectedSKU?.image_url || product.images_url[selectedImage]}
                   alt={product.name}
                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -382,7 +401,7 @@ export default function SingleProductPage() {
                   <DialogContent className="max-w-4xl">
                     <div className="relative aspect-square">
                       <Image
-                        src={product.images[selectedImage]}
+                        src={selectedSKU?.image_url || product.images_url[selectedImage]}
                         alt={product.name}
                         fill
                         className="object-cover"
@@ -392,7 +411,7 @@ export default function SingleProductPage() {
                 </Dialog>
 
                 {/* Navigation Arrows */}
-                {product.images.length > 1 && (
+                {product.images_url.length > 1 && (
                   <>
                     <button
                       onClick={() =>
@@ -413,7 +432,7 @@ export default function SingleProductPage() {
                     <button
                       onClick={() =>
                         setSelectedImage(
-                          Math.min(product.images.length - 1, selectedImage + 1)
+                          Math.min(product.images_url.length - 1, selectedImage + 1)
                         )
                       }
                       className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -421,7 +440,7 @@ export default function SingleProductPage() {
                         backgroundColor: colors.background.primary,
                         borderColor: colors.background.secondary,
                       }}
-                      disabled={selectedImage === product.images.length - 1}
+                      disabled={selectedImage === product.images_url.length - 1}
                     >
                       <ChevronRight
                         className="w-4 h-4"
@@ -434,7 +453,7 @@ export default function SingleProductPage() {
 
               {/* Thumbnail Images */}
               <div className="grid grid-cols-4 gap-3">
-                {product.images.map((image, index) => (
+                {product.images_url.map((image: string, index: number) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
@@ -531,37 +550,41 @@ export default function SingleProductPage() {
                 </h1>
 
                 {/* Rating */}
-                <div className="flex items-center space-x-2 mb-4">
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        size={16}
-                        className={
-                          i < Math.floor(averageRating) ? "fill-current" : ""
-                        }
-                        style={{
-                          color:
-                            i < Math.floor(averageRating)
-                              ? colors.buttons.primary.background
-                              : colors.background.secondary,
-                        }}
-                      />
-                    ))}
+                {totalReviews > 0 ? (
+                  <div className="flex items-center space-x-2 mb-4">
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          size={16}
+                          className={
+                            i < Math.floor(averageRating) ? "fill-current" : ""
+                          }
+                          style={{
+                            color:
+                              i < Math.floor(averageRating)
+                                ? colors.buttons.primary.background
+                                : colors.background.secondary,
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <span
+                      className="text-sm font-medium"
+                      style={{ color: colors.text.primary }}
+                    >
+                      {averageRating.toFixed(1)}
+                    </span>
+                    <span
+                      className="text-sm"
+                      style={{ color: colors.text.secondary }}
+                    >
+                      ({totalReviews} reviews)
+                    </span>
                   </div>
-                  <span
-                    className="text-sm font-medium"
-                    style={{ color: colors.text.primary }}
-                  >
-                    {averageRating.toFixed(1)}
-                  </span>
-                  <span
-                    className="text-sm"
-                    style={{ color: colors.text.secondary }}
-                  >
-                    ({product.reviews.length} reviews)
-                  </span>
-                </div>
+                ) : (
+                  <p style={{ color: colors.text.secondary }}>No reviews yet</p>
+                )}
 
                 <p
                   className="text-lg leading-relaxed"
@@ -581,103 +604,38 @@ export default function SingleProductPage() {
                     className="text-4xl font-bold"
                     style={{ color: colors.text.primary }}
                   >
-                    ${product.startPrice.toFixed(2)}
+                    ${selectedSKU?.price?.toFixed(2) || product.startPrice?.toFixed(2) || "0.00"}
                   </span>
-                  <Badge
-                    variant="outline"
-                    style={{
-                      borderColor: colors.buttons.primary.background,
-                      color: colors.buttons.primary.background,
-                    }}
-                  >
-                    Free Shipping
-                  </Badge>
-                </div>
-              </div>
-
-              {/* Variants */}
-              <div className="space-y-4">
-                {product.variants.map((variant) => (
-                  <div key={variant.id}>
-                    <label
-                      className="block text-sm font-medium mb-2"
-                      style={{ color: colors.text.primary }}
+                  {selectedSKU?.compare_at_price && selectedSKU.compare_at_price > selectedSKU.price && (
+                    <span
+                      className="text-lg line-through"
+                      style={{ color: colors.text.secondary }}
                     >
-                      {variant.name}
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                      {variant.id === "color"
-                        ? ["Midnight Black", "Pearl White", "Ocean Blue"].map(
-                            (color) => (
-                              <button
-                                key={color}
-                                onClick={() =>
-                                  setSelectedVariants((prev) => ({
-                                    ...prev,
-                                    color,
-                                  }))
-                                }
-                                className={cn(
-                                  "px-4 py-2 text-sm border rounded-lg transition-all duration-200",
-                                  selectedVariants.color === color
-                                    ? "ring-2 ring-primary"
-                                    : "hover:border-opacity-60"
-                                )}
-                                style={{
-                                  backgroundColor:
-                                    selectedVariants.color === color
-                                      ? colors.buttons.primary.background
-                                      : colors.background.primary,
-                                  color:
-                                    selectedVariants.color === color
-                                      ? colors.buttons.primary.text
-                                      : colors.text.primary,
-                                  borderColor:
-                                    selectedVariants.color === color
-                                      ? colors.buttons.primary.background
-                                      : colors.background.secondary,
-                                }}
-                              >
-                                {color}
-                              </button>
-                            )
-                          )
-                        : ["Standard", "Large"].map((size) => (
-                            <button
-                              key={size}
-                              onClick={() =>
-                                setSelectedVariants((prev) => ({
-                                  ...prev,
-                                  size,
-                                }))
-                              }
-                              className={cn(
-                                "px-4 py-2 text-sm border rounded-lg transition-all duration-200",
-                                selectedVariants.size === size
-                                  ? "ring-2 ring-primary"
-                                  : "hover:border-opacity-60"
-                              )}
-                              style={{
-                                backgroundColor:
-                                  selectedVariants.size === size
-                                    ? colors.buttons.primary.background
-                                    : colors.background.primary,
-                                color:
-                                  selectedVariants.size === size
-                                    ? colors.buttons.primary.text
-                                    : colors.text.primary,
-                                borderColor:
-                                  selectedVariants.size === size
-                                    ? colors.buttons.primary.background
-                                    : colors.background.secondary,
-                              }}
-                            >
-                              {size}
-                            </button>
-                          ))}
-                    </div>
-                  </div>
-                ))}
+                      ${selectedSKU.compare_at_price.toFixed(2)}
+                    </span>
+                  )}
+                  {selectedSKU?.stock > 0 ? (
+                    <Badge
+                      variant="outline"
+                      style={{
+                        borderColor: colors.buttons.primary.background,
+                        color: colors.buttons.primary.background,
+                      }}
+                    >
+                      In Stock
+                    </Badge>
+                  ) : (
+                    <Badge
+                      variant="outline"
+                      style={{
+                        borderColor: "red",
+                        color: "red",
+                      }}
+                    >
+                      Out of Stock
+                    </Badge>
+                  )}
+                </div>
               </div>
 
               {/* Quantity & Add to Cart */}
@@ -713,11 +671,18 @@ export default function SingleProductPage() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleQuantityChange(1)}
+                        disabled={quantity >= (selectedSKU?.stock ?? 0)}
                         style={{ color: colors.text.primary }}
                       >
                         <Plus className="w-4 h-4" />
                       </Button>
                     </div>
+                    <span
+                      className="text-sm"
+                      style={{ color: colors.text.secondary }}
+                    >
+                      {selectedSKU?.stock || 0} in stock
+                    </span>
                   </div>
                 </div>
 
@@ -725,21 +690,28 @@ export default function SingleProductPage() {
                   onClick={handleAddToCart}
                   size="lg"
                   className="w-full text-lg"
+                  disabled={!selectedSKU?.stock}
                   style={{
-                    backgroundColor: colors.buttons.primary.background,
-                    color: colors.buttons.primary.text,
+                    backgroundColor: selectedSKU?.stock ? colors.buttons.primary.background : colors.background.secondary,
+                    color: selectedSKU?.stock ? colors.buttons.primary.text : colors.text.secondary,
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor =
-                      colors.buttons.primary.hover;
+                    if (selectedSKU?.stock) {
+                      e.currentTarget.style.backgroundColor = colors.buttons.primary.hover;
+                    }
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor =
-                      colors.buttons.primary.background;
+                    if (selectedSKU?.stock) {
+                      e.currentTarget.style.backgroundColor = colors.buttons.primary.background;
+                    }
                   }}
                 >
                   <ShoppingBag className="w-5 h-5 mr-2" />
-                  Add to Cart - ${(product.startPrice * quantity).toFixed(2)}
+                  {selectedSKU?.stock ? (
+                    <>Add to Cart - ${((selectedSKU?.price || 0) * quantity).toFixed(2)}</>
+                  ) : (
+                    "Out of Stock"
+                  )}
                 </Button>
               </div>
 
@@ -789,6 +761,54 @@ export default function SingleProductPage() {
                   </Card>
                 ))}
               </div>
+
+              {/* Variants */}
+              {variantTypes.length > 0 && (
+                <div className="space-y-4">
+                  {variantTypes.map((type) => (
+                    <div key={type}>
+                      <label
+                        className="block text-sm font-medium mb-2"
+                        style={{ color: colors.text.primary }}
+                      >
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {variantOptions[type].map((value: string) => (
+                          <button
+                            key={value}
+                            onClick={() =>
+                              setSelectedVariants((prev) => ({ ...prev, [type]: value }))
+                            }
+                            className={cn(
+                              "px-4 py-2 text-sm border rounded-lg transition-all duration-200",
+                              selectedVariants[type] === value
+                                ? "ring-2 ring-primary"
+                                : "hover:border-opacity-60"
+                            )}
+                            style={{
+                              backgroundColor:
+                                selectedVariants[type] === value
+                                  ? colors.buttons.primary.background
+                                  : colors.background.primary,
+                              color:
+                                selectedVariants[type] === value
+                                  ? colors.buttons.primary.text
+                                  : colors.text.primary,
+                              borderColor:
+                                selectedVariants[type] === value
+                                  ? colors.buttons.primary.background
+                                  : colors.background.secondary,
+                            }}
+                          >
+                            {value}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -839,7 +859,7 @@ export default function SingleProductPage() {
                     } as any
                   }
                 >
-                  Reviews ({product.reviews.length})
+                  Reviews ({totalReviews})
                 </TabsTrigger>
               </TabsList>
 
@@ -853,7 +873,7 @@ export default function SingleProductPage() {
                       Key Features
                     </h3>
                     <div className="grid gap-3">
-                      {product.features.map((feature, index) => (
+                      {product.features?.map((feature: string, index: number) => (
                         <div key={index} className="flex items-start space-x-3">
                           <Check
                             className="w-5 h-5 mt-0.5 flex-shrink-0"
@@ -879,7 +899,7 @@ export default function SingleProductPage() {
                       Technical Specifications
                     </h3>
                     <div className="grid gap-4">
-                      {Object.entries(product.specifications).map(
+                      {product.specifications && Object.entries(product.specifications).map(
                         ([key, value]) => (
                           <div
                             key={key}
@@ -916,36 +936,42 @@ export default function SingleProductPage() {
                           >
                             Customer Reviews
                           </h3>
-                          <div className="flex items-center space-x-2">
-                            <div className="flex">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  size={16}
-                                  className={
-                                    i < Math.floor(averageRating)
-                                      ? "fill-current"
-                                      : ""
-                                  }
-                                  style={{
-                                    color:
+                          {totalReviews > 0 ? (
+                            <div className="flex items-center space-x-2">
+                              <div className="flex">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star
+                                    key={i}
+                                    size={16}
+                                    className={
                                       i < Math.floor(averageRating)
-                                        ? colors.buttons.primary.background
-                                        : colors.background.secondary,
-                                  }}
-                                />
-                              ))}
+                                        ? "fill-current"
+                                        : ""
+                                    }
+                                    style={{
+                                      color:
+                                        i < Math.floor(averageRating)
+                                          ? colors.buttons.primary.background
+                                          : colors.background.secondary,
+                                    }}
+                                  />
+                                ))}
+                              </div>
+                              <span
+                                className="font-semibold"
+                                style={{ color: colors.text.primary }}
+                              >
+                                {averageRating.toFixed(1)} out of 5
+                              </span>
+                              <span style={{ color: colors.text.secondary }}>
+                                ({totalReviews} reviews)
+                              </span>
                             </div>
-                            <span
-                              className="font-semibold"
-                              style={{ color: colors.text.primary }}
-                            >
-                              {averageRating.toFixed(1)} out of 5
-                            </span>
-                            <span style={{ color: colors.text.secondary }}>
-                              ({product.reviews.length} reviews)
-                            </span>
-                          </div>
+                          ) : (
+                            <p style={{ color: colors.text.secondary }}>
+                              No reviews yet
+                            </p>
+                          )}
                         </div>
                         <Button
                           variant="outline"
@@ -961,68 +987,70 @@ export default function SingleProductPage() {
                   </Card>
 
                   {/* Individual Reviews */}
-                  <div className="space-y-4">
-                    {product.reviews.map((review) => (
-                      <Card
-                        key={review.id}
-                        style={{ borderColor: colors.background.secondary }}
-                      >
-                        <CardContent className="p-6">
-                          <div className="flex items-start space-x-4">
-                            <Avatar>
-                              <AvatarImage src={review.avatar} />
-                              <AvatarFallback
-                                style={{
-                                  backgroundColor: colors.background.secondary,
-                                }}
-                              >
-                                {review.name
-                                  .split(" ")
-                                  .map((n) => n[0])
-                                  .join("")}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1">
-                              <div className="flex items-center justify-between mb-2">
-                                <h4
-                                  className="font-semibold"
-                                  style={{ color: colors.text.primary }}
+                  {product.reviews && product.reviews.length > 0 && (
+                    <div className="space-y-4">
+                      {product.reviews.map((review: Review) => (
+                        <Card
+                          key={review.id}
+                          style={{ borderColor: colors.background.secondary }}
+                        >
+                          <CardContent className="p-6">
+                            <div className="flex items-start space-x-4">
+                              <Avatar>
+                                <AvatarImage src={review.avatar} />
+                                <AvatarFallback
+                                  style={{
+                                    backgroundColor: colors.background.secondary,
+                                  }}
                                 >
-                                  {review.name}
-                                </h4>
-                                <span
-                                  className="text-sm"
-                                  style={{ color: colors.text.secondary }}
-                                >
-                                  {new Date(review.date).toLocaleDateString()}
-                                </span>
+                                  {review.name
+                                    .split(" ")
+                                    .map((n: string) => n[0])
+                                    .join("")}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div className="flex-1">
+                                <div className="flex items-center justify-between mb-2">
+                                  <h4
+                                    className="font-semibold"
+                                    style={{ color: colors.text.primary }}
+                                  >
+                                    {review.name}
+                                  </h4>
+                                  <span
+                                    className="text-sm"
+                                    style={{ color: colors.text.secondary }}
+                                  >
+                                    {new Date(review.date).toLocaleDateString()}
+                                  </span>
+                                </div>
+                                <div className="flex mb-3">
+                                  {[...Array(5)].map((_, i) => (
+                                    <Star
+                                      key={i}
+                                      size={14}
+                                      className={
+                                        i < review.rating ? "fill-current" : ""
+                                      }
+                                      style={{
+                                        color:
+                                          i < review.rating
+                                            ? colors.buttons.primary.background
+                                            : colors.background.secondary,
+                                      }}
+                                    />
+                                  ))}
+                                </div>
+                                <p style={{ color: colors.text.secondary }}>
+                                  {review.comment}
+                                </p>
                               </div>
-                              <div className="flex mb-3">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star
-                                    key={i}
-                                    size={14}
-                                    className={
-                                      i < review.rating ? "fill-current" : ""
-                                    }
-                                    style={{
-                                      color:
-                                        i < review.rating
-                                          ? colors.buttons.primary.background
-                                          : colors.background.secondary,
-                                    }}
-                                  />
-                                ))}
-                              </div>
-                              <p style={{ color: colors.text.secondary }}>
-                                {review.comment}
-                              </p>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </TabsContent>
             </Tabs>
@@ -1030,7 +1058,7 @@ export default function SingleProductPage() {
 
           {/* Related Products */}
           <RelatedProducts
-            products={relatedProducts}
+            products={relatedProducts as Product[]}
             storeSlug={storeSlug}
             colors={colors}
           />

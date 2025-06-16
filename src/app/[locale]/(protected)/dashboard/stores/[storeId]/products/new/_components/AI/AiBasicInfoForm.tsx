@@ -47,7 +47,7 @@ type AiBasicInfoFormProps = {
 const AiBasicInfoForm = ({ onGenerationSuccess }: AiBasicInfoFormProps) => {
   const [isMediaModalOpen, setIsMediaModalOpen] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const { updateFormData } = useProductForm();
+  const { updateFormData , formData } = useProductForm();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(AiFormSchema),
@@ -230,6 +230,7 @@ const AiBasicInfoForm = ({ onGenerationSuccess }: AiBasicInfoFormProps) => {
 
         {/* Media upload modal */}
         <MediaUploadModal
+        storeId={formData.store_id}
           open={isMediaModalOpen}
           onOpenChange={setIsMediaModalOpen}
           handleAddMedia={handleAddMedia}

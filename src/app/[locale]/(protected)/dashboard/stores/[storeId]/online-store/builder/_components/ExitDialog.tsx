@@ -14,8 +14,10 @@ import TooltipChildren from "@/components/ui/TooltipChildren";
 import { Link } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { LogOut } from "lucide-react";
+import { useParams } from "next/navigation";
 
 export function ExitDialog() {
+  const {storeId} = useParams()
   return (
     <Dialog>
       <TooltipChildren message={"Exit"}>
@@ -39,7 +41,7 @@ export function ExitDialog() {
             </Button>
           </DialogClose>
           <Link
-            href="/dashboard/online-store"
+            href={`/dashboard/stores/${storeId}/online-store`}
             className={cn(
               buttonVariants({ variant: "destructive" }),
               "min-w-[100px]"

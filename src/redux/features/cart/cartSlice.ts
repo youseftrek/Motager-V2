@@ -7,6 +7,7 @@ export interface CartItem {
   image: string;
   quantity: number;
   category: string;
+  sku_id: number;
 }
 
 interface StoreCart {
@@ -84,7 +85,7 @@ const cartSlice = createSlice({
 
       const storeCart = state.stores[storeSlug];
       const existingItem = storeCart.items.find(
-        (cartItem) => cartItem.id === item.id
+        (cartItem) => cartItem.id === item.id && cartItem.sku_id === item.sku_id
       );
 
       if (existingItem) {

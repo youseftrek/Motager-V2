@@ -136,8 +136,8 @@ export default function CartSheet({ themeColors }: CartSheetProps) {
         ) : (
           <div className="flex flex-col h-[90vh]">
             <div className="flex-grow">
-              {items.map((item) => (
-                <div key={item.id} className="flex items-start py-4 border-b">
+              {items.map((item , index) => (
+                <div key={index} className="flex items-start py-4 border-b">
                   <div className="relative w-16 h-16 rounded-md overflow-hidden flex-shrink-0">
                     <Image
                       src={item.image}

@@ -53,6 +53,7 @@ export default function ProductCard({
           price: `$${product.startPrice.toFixed(2)}`,
           image: product.main_image_url,
           category: product.category.slug,
+          sku_id: 0,
         },
         storeSlug,
       })
@@ -188,7 +189,7 @@ export default function ProductCard({
         <div className={viewMode === "list" ? "flex-1" : ""}>
           <CardHeader className="pb-2">
             <div className="flex justify-between items-start">
-              <Link href={`/shop/${storeSlug}/products/${product.slug}`}>
+              <Link href={`/shop/${storeSlug}/products/${product.id}`}>
                 <h3
                   className="font-semibold hover:text-primary transition-colors duration-200"
                   style={{ color: colors.text.primary }}

@@ -5,16 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Loader, Lock } from "lucide-react";
+import { CartItem } from "@/redux/features/cart/cartSlice";
+import { useAppSelector } from "@/redux/app/hooks";
+import { useParams } from "next/navigation";
 
-interface CartItem {
-  id: number;
-  sku_id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-  variant: string;
-}
 
 interface PaymentMethod {
   id: string;
@@ -60,6 +54,12 @@ export default function ConfirmationStep({
   const selectedPaymentMethod = paymentMethods.find(
     (m) => m.id === formData.payment_method
   );
+  const { shopSlug } = useParams();
+  const storeSlug = shopSlug as string;
+  const storeCart = useAppSelector(
+    (state) => state.cart.stores[storeSlug] || { items: [], totalItems: 0 }
+  );
+  const items = storeCart.items;
 
   return (
     <div className="space-y-6">
@@ -170,8 +170,8 @@ export default function ConfirmationStep({
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {cartItems.map((item) => (
-              <div key={item.id} className="flex items-center space-x-4">
+            {items.map((item, index) => (
+              <div key={index} className="flex items-center space-x-4">
                 <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
                   <Image
                     src={item.image}
@@ -191,15 +191,12 @@ export default function ConfirmationStep({
                     className="text-sm"
                     style={{ color: colors.text.secondary }}
                   >
-                    {item.variant} • Qty: {item.quantity}
+                    SKU: {item.sku_id} • Qty: {item.quantity}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p
-                    className="font-semibold"
-                    style={{ color: colors.text.primary }}
-                  >
-                    ${(item.price * item.quantity).toFixed(2)}
+                  <p className="font-semibold" style={{ color: colors.text.primary }}>
+                    {`$${(parseFloat(item.price.replace(/[^0-9.]/g, "")) * item.quantity).toFixed(2)}`}
                   </p>
                 </div>
               </div>

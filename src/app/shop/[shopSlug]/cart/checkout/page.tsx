@@ -52,6 +52,7 @@ import {
   PaymentStep,
   ConfirmationStep,
 } from "./components";
+import { useAppSelector } from "@/redux/app/hooks";
 
 // Define validation schema with Zod
 const customerInfoSchema = z.object({
@@ -106,28 +107,31 @@ const mockCartItems = [
     id: 1,
     sku_id: 1,
     name: "Premium Wireless Headphones",
-    price: 299.99,
+    price: "$299.99",
     quantity: 1,
     image: "https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg",
     variant: "Midnight Black",
+    category: "electronics",
   },
   {
     id: 2,
     sku_id: 2,
     name: "Ergonomic Office Chair",
-    price: 199.99,
+    price: "$199.99",
     quantity: 1,
     image: "https://images.pexels.com/photos/1957478/pexels-photo-1957478.jpeg",
     variant: "Gray",
+    category: "office",
   },
   {
     id: 3,
     sku_id: 3,
     name: "Ceramic Plant Pot",
-    price: 49.98,
+    price: "$49.98",
     quantity: 1,
     image: "https://images.pexels.com/photos/4207892/pexels-photo-4207892.jpeg",
     variant: "White",
+    category: "garden",
   },
 ];
 
@@ -182,6 +186,12 @@ export default function CheckoutPage() {
     Record<string, string>
   >({});
 
+    const storeCart = useAppSelector(
+      (state) => state.cart.stores[storeSlug] || { items: [], totalItems: 0 }
+    );
+      const { items, totalItems } = storeCart;
+
+
   // Form state matching required structure
   const [formData, setFormData] = useState({
     email: "",
@@ -225,7 +235,7 @@ export default function CheckoutPage() {
 
   // Calculate totals
   const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) => sum + Number(item.price) * item.quantity,
     0
   );
   const shipping =
@@ -501,7 +511,7 @@ export default function CheckoutPage() {
               {/* Desktop Order Summary */}
               <div className="hidden lg:block">
                 <OrderSummary
-                  cartItems={cartItems}
+                  cartItems={items}
                   subtotal={subtotal}
                   shipping={shipping}
                   tax={tax}

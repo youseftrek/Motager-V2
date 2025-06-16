@@ -104,7 +104,7 @@ export default function PaymentSuccessPage({ data }: any) {
                     Payment Method
                   </span>
                   <span className="font-mono">
-                    **** **** **** {charge.card.last_four}
+                    **** **** **** {charge?.card?.last_four ?? '****'}
                   </span>
                 </div>
 

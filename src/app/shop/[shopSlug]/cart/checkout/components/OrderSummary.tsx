@@ -6,16 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Shield, Truck, Gift, Plus, Minus, X } from "lucide-react";
+import { CartItem } from "@/redux/features/cart/cartSlice";
 
-interface CartItem {
-  id: number;
-  sku_id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-  variant: string;
-}
 
 interface OrderSummaryProps {
   cartItems: CartItem[];
@@ -40,6 +32,12 @@ export default function OrderSummary({
   updateQuantity,
   removeItem,
 }: OrderSummaryProps) {
+  const calculatedSubtotal = cartItems.reduce(
+    (sum, item) => sum + parseFloat(item.price.replace(/[^0-9.]/g, "")) * item.quantity,
+    0
+  );
+  
+
   return (
     <div className="space-y-6">
       <Card style={{ borderColor: colors.background.secondary }}>
@@ -63,8 +61,8 @@ export default function OrderSummary({
         <CardContent className="space-y-4">
           {/* Cart Items */}
           <div className="space-y-4">
-            {cartItems.map((item) => (
-              <div key={item.id} className="flex items-center space-x-4">
+            {cartItems.map((item , index) => (
+              <div key={index} className="flex items-center space-x-4">
                 <div className="relative w-16 h-16 rounded-lg flex-shrink-0">
                   <Image
                     src={item.image}
@@ -93,7 +91,7 @@ export default function OrderSummary({
                     className="text-xs"
                     style={{ color: colors.text.secondary }}
                   >
-                    {item.variant}
+                    {item.category}
                   </p>
                   <div className="flex items-center justify-between mt-1">
                     <div className="flex items-center space-x-2">
@@ -133,7 +131,7 @@ export default function OrderSummary({
                         className="text-sm font-semibold"
                         style={{ color: colors.text.primary }}
                       >
-                        ${(item.price * item.quantity).toFixed(2)}
+                        {`$${(parseFloat(item.price.replace(/[^0-9.]/g, "")) * item.quantity).toFixed(2)}`}
                       </span>
                       <Button
                         size="icon"
@@ -157,7 +155,7 @@ export default function OrderSummary({
             <div className="flex justify-between text-sm">
               <span style={{ color: colors.text.secondary }}>Subtotal</span>
               <span style={{ color: colors.text.primary }}>
-                ${subtotal.toFixed(2)}
+                ${calculatedSubtotal.toFixed(2)}
               </span>
             </div>
             <div className="flex justify-between text-sm">
@@ -169,7 +167,7 @@ export default function OrderSummary({
             <div className="flex justify-between text-sm">
               <span style={{ color: colors.text.secondary }}>Tax</span>
               <span style={{ color: colors.text.primary }}>
-                ${tax.toFixed(2)}
+                ${isNaN(tax) ? "0.00" : tax.toFixed(2)}
               </span>
             </div>
             {discount > 0 && (
@@ -186,7 +184,7 @@ export default function OrderSummary({
             <div className="flex justify-between font-semibold text-lg">
               <span style={{ color: colors.text.primary }}>Total</span>
               <span style={{ color: colors.text.primary }}>
-                ${total.toFixed(2)}
+                ${calculatedSubtotal + shipping}
               </span>
             </div>
           </div>

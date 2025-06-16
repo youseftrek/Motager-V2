@@ -168,9 +168,9 @@ export default function CartPage() {
             <div className="lg:col-span-2">
               {/* Cart Items */}
               <div className="bg-white rounded-lg shadow-sm border">
-                {items.map((item) => (
+                {items.map((item , index) => (
                   <div
-                    key={item.id}
+                    key={index}
                     className="flex flex-row items-center p-4 border-b last:border-b-0"
                   >
                     <div className="relative w-24 h-24 rounded-md overflow-hidden flex-shrink-0">

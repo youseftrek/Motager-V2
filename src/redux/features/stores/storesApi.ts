@@ -7,7 +7,11 @@ const storesApi = baseApi.injectEndpoints({
     getStores: builder.query<Store[], void>({
       query: (id) => `/stores/user/${id}`,
     }),
+
+    getStoreBySlug: builder.query<{data:Store}, string>({
+      query: (slug) => `/store/slug/${slug}`,
+    })
   }),
 });
 
-export const { useGetStoresQuery } = storesApi;
+export const { useGetStoresQuery , useGetStoreBySlugQuery } = storesApi;
