@@ -9,10 +9,7 @@ import { MediaModal } from "./media-modal";
 
 interface MediaFile {
   id: string;
-  name: string;
-  url: string;
-  size: number;
-  created_at: string;
+  imageUrl: string;
 }
 
 export default function MediaModalDemo() {
@@ -53,8 +50,8 @@ export default function MediaModalDemo() {
                   <div key={image.id} className="relative group">
                     <div className="aspect-square relative overflow-hidden rounded-lg border">
                       <img
-                        src={image.url || "/placeholder.svg"}
-                        alt={image.name}
+                        src={image.imageUrl || "/placeholder.svg"}
+                        alt="Selected image"
                         className="w-full h-full object-cover"
                       />
                       <button
@@ -65,7 +62,7 @@ export default function MediaModalDemo() {
                       </button>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1 truncate">
-                      {image.name}
+                      Image {image.id}
                     </p>
                   </div>
                 ))}
@@ -74,6 +71,7 @@ export default function MediaModalDemo() {
           )}
 
           <MediaModal
+            storeId={1}
             open={isModalOpen}
             onOpenChange={setIsModalOpen}
             onSelect={handleImageSelect}

@@ -5,9 +5,10 @@ import OrderPaymentSuccess from "./_components/SuccessPaymentPage";
 export default async function PaymentSuccess({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const tap_id = searchParams.tap_id;
+  const params = await searchParams;
+  const tap_id = params.tap_id;
 
   if (!tap_id || typeof tap_id !== "string") {
     return <div>Error: Invalid payment reference</div>;
