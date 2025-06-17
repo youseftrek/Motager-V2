@@ -78,9 +78,8 @@ export default function OrderView({ order }: Props) {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" onClick={handleBack}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Orders
+            <Button variant="outline" size="icon" onClick={handleBack}>
+              <ArrowLeft className="w-4 h-4 " />
             </Button>
             <div>
               <h1 className="text-2xl font-bold">Order #{order.order_id}</h1>

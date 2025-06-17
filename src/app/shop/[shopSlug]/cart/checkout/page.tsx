@@ -237,7 +237,7 @@ export default function CheckoutPage() {
     fetchThemeColors();
   }, [storeSlug]);
 
-  const [createOrder , {data , isLoading:isCreatingLoading , isError}] = useCreateOrderMutation()
+  const [createOrder] = useCreateOrderMutation()
 
   const colors = themeColors ? extractThemeColors(themeColors) : defaultColors;
 
@@ -323,34 +323,43 @@ export default function CheckoutPage() {
   };
 
   const handlePlaceOrder = async () => {
-    if (validateStep(3)) {
+    if (validateStep(3) && !isProcessing) {
       setIsProcessing(true);
-      const orderData = {
-        total_price: parseFloat(total.toFixed(2)),
-        email: formData.email,
-        customer_name: formData.customer_name,
-        phone_number: formData.phone_number,
-        address: formData.address,
-        payment_method: formData.payment_method,
-        note: formData.note,
-        city: formData.city,
-        governorate: formData.governorate,
-        postal_code: formData.postal_code,
-        shipping_method: formData.shipping_method,
-        order_items: items.map((item) => ({
-          sku_id: item.sku_id,
-          price: Number(item.price.replace(/[^0-9.]/g, "")),
-          quantity: item.quantity,
-        })),
-        store_id: store?.data?.id,
-        token
-      };
-      await createOrder(orderData);
-      setIsProcessing(false);
-      if(data){
-        console.log("Order created successfully:", data.data);
-        await localStorage.removeItem('cart')
-        window.location.assign(data.data.payment.transaction.url)
+      try {
+        const orderData = {
+          total_price: parseFloat(total.toFixed(2)),
+          email: formData.email,
+          customer_name: formData.customer_name,
+          phone_number: formData.phone_number,
+          address: formData.address,
+          payment_method: formData.payment_method,
+          note: formData.note,
+          city: formData.city,
+          governorate: formData.governorate,
+          postal_code: formData.postal_code,
+          shipping_method: formData.shipping_method,
+          order_items: items.map((item) => ({
+            sku_id: item.sku_id,
+            price: Number(item.price.replace(/[^0-9.]/g, "")),
+            quantity: item.quantity,
+          })),
+          store_id: store?.data?.id,
+          token
+        };
+        
+        const result = await createOrder(orderData).unwrap();
+        
+        if (result?.data?.payment?.transaction?.url) {
+          console.log("Order created successfully:", result.data);
+          localStorage.removeItem('cart');
+          window.location.assign(result.data.payment.transaction.url);
+        } else {
+          console.error("No payment URL received");
+          setIsProcessing(false);
+        }
+      } catch (error) {
+        console.error("Error creating order:", error);
+        setIsProcessing(false);
       }
     }
   };

@@ -90,9 +90,8 @@ export default function CustomerView({ customer }: Props) {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" onClick={handleBack}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Customers
+            <Button variant="outline" size="icon" onClick={handleBack}>
+              <ArrowLeft className="w-4 h-4" />
             </Button>
             <div>
               <h1 className="text-2xl font-bold">{customer.customer_name || customer.name || 'Customer'}</h1>
