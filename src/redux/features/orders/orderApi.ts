@@ -9,6 +9,19 @@ export const orderApi = baseApi.injectEndpoints({
             body: orderData,
         }),
         }),
+        getStoreOrder:builder.query<{orders:any[]} , {storeId:number}>({
+            query:(storeId)=>`stores/${storeId}/orders`
+        }),
+        deleteOrder: builder.mutation<any, {orderId: number, storeId: number}>({
+            query: ({orderId, storeId}) => ({
+                url: `/stores/${storeId}/orders/${orderId}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 })
-export const { useCreateOrderMutation } = orderApi;
+export const { 
+    useCreateOrderMutation, 
+    useGetStoreOrderQuery,
+    useDeleteOrderMutation 
+} = orderApi;

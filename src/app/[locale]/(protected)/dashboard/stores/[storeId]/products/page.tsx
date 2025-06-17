@@ -1,8 +1,8 @@
 import React from "react";
 import AnimatedDashboardPage from "../../../_components/AnimatedDashboardPage";
 import DashboardPageHeader from "../../../_components/DashboardPageHeader";
-import DataTable from "@/components/data-table";
 import { getStoreProducts } from "@/data/products";
+import ProductsTable from "./_components/ProductsTable";
 
 interface PageProps {
   params: Promise<{ storeId: string }>;
@@ -20,17 +20,7 @@ const ProductsPage = async ({ params }: PageProps) => {
         navigateToIcon="PackagePlus"
       ></DashboardPageHeader>
 
-      <DataTable
-        enableSearch
-        showActions
-        data={products}
-        pageSize={8}
-        defaultHide={["id", "category", "published", "images_url"]}
-        hiddenCols={["collection_ids", "has_variants"]}
-        sortableCols={["products", "name"]}
-        ImgCols={["main_image_url"]}
-        priority={{ main_image_url: 1 }}
-      />
+      <ProductsTable products={products} storeId={storeId} />
     </AnimatedDashboardPage>
   );
 };

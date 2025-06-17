@@ -95,8 +95,17 @@ const ProductFormContext = createContext<ProductFormContextType | undefined>(
   undefined
 );
 
-export function ProductFormProvider({ children }: { children: ReactNode }) {
-  const [formData, setFormData] = useState<ProductFormData>(initialFormData);
+export function ProductFormProvider({ 
+  children, 
+  initialData 
+}: { 
+  children: ReactNode;
+  initialData?: Partial<ProductFormData>;
+}) {
+  const [formData, setFormData] = useState<ProductFormData>({
+    ...initialFormData,
+    ...initialData,
+  });
   const [currentStep, setCurrentStep] = useState(0);
   const totalSteps = 4; // Basic Info, Variants, SKUs, Review
 

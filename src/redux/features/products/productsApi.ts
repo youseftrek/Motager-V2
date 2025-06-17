@@ -10,6 +10,21 @@ export const productsApi = baseApi.injectEndpoints({
             }),
         }),
 
+        updateProduct: build.mutation<any, {storeId: number, productId: number, data: any}>({
+            query: ({storeId, productId, data}) => ({
+                url: `/stores/${storeId}/products/${productId}`,
+                method: 'PUT',
+                body: data,
+            }),
+        }),
+
+        deleteProduct: build.mutation<any, {storeId: number, productId: number}>({
+            query: ({storeId, productId}) => ({
+                url: `/stores/${storeId}/products/${productId}`,
+                method: 'DELETE',
+            }),
+        }),
+
         getStoreProductsBySlug: build.query<any, {storeSlug:string}>({
             query: ({storeSlug}) => `/stores/slug/${storeSlug}/products`,
         }),
@@ -19,4 +34,10 @@ export const productsApi = baseApi.injectEndpoints({
         })
     }),
 })
-export const {useCreateProductMutation ,useGetStoreProductsBySlugQuery , useGetSingleProductQuery } = productsApi
+export const {
+    useCreateProductMutation, 
+    useUpdateProductMutation,
+    useDeleteProductMutation,
+    useGetStoreProductsBySlugQuery, 
+    useGetSingleProductQuery 
+} = productsApi
