@@ -11,7 +11,7 @@ import {
   Autoplay,
   EffectCreative,
 } from "swiper/modules";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import Link from "next/link";
@@ -27,16 +27,9 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { extractThemeColors } from "../theme-utils";
-import { ThemedButton, ThemedHeading, ThemedText } from "../theme-components";
-import {
-  useResponsiveClasses,
-  padding,
-  textSize,
-} from "@/hooks/use-responsive-classes";
+import {  ThemedHeading, ThemedText } from "../theme-components";
 import { useDeviceView } from "@/providers/device-view-context";
 import { useAppDispatch } from "@/redux/app/hooks";
-import { addToCart } from "@/redux/features/cart/cartSlice";
-import { toast } from "sonner";
 import { useParams } from "next/navigation";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -271,7 +264,21 @@ export default function BestSellersSlider({
   const dispatch = useAppDispatch();
   const { shopSlug } = useParams();
   const storeSlug = shopSlug as string;
-  const {data , isLoading}  = useGetStoreProductsBySlugQuery({storeSlug})
+  
+  // Check if we're in the builder page
+  const [isBuilderPage, setIsBuilderPage] = useState(false);
+  
+  useEffect(() => {
+    // Check if the URL contains '/builder'
+    setIsBuilderPage(window.location.pathname.includes('/builder'));
+  }, []);
+  
+  // Only fetch products if not in builder page
+  const {data, isLoading} = useGetStoreProductsBySlugQuery(
+    {storeSlug},
+    { skip: isBuilderPage }
+  );
+
   // Extract theme colors
   const colors = extractThemeColors(themeColors);
 
@@ -403,84 +410,225 @@ export default function BestSellersSlider({
     }
   };
 
-  return (
-    <TooltipProvider>
-      <div
-        className="py-12"
-        style={{ backgroundColor: bgColor, color: txtColor }}
-      >
-        <div className="container mx-auto px-4">
-          <ThemedHeading
-            level={2}
-            className="text-3xl font-bold text-center mb-8"
-            colors={colors}
-          >
-            {title}
-          </ThemedHeading>
-
-          <div className="relative">
-            {showNavigation && (
-              <>
-                <div
-                  className="swiper-button-prev absolute left-0 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 shadow-md"
-                  style={{ color: colors.buttons.primary.background }}
-                >
-                  <ChevronLeft size={20} />
-                </div>
-                <div
-                  className="swiper-button-next absolute right-0 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 shadow-md"
-                  style={{ color: colors.buttons.primary.background }}
-                >
-                  <ChevronRight size={20} />
-                </div>
-              </>
+  // Function to render product slides based on whether we're in builder mode or not
+  const renderProductSlides = () => {
+    // Always use placeholder products in builder mode
+    if (isBuilderPage) {
+      return products.map((product) => (
+        <SwiperSlide key={product.id}>
+          <Card
+            className={cn(
+              "h-full overflow-hidden group hover:shadow-lg transition-all duration-300",
+              getCardClass()
             )}
+          >
+            <div className="relative aspect-square overflow-hidden">
+              <Link
+                href="#"
+                onClick={(e) => e.preventDefault()}
+              >
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  fill
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+              </Link>
 
-            <Swiper
-              ref={swiperRef}
-              modules={[Navigation, Pagination, Autoplay, EffectCreative]}
-              spaceBetween={20}
-              slidesPerView={slidesPerView}
-              navigation={{
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-              }}
-              pagination={
-                showBullets
-                  ? {
-                      clickable: true,
-                      el: ".swiper-pagination",
-                      bulletActiveClass: "swiper-pagination-bullet-active",
-                    }
-                  : false
-              }
-              autoplay={
-                swipeSpeed > 0
-                  ? {
-                      delay: swipeSpeed * 1000,
-                      disableOnInteraction: false,
-                    }
-                  : false
-              }
-              breakpoints={
-                !deviceView?.isPreviewMode
-                  ? {
-                      640: {
-                        slidesPerView: 2,
-                      },
-                      768: {
-                        slidesPerView: 3,
-                      },
-                      1024: {
-                        slidesPerView: 4,
-                      },
-                    }
-                  : undefined
-              }
-              {...getSwiperEffect()}
-              className="mb-8"
-            >
-              {data?.products.map((product:any) => (
+              {/* Action Buttons */}
+              <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="secondary"
+                      className="h-8 w-8 rounded-full"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        toggleLike(product.id);
+                      }}
+                      style={{
+                        backgroundColor: colors.background.primary,
+                        borderColor: colors.background.secondary,
+                      }}
+                    >
+                      <Heart
+                        className={`h-4 w-4 ${
+                          likedProducts.includes(product.id)
+                            ? "fill-red-500 text-red-500"
+                            : ""
+                        }`}
+                        style={{
+                          color: likedProducts.includes(product.id)
+                            ? "#ef4444"
+                            : colors.text.secondary,
+                        }}
+                      />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    style={{
+                      backgroundColor: colors.background.secondary,
+                      color: colors.text.primary,
+                    }}
+                  >
+                    Add to wishlist
+                  </TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="secondary"
+                      className="h-8 w-8 rounded-full"
+                      style={{
+                        backgroundColor: colors.background.primary,
+                        borderColor: colors.background.secondary,
+                        color: colors.text.secondary,
+                      }}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    style={{
+                      backgroundColor: colors.background.secondary,
+                      color: colors.text.primary,
+                    }}
+                  >
+                    Quick view
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+
+              {/* Add to Cart Button */}
+              <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                <Link 
+                  className={cn(
+                    buttonVariants({
+                      variant:"secondary",
+                      size:"sm"
+                    })
+                  )}
+                  style={{
+                    backgroundColor: colors.buttons.primary.background,
+                    color: colors.buttons.primary.text,
+                  }} 
+                  href="#"
+                  onClick={(e) => e.preventDefault()}
+                >
+                    <ShoppingBag className="h-4 w-4 mr-2" />
+                    Add to Cart
+                </Link>
+              </div>
+
+              {/* Badges */}
+              {product.sale && showSaleTag && (
+                <Badge
+                  className="absolute left-2 top-2"
+                  style={{
+                    backgroundColor: colors.buttons.secondary.background,
+                    color: colors.buttons.secondary.text,
+                  }}
+                >
+                  Sale {product.salePercentage}
+                </Badge>
+              )}
+                </div>
+
+            <CardContent className="p-4">
+              <div className="flex justify-between items-start">
+                <ThemedHeading
+                  level={3}
+                  className="font-semibold"
+                  colors={colors}
+                >
+                  <Link
+                    href="#"
+                    onClick={(e) => e.preventDefault()}
+                    className="hover:text-primary transition-colors duration-200"
+                    style={{ color: colors.text.primary }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color =
+                        colors.buttons.primary.background;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = colors.text.primary;
+                    }}
+                  >
+                    {product.name}
+                  </Link>
+                </ThemedHeading>
+                <Badge
+                  variant="outline"
+                  className="ml-2 capitalize"
+                  style={{
+                    borderColor: colors.background.secondary,
+                    backgroundColor: colors.buttons.tertiary.background,
+                    color: colors.text.secondary,
+                  }}
+                >
+                  {product.category}
+                </Badge>
+              </div>
+
+              <p
+                className="text-sm my-3 line-clamp-2"
+                style={{ color: colors.text.secondary }}
+              >
+                {product.description}
+              </p>
+
+              <div className="mt-4 flex items-center justify-between">
+                <div>
+                  <ThemedText
+                    variant="primary"
+                    className="text-2xl font-bold"
+                    colors={colors}
+                  >
+                    {product.price}
+                  </ThemedText>
+                  {product.originalPrice && product.sale && (
+                    <ThemedText
+                      variant="secondary"
+                      className="text-sm line-through ml-2"
+                      colors={colors}
+                    >
+                      {product.originalPrice}
+                    </ThemedText>
+                  )}
+                </div>
+                {showRating && (
+                  <div>{renderRating(product.rating)}</div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </SwiperSlide>
+      ));
+    }
+    
+    // Show empty state if no products are available
+    if (!data?.products || data.products.length === 0) {
+      return (
+        <SwiperSlide>
+          <Card className={cn("h-full flex flex-col items-center justify-center py-16 px-4 text-center", getCardClass())}>
+            <ShoppingBag className="h-16 w-16 mb-4 opacity-20" style={{ color: colors.text.secondary }} />
+            <ThemedHeading level={3} className="text-xl mb-2" colors={colors}>
+              No Products Available
+            </ThemedHeading>
+            <ThemedText variant="secondary" className="max-w-sm" colors={colors}>
+              There are no products in this collection yet. Products added to your store will appear here.
+            </ThemedText>
+          </Card>
+        </SwiperSlide>
+      );
+    }
+    
+    // Use real products from API when not in builder
+    return data.products.map((product: any) => (
                 <SwiperSlide key={product.id}>
                   <Card
                     className={cn(
@@ -570,28 +718,6 @@ export default function BestSellersSlider({
 
                       {/* Add to Cart Button */}
                       <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-                        {/* <Button
-                          size="sm"
-                          className="rounded-full"
-                          style={{
-                            backgroundColor: colors.buttons.primary.background,
-                            color: colors.buttons.primary.text,
-                          }}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleAddToCart(product);
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor =
-                              colors.buttons.primary.hover;
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor =
-                              colors.buttons.primary.background;
-                          }}
-                        >
-                          
-                        </Button> */}
                         <Link 
                           className={cn(
                             buttonVariants({
@@ -653,7 +779,7 @@ export default function BestSellersSlider({
                             color: colors.text.secondary,
                           }}
                         >
-                          {product.category.slug}
+                {product.category?.slug}
                         </Badge>
                       </div>
 
@@ -678,7 +804,87 @@ export default function BestSellersSlider({
                     </CardContent>
                   </Card>
                 </SwiperSlide>
-              ))}
+    ));
+  };
+
+  return (
+    <TooltipProvider>
+      <div
+        className="py-12"
+        style={{ backgroundColor: bgColor, color: txtColor }}
+      >
+        <div className="container mx-auto px-4">
+          <ThemedHeading
+            level={2}
+            className="text-3xl font-bold text-center mb-8"
+            colors={colors}
+          >
+            {title}
+          </ThemedHeading>
+
+          <div className="relative">
+            {showNavigation && (
+              <>
+                <div
+                  className="swiper-button-prev absolute left-0 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 shadow-md"
+                  style={{ color: colors.buttons.primary.background }}
+                >
+                  <ChevronLeft size={20} />
+                </div>
+                <div
+                  className="swiper-button-next absolute right-0 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 shadow-md"
+                  style={{ color: colors.buttons.primary.background }}
+                >
+                  <ChevronRight size={20} />
+                </div>
+              </>
+            )}
+
+            <Swiper
+              ref={swiperRef}
+              modules={[Navigation, Pagination, Autoplay, EffectCreative]}
+              spaceBetween={20}
+              slidesPerView={slidesPerView}
+              navigation={{
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+              }}
+              pagination={
+                showBullets
+                  ? {
+                      clickable: true,
+                      el: ".swiper-pagination",
+                      bulletActiveClass: "swiper-pagination-bullet-active",
+                    }
+                  : false
+              }
+              autoplay={
+                swipeSpeed > 0
+                  ? {
+                      delay: swipeSpeed * 1000,
+                      disableOnInteraction: false,
+                    }
+                  : false
+              }
+              breakpoints={
+                !deviceView?.isPreviewMode
+                  ? {
+                      640: {
+                        slidesPerView: 2,
+                      },
+                      768: {
+                        slidesPerView: 3,
+                      },
+                      1024: {
+                        slidesPerView: 4,
+                      },
+                    }
+                  : undefined
+              }
+              {...getSwiperEffect()}
+              className="mb-8"
+            >
+              {renderProductSlides()}
             </Swiper>
           </div>
 
