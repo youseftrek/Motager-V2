@@ -1,7 +1,7 @@
 import "./globals.css";
 import { LocaleType } from "@/i18n/request";
 import { DIRECTIONS } from "../../constants/locale";
-import {  Outfit } from "next/font/google";
+import { El_Messiri, Outfit } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
@@ -25,11 +25,11 @@ const FONT_EN = Outfit({
   preload: true,
 });
 
-// const FONT_AR = El_Messiri({
-//   weight: ["400", "500", "700", "600"],
-//   subsets: ["arabic"],
-//   preload: true,
-// });
+const FONT_AR = El_Messiri({
+  weight: ["400", "500", "700", "600"],
+  subsets: ["arabic"],
+  preload: true,
+});
 
 export const metadata: Metadata = {
   title: "Motager",
@@ -69,7 +69,7 @@ export default async function RootLayout({
       <body
         suppressHydrationWarning
         className={`${
-          FONT_EN.className
+          locale === "ar" ? FONT_AR.className : FONT_EN.className
         } antialiased`}
       >
         <ReduxProvider>

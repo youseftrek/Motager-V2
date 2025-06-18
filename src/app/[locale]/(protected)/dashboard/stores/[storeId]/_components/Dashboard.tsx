@@ -54,114 +54,7 @@ const Dashboard = () => {
     fetchDashboardData();
   }, [token, storeId, dateRange]);
 
-  // Use dashboardData if available, otherwise fallback to mock data
-  // Mock data - replace with your API calls
-  const mockData = {
-    summary: {
-      totalRevenue: 145650.75,
-      totalProducts: 1247,
-      totalOrders: 3456,
-      revenueChange: 12.5,
-      productsChange: 5.2,
-      ordersChange: 8.7,
-    },
-    monthlySales: [
-      { month: "Jan", sales: 12500 },
-      { month: "Feb", sales: 15200 },
-      { month: "Mar", sales: 18700 },
-      { month: "Apr", sales: 16800 },
-      { month: "May", sales: 22400 },
-      { month: "Jun", sales: 25600 },
-      { month: "Jul", sales: 24800 },
-      { month: "Aug", sales: 28900 },
-      { month: "Sep", sales: 26300 },
-      { month: "Oct", sales: 31200 },
-      { month: "Nov", sales: 29800 },
-      { month: "Dec", sales: 33450 },
-    ],
-    latestOrders: [
-      {
-        id: "#ORD-2024-001",
-        customer: "Sarah Johnson",
-        amount: 299.99,
-        status: "completed",
-        date: "2024-06-16",
-      },
-      {
-        id: "#ORD-2024-002",
-        customer: "Michael Chen",
-        amount: 149.5,
-        status: "processing",
-        date: "2024-06-16",
-      },
-      {
-        id: "#ORD-2024-003",
-        customer: "Emma Wilson",
-        amount: 89.99,
-        status: "shipped",
-        date: "2024-06-15",
-      },
-      {
-        id: "#ORD-2024-004",
-        customer: "James Miller",
-        amount: 199.99,
-        status: "completed",
-        date: "2024-06-15",
-      },
-      {
-        id: "#ORD-2024-005",
-        customer: "Lisa Anderson",
-        amount: 75.25,
-        status: "processing",
-        date: "2024-06-15",
-      },
-    ],
-    latestCustomers: [
-      {
-        id: 1,
-        name: "Alex Thompson",
-        email: "alex@email.com",
-        orders: 3,
-        totalSpent: 450.75,
-        joinDate: "2024-06-16",
-      },
-      {
-        id: 2,
-        name: "Maria Garcia",
-        email: "maria@email.com",
-        orders: 1,
-        totalSpent: 125.99,
-        joinDate: "2024-06-15",
-      },
-      {
-        id: 3,
-        name: "David Kim",
-        email: "david@email.com",
-        orders: 2,
-        totalSpent: 299.5,
-        joinDate: "2024-06-15",
-      },
-      {
-        id: 4,
-        name: "Sophie Brown",
-        email: "sophie@email.com",
-        orders: 5,
-        totalSpent: 678.25,
-        joinDate: "2024-06-14",
-      },
-      {
-        id: 5,
-        name: "Ryan Davis",
-        email: "ryan@email.com",
-        orders: 1,
-        totalSpent: 89.99,
-        joinDate: "2024-06-14",
-      },
-    ],
-  };
-
   // Use real data if available, otherwise use mock data
-  const data = dashboardData || mockData;
 
   const formatCurrency = (amount: any) => {
     return new Intl.NumberFormat("en-US", {
@@ -236,7 +129,7 @@ const Dashboard = () => {
                       Total Revenue
                     </p>
                     <p className="text-2xl font-bold mt-1">
-                      {formatCurrency(data.summary.totalRevenue)}
+                      {formatCurrency(dashboardData.summary.totalRevenue)}
                     </p>
                   </div>
                   <div className="bg-emerald-500/10 p-3 rounded-full">
@@ -252,7 +145,7 @@ const Dashboard = () => {
                       Total Products
                     </p>
                     <p className="text-2xl font-bold mt-1">
-                      {data.summary.totalProducts.toLocaleString()}
+                      {dashboardData.summary.totalProducts.toLocaleString()}
                     </p>
                   </div>
                   <div className="bg-blue-500/10 p-3 rounded-full">
@@ -268,7 +161,7 @@ const Dashboard = () => {
                       Total Orders
                     </p>
                     <p className="text-2xl font-bold mt-1">
-                      {data.summary.totalOrders.toLocaleString()}
+                      {dashboardData.summary.totalOrders.toLocaleString()}
                     </p>
                   </div>
                   <div className="bg-violet-500/10 p-3 rounded-full">
@@ -289,10 +182,11 @@ const Dashboard = () => {
                     <span>Sales Revenue</span>
                   </div>
                 </div>
-                {data.monthlySales && data.monthlySales.length > 0 ? (
+                {dashboardData.monthlySales &&
+                dashboardData.monthlySales.length > 0 ? (
                   <div className="h-80">
                     <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={data.monthlySales}>
+                      <AreaChart data={dashboardData.monthlySales}>
                         <defs>
                           <linearGradient
                             id="salesGradient"
@@ -366,9 +260,10 @@ const Dashboard = () => {
                     View All <Eye className="w-4 h-4" />
                   </button>
                 </div>
-                {data.latestOrders && data.latestOrders.length > 0 ? (
+                {dashboardData.latestOrders &&
+                dashboardData.latestOrders.length > 0 ? (
                   <div className="space-y-4">
-                    {data.latestOrders.map((order: any) => (
+                    {dashboardData.latestOrders.map((order: any) => (
                       <div
                         key={order.id}
                         className="flex items-center justify-between p-3 hover:bg-muted/50 rounded-lg transition-colors"
@@ -416,7 +311,8 @@ const Dashboard = () => {
                   View All <Eye className="w-4 h-4" />
                 </button>
               </div>
-              {data.latestCustomers && data.latestCustomers.length > 0 ? (
+              {dashboardData.latestCustomers &&
+              dashboardData.latestCustomers.length > 0 ? (
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
@@ -439,7 +335,7 @@ const Dashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {data.latestCustomers.map((customer: any) => (
+                      {dashboardData.latestCustomers.map((customer: any) => (
                         <tr
                           key={customer.id}
                           className="border-b border-border hover:bg-muted/50 transition-colors"
