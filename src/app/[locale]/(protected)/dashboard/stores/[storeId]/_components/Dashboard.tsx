@@ -54,7 +54,37 @@ const Dashboard = () => {
     fetchDashboardData();
   }, [token, storeId, dateRange]);
 
+  // Use dashboardData if available, otherwise fallback to mock data
+  // Mock data - replace with your API calls
+  const mockData = {
+    summary: {
+      totalRevenue: 0,
+      totalProducts: 0,
+      totalOrders: 0,
+      revenueChange: 0,
+      productsChange: 0,
+      ordersChange: 0,
+    },
+    monthlySales: [
+      { month: "Jan", sales: 0 },
+      { month: "Feb", sales: 0 },
+      { month: "Mar", sales: 0 },
+      { month: "Apr", sales: 0 },
+      { month: "May", sales: 0 },
+      { month: "Jun", sales: 0 },
+      { month: "Jul", sales: 0 },
+      { month: "Aug", sales: 0 },
+      { month: "Sep", sales: 0 },
+      { month: "Oct", sales: 0 },
+      { month: "Nov", sales: 0 },
+      { month: "Dec", sales: 0 },
+    ],
+    latestOrders: [],
+    latestCustomers: [],
+  };
+
   // Use real data if available, otherwise use mock data
+  const data = dashboardData || mockData;
 
   const formatCurrency = (amount: any) => {
     return new Intl.NumberFormat("en-US", {
@@ -129,7 +159,7 @@ const Dashboard = () => {
                       Total Revenue
                     </p>
                     <p className="text-2xl font-bold mt-1">
-                      {formatCurrency(dashboardData.summary.totalRevenue)}
+                      {formatCurrency(data.summary.totalRevenue)}
                     </p>
                   </div>
                   <div className="bg-emerald-500/10 p-3 rounded-full">
@@ -145,7 +175,7 @@ const Dashboard = () => {
                       Total Products
                     </p>
                     <p className="text-2xl font-bold mt-1">
-                      {dashboardData.summary.totalProducts.toLocaleString()}
+                      {data.summary.totalProducts.toLocaleString()}
                     </p>
                   </div>
                   <div className="bg-blue-500/10 p-3 rounded-full">
@@ -161,7 +191,7 @@ const Dashboard = () => {
                       Total Orders
                     </p>
                     <p className="text-2xl font-bold mt-1">
-                      {dashboardData.summary.totalOrders.toLocaleString()}
+                      {data.summary.totalOrders.toLocaleString()}
                     </p>
                   </div>
                   <div className="bg-violet-500/10 p-3 rounded-full">
@@ -182,11 +212,10 @@ const Dashboard = () => {
                     <span>Sales Revenue</span>
                   </div>
                 </div>
-                {dashboardData.monthlySales &&
-                dashboardData.monthlySales.length > 0 ? (
+                {data.monthlySales && data.monthlySales.length > 0 ? (
                   <div className="h-80">
                     <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={dashboardData.monthlySales}>
+                      <AreaChart data={data.monthlySales}>
                         <defs>
                           <linearGradient
                             id="salesGradient"
@@ -260,10 +289,9 @@ const Dashboard = () => {
                     View All <Eye className="w-4 h-4" />
                   </button>
                 </div>
-                {dashboardData.latestOrders &&
-                dashboardData.latestOrders.length > 0 ? (
+                {data.latestOrders && data.latestOrders.length > 0 ? (
                   <div className="space-y-4">
-                    {dashboardData.latestOrders.map((order: any) => (
+                    {data.latestOrders.map((order: any) => (
                       <div
                         key={order.id}
                         className="flex items-center justify-between p-3 hover:bg-muted/50 rounded-lg transition-colors"
@@ -311,8 +339,7 @@ const Dashboard = () => {
                   View All <Eye className="w-4 h-4" />
                 </button>
               </div>
-              {dashboardData.latestCustomers &&
-              dashboardData.latestCustomers.length > 0 ? (
+              {data.latestCustomers && data.latestCustomers.length > 0 ? (
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
@@ -335,7 +362,7 @@ const Dashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {dashboardData.latestCustomers.map((customer: any) => (
+                      {data.latestCustomers.map((customer: any) => (
                         <tr
                           key={customer.id}
                           className="border-b border-border hover:bg-muted/50 transition-colors"
